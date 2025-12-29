@@ -1,0 +1,978 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Japanese Flash Cards — v1.4.7 (Build 14)</title>
+
+  <!--
+    Japanese Flash Cards — v1.4.7 (Build 14)
+
+    CHANGELOG
+    - UI: Vocab Japanese-side layout updated to 3-line hierarchy:
+          1) Romaji (top, primary)
+          2) Japanese characters (own line, slightly smaller but still prominent)
+          3) Pronunciation (smaller, tertiary)
+    - No other functional changes.
+
+    REVERT GUIDE
+    - To revert to the prior Japanese-face layout:
+      In faceContent() for vocab, replace the returned object with:
+        { big: card.romaji, mid: `${card.japanese} · Pronunciation: ${card.pronunciation}`, small: "" }
+  -->
+
+  <style>
+    :root {
+      --bg:#0b1220;
+      --panel:#121a2b;
+      --muted:#9aa4b2;
+      --text:#e7edf6;
+      --accent:#4aa3ff;
+      --border:#24314a;
+      --good:#2bd4a6;
+      --bad:#ff5a7a;
+      --warn:#fbbf24;
+    }
+
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"; }
+    body { margin: 0; background: radial-gradient(1200px 800px at 20% 0%, #15203a 0%, var(--bg) 45%, #070b14 100%); color: var(--text); }
+
+    header { padding: 20px 18px 8px; max-width: 1100px; margin: 0 auto; }
+    h1 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: .2px; }
+    .sub { margin-top: 6px; color: var(--muted); font-size: 13px; line-height: 1.35; display:flex; flex-wrap: wrap; gap:10px; align-items:center; }
+    .ver { color: var(--muted); font-size: 12px; border:1px solid var(--border); padding: 4px 8px; border-radius: 999px; background: rgba(0,0,0,.18); }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 14px 18px 28px; display: grid; grid-template-columns: 380px 1fr; gap: 14px; }
+    @media (max-width: 980px) { main { grid-template-columns: 1fr; } }
+
+    .panel { background: color-mix(in srgb, var(--panel), #000 10%); border: 1px solid var(--border); border-radius: 14px; padding: 14px; box-shadow: 0 12px 30px rgba(0,0,0,.25); }
+
+    .row { display:flex; gap:10px; flex-wrap: wrap; align-items:center; }
+    .row + .row { margin-top: 12px; }
+
+    .pill { border:1px solid var(--border); background: rgba(255,255,255,.03); padding: 9px 11px; border-radius: 14px; display:flex; align-items:center; gap:8px; }
+    .pill label { font-size: 13px; color: var(--text); }
+    .pill small { color: var(--muted); }
+    input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); }
+
+    select, button, input[type="number"] {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 10px 12px;
+      outline: none;
+      font-size: 13px;
+    }
+
+    select {
+      min-width: 250px;
+      background: rgba(12, 18, 32, 0.92);
+      color: var(--text);
+      border-color: var(--border);
+    }
+    select option { background: #0b1220; color: var(--text); }
+    select option:checked { background: #15203a; }
+
+    button { cursor: pointer; }
+    button.primary { background: linear-gradient(180deg, rgba(74,163,255,.35), rgba(74,163,255,.12)); border-color: color-mix(in srgb, var(--accent), var(--border) 55%); }
+    button.good { background: linear-gradient(180deg, rgba(43,212,166,.35), rgba(43,212,166,.10)); border-color: color-mix(in srgb, var(--good), var(--border) 60%); }
+    button.bad  { background: linear-gradient(180deg, rgba(255,90,122,.35), rgba(255,90,122,.10)); border-color: color-mix(in srgb, var(--bad), var(--border) 60%); }
+    button.warn { background: linear-gradient(180deg, rgba(251,191,36,.35), rgba(251,191,36,.10)); border-color: color-mix(in srgb, var(--warn), var(--border) 60%); }
+    button:disabled { opacity:.55; cursor:not-allowed; }
+
+    .divider { height: 1px; background: var(--border); margin: 14px 0; opacity: .7; }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid color-mix(in srgb, var(--border), #000 15%);
+    }
+
+    .panel h2 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: color-mix(in srgb, var(--muted), var(--text) 25%);
+      margin: 2px 0 10px;
+    }
+
+    .cardWrap { display:flex; flex-direction: column; gap: 12px; }
+    .controls { display:flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+    .stats { color: var(--muted); font-size: 12px; }
+
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px; border:1px solid var(--border); padding: 2px 6px; border-radius: 8px;
+      background: rgba(0,0,0,.2); color: var(--text);
+    }
+
+    .toast {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      min-height: 16px;
+      padding: 8px 10px;
+      border: 1px solid color-mix(in srgb, var(--border), #000 20%);
+      border-radius: 12px;
+      background: rgba(0,0,0,.18);
+    }
+
+    .flashcard {
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      min-height: 360px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      text-align:center;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+      cursor: pointer;
+      box-shadow: 0 18px 40px rgba(0,0,0,.28);
+    }
+    .flashcard:active { transform: translateY(1px); }
+
+    .badge {
+      position:absolute; top: 12px; left: 12px;
+      font-size: 12px; color: var(--muted);
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.18);
+      padding: 6px 10px; border-radius: 999px;
+      z-index: 2;
+      max-width: calc(50% - 18px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .badge.right { left:auto; right: 12px; }
+
+    .content { max-width: 720px; margin: 0 auto; z-index: 1; }
+    .big { font-size: 34px; font-weight: 800; letter-spacing: .2px; line-height: 1.15; }
+    .mid { margin-top: 10px; font-size: 18px; color: color-mix(in srgb, var(--text), var(--muted) 30%); line-height: 1.35; }
+    .small { margin-top: 10px; font-size: 13px; color: var(--muted); line-height: 1.35; }
+
+    /* New: slightly more prominent Japanese line when romaji is on top */
+    .jpLine { font-size: 22px; font-weight: 750; color: color-mix(in srgb, var(--text), var(--muted) 14%); letter-spacing: .2px; }
+
+    .cardActions {
+      position: absolute;
+      left: 12px; right: 12px;
+      bottom: 12px;
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      z-index: 3;
+      pointer-events: none;
+      flex-wrap: wrap;
+    }
+    .cardActions button { pointer-events: auto; }
+    .cardActions .group {
+      display:flex;
+      gap:10px;
+      flex-wrap: wrap;
+      justify-content:center;
+      align-items:center;
+      padding: 6px 10px;
+      border: 1px solid color-mix(in srgb, var(--border), #000 18%);
+      border-radius: 999px;
+      background: rgba(0,0,0,.12);
+      backdrop-filter: blur(6px);
+    }
+
+    .hidden { display:none !important; }
+
+    button:focus-visible,
+    select:focus-visible,
+    input[type="checkbox"]:focus-visible,
+    input[type="number"]:focus-visible {
+      outline: 2px solid color-mix(in srgb, var(--accent), #fff 18%);
+      outline-offset: 2px;
+    }
+    .flashcard:focus-visible {
+      outline: 2px solid color-mix(in srgb, var(--accent), #fff 18%);
+      outline-offset: 4px;
+    }
+
+    button.icon-btn {
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, rgba(231,237,246,.14), rgba(231,237,246,.06));
+      border-color: color-mix(in srgb, var(--text), var(--border) 70%);
+    }
+    button.icon-btn:hover {
+      background: linear-gradient(180deg, rgba(74,163,255,.26), rgba(74,163,255,.10));
+      border-color: color-mix(in srgb, var(--accent), var(--border) 55%);
+    }
+    button.icon-btn:active { transform: translateY(1px); }
+    button.icon-btn svg { width: 20px; height: 20px; fill: currentColor; color: var(--text); opacity: .92; }
+    button.icon-btn:disabled { opacity: .50; cursor:not-allowed; }
+
+    details.changelog {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid color-mix(in srgb, var(--border), #000 15%);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    details.changelog summary {
+      cursor: pointer;
+      color: color-mix(in srgb, var(--muted), var(--text) 15%);
+      font-weight: 650;
+      list-style: none;
+    }
+    details.changelog summary::-webkit-details-marker { display:none; }
+    details.changelog .cl-body {
+      margin-top: 10px;
+      padding: 10px 10px;
+      border: 1px solid color-mix(in srgb, var(--border), #000 20%);
+      border-radius: 12px;
+      background: rgba(0,0,0,.14);
+    }
+    .cl-meta { display:flex; gap:10px; flex-wrap: wrap; margin-bottom: 8px; }
+    .cl-pill {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      padding: 4px 8px;
+      border-radius: 999px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Japanese Flash Cards</h1>
+    <div class="sub">
+      <span>
+        Click the card to flip. Use <span class="kbd">←</span>/<span class="kbd">→</span> prev/next,
+        <span class="kbd">↑</span>/<span class="kbd">↓</span> or <span class="kbd">Space</span> flip.
+      </span>
+      <span class="ver">v1.4.7 · Build 14</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Study Sets</h2>
+
+      <div class="row">
+        <div class="pill">
+          <input id="sel_all" type="checkbox" />
+          <label for="sel_all"><b>Select All</b></label>
+        </div>
+        <div class="pill">
+          <input id="sel_essentials" type="checkbox" />
+          <label for="sel_essentials">Essentials</label>
+        </div>
+        <div class="pill">
+          <input id="sel_core" type="checkbox" checked />
+          <label for="sel_core">Core Travel Vocabulary</label>
+        </div>
+        <div class="pill">
+          <input id="sel_hira" type="checkbox" />
+          <label for="sel_hira">Hiragana</label>
+        </div>
+        <div class="pill">
+          <input id="sel_kata" type="checkbox" />
+          <label for="sel_kata">Katakana</label>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2>By Category (Overrides Study Sets)</h2>
+      <div class="row">
+        <div class="pill" style="width:100%; justify-content: space-between;">
+          <label for="by_category"><b>Category</b></label>
+          <select id="by_category" title="Choose a category to study across all sets">
+            <option value="">(None)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2>Options</h2>
+
+      <div class="row">
+        <div class="pill">
+          <input id="opt_randomSide" type="checkbox" checked />
+          <label for="opt_randomSide">Randomize front side (English/Japanese)</label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="pill">
+          <input id="opt_shuffle" type="checkbox" checked />
+          <label for="opt_shuffle">Shuffle deck</label>
+        </div>
+        <div class="pill">
+          <label for="opt_limit">Card limit</label>
+          <input id="opt_limit" type="number" min="0" step="10" value="0" style="width:110px" />
+          <small>(0 = no limit)</small>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="pill">
+          <input id="opt_incorrectOnly" type="checkbox" />
+          <label for="opt_incorrectOnly">Review incorrect only</label>
+        </div>
+        <div class="pill">
+          <button id="btn_clearMisses">Clear incorrect list</button>
+          <small id="missCount" style="color:var(--muted);">Incorrect: 0</small>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <button class="primary" id="btn_build">Build Deck</button>
+        <button id="btn_reset">Reset</button>
+      </div>
+
+      <div class="hint">
+        <ul style="margin:8px 0 0 18px; padding:0;">
+          <li><b>Unsure</b> marks incorrect and flips to show the answer.</li>
+          <li>Once marked incorrect, a card stays incorrect until you clear the incorrect list.</li>
+          <li><b>By Category</b> pulls cards from all sets but filters to the chosen sub-category.</li>
+        </ul>
+      </div>
+
+      <details class="changelog">
+        <summary>Changelog (v1.4.7 · Build 14)</summary>
+        <div class="cl-body">
+          <div class="cl-meta">
+            <span class="cl-pill">Version: 1.4.7</span>
+            <span class="cl-pill">Build: 14</span>
+            <span class="cl-pill">Type: PATCH</span>
+          </div>
+          <ul style="margin:0 0 0 16px; padding:0;">
+            <li><b>UI:</b> Japanese-face vocab cards now show Romaji (top) → Japanese (own line) → Pronunciation (below).</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <section class="cardWrap">
+      <div class="panel">
+        <div class="controls">
+          <div class="row">
+            <button id="btn_prev">← Prev</button>
+            <button class="primary" id="btn_flip">Flip</button>
+            <button id="btn_next">Next →</button>
+          </div>
+          <div class="stats" id="stats">Deck not built yet.</div>
+        </div>
+        <div class="toast" id="toast"></div>
+      </div>
+
+      <div class="flashcard" id="card" tabindex="0" title="Click to flip">
+        <div class="badge" id="badge_left">—</div>
+        <div class="badge right" id="badge_right">—</div>
+
+        <div class="content">
+          <div class="big" id="big">Build a deck to start</div>
+          <div class="mid" id="mid">Select sets on the left, then click <b>Build Deck</b>.</div>
+          <div class="small" id="small"></div>
+        </div>
+
+        <div class="cardActions">
+          <div class="group" id="actions_front">
+            <button class="warn" id="btn_unsure" title="Mark incorrect and show answer">Unsure</button>
+          </div>
+
+          <div class="group hidden" id="actions_back">
+            <button class="icon-btn hidden" id="btn_speak" type="button" aria-label="Speak Japanese" title="Speak Japanese">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M3 10v4c0 1.1.9 2 2 2h3l4 3c.7.5 1.7 0 1.7-.9V5.9c0-.9-1-1.4-1.7-.9l-4 3H5c-1.1 0-2 .9-2 2zm14.5 2c0-1.8-1-3.4-2.5-4.2v8.4c1.5-.8 2.5-2.4 2.5-4.2zm-2.5-9.2v2.2c2.9 1 5 3.8 5 7s-2.1 6-5 7v2.2c4.1-1.1 7-4.8 7-9.2s-2.9-8.1-7-9.2z"/>
+              </svg>
+            </button>
+
+            <button class="bad" id="btn_incorrect" title="Mark incorrect">Incorrect</button>
+            <button class="good" id="btn_correct" title="Mark correct">Correct</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+<script>
+/* ========= Japanese Flash Cards — v1.4.7 (Build 14) ========= */
+
+const APP = { version: "1.4.7", build: 14 };
+
+const SETS = {
+  ESSENTIALS: "Essentials",
+  CORE: "Core Travel Vocabulary",
+  HIRAGANA: "Hiragana",
+  KATAKANA: "Katakana"
+};
+
+const VOCAB = {
+  [SETS.ESSENTIALS]: {
+    "Essentials": [
+      { english: "Excuse me / Sorry", japanese: "すみません", romaji: "Sumimasen", pronunciation: "soo-mee-mah-sen" },
+      { english: "Thank you very much", japanese: "ありがとうございます", romaji: "Arigatō gozaimasu", pronunciation: "ah-ree-gah-toh goh-zah-ee-mas" },
+      { english: "This", japanese: "これ", romaji: "Kore", pronunciation: "koh-reh" },
+      { english: "That (near you)", japanese: "それ", romaji: "Sore", pronunciation: "soh-reh" },
+      { english: "Please (requesting an item)", japanese: "ください", romaji: "Kudasai", pronunciation: "koo-dah-sigh" },
+      { english: "Please (general favor)", japanese: "お願いします", romaji: "Onegaishimasu", pronunciation: "oh-neh-guy-shee-mas" },
+      { english: "No thank you / I'm good", japanese: "大丈夫です", romaji: "Daijōbu desu", pronunciation: "dye-joh-bu dess" }
+    ],
+    "Greetings": [
+      { english: "Hello / Good afternoon", japanese: "こんにちは", romaji: "Konnichiwa", pronunciation: "kon-nee-chee-wah" },
+      { english: "Good morning", japanese: "おはようございます", romaji: "Ohayō gozaimasu", pronunciation: "oh-hah-yoh goh-zah-ee-mas" },
+      { english: "Good evening", japanese: "こんばんは", romaji: "Konbanwa", pronunciation: "kon-bahn-wah" },
+      { english: "Good night", japanese: "おやすみ", romaji: "Oyasumi", pronunciation: "oh-yah-soo-mee" }
+    ]
+  },
+
+  [SETS.CORE]: {
+    "Restaurants": [
+      { english: "Beer, one more", japanese: "ビールもう一杯", romaji: "Bīru mō ippai", pronunciation: "bee-roo moh ee-pie" },
+      { english: "Reservation", japanese: "よやく", romaji: "Yoyaku", pronunciation: "yoh-yah-koo" }
+    ],
+    "Shopping": [
+      { english: "Do you have (it)?", japanese: "ありますか", romaji: "Arimasu ka", pronunciation: "ah-ree-mas kah" },
+      { english: "How much?", japanese: "いくら", romaji: "Ikura", pronunciation: "ee-koo-rah" },
+      { english: "Please show me", japanese: "見せてください", romaji: "Misete kudasai", pronunciation: "mee-seh-teh koo-dah-sigh" }
+    ],
+    "Hotel": [
+      { english: "Reservation / appointment", japanese: "よやく", romaji: "Yoyaku", pronunciation: "yoh-yah-koo" }
+    ],
+    "Numbers": [
+      { english: "Hundred", japanese: "ひゃく", romaji: "Hyaku", pronunciation: "hyah-koo" },
+      { english: "Two hundred", japanese: "にひゃく", romaji: "Ni-hyaku", pronunciation: "nee-hyah-koo" },
+      { english: "Three hundred", japanese: "さんびゃく", romaji: "San-byaku", pronunciation: "sahn-byah-koo" },
+      { english: "Four hundred", japanese: "よんひゃく", romaji: "Yon-hyaku", pronunciation: "yohn-hyah-koo" },
+      { english: "Six hundred", japanese: "ろっぴゃく", romaji: "Roppyaku", pronunciation: "roh-ppyah-koo" },
+      { english: "Eight hundred", japanese: "はっぴゃく", romaji: "Happyaku", pronunciation: "hah-ppyah-koo" },
+      { english: "Twenty", japanese: "にじゅう", romaji: "Ni-jū", pronunciation: "nee-joo" },
+      { english: "Thirty", japanese: "さんじゅう", romaji: "San-jū", pronunciation: "sahn-joo" },
+      { english: "Four thousand", japanese: "よんせん", romaji: "Yon-sen", pronunciation: "yohn-sen" },
+      { english: "Three thousand", japanese: "さんぜん", romaji: "Sanzen", pronunciation: "sahn-zen" },
+      { english: "Eight thousand", japanese: "はっせん", romaji: "Hassen", pronunciation: "hah-sen" }
+    ],
+    "Time & Dates": [
+      { english: "From", japanese: "から", romaji: "Kara", pronunciation: "kah-rah" },
+      { english: "Until / to", japanese: "まで", romaji: "Made", pronunciation: "mah-deh" },
+      { english: "Morning / a.m.", japanese: "ごぜん", romaji: "Gozen", pronunciation: "goh-zen" },
+      { english: "Afternoon / p.m.", japanese: "ごご", romaji: "Gogo", pronunciation: "goh-goh" }
+    ]
+  }
+};
+
+const HIRAGANA = [
+  ["あ","a","ah"],["い","i","ee"],["う","u","oo"],["え","e","eh"],["お","o","oh"],
+  ["か","ka","kah"],["き","ki","kee"],["く","ku","koo"],["け","ke","keh"],["こ","ko","koh"],
+  ["さ","sa","sah"],["し","shi","shee"],["す","su","soo"],["せ","se","seh"],["そ","so","soh"],
+  ["た","ta","tah"],["ち","chi","chee"],["つ","tsu","tsoo"],["て","te","teh"],["と","to","toh"],
+  ["な","na","nah"],["に","ni","nee"],["ぬ","nu","noo"],["ね","ne","neh"],["の","no","noh"],
+  ["は","ha","hah"],["ひ","hi","hee"],["ふ","fu","foo"],["へ","he","heh"],["ほ","ho","hoh"],
+  ["ま","ma","mah"],["み","mi","mee"],["む","mu","moo"],["め","me","meh"],["も","mo","moh"],
+  ["や","ya","yah"],["ゆ","yu","yoo"],["よ","yo","yoh"],
+  ["ら","ra","rah"],["り","ri","ree"],["る","ru","roo"],["れ","re","reh"],["ろ","ro","roh"],
+  ["わ","wa","wah"],["を","wo (o)","woh"],["ん","n","n"]
+];
+
+const KATAKANA = [
+  ["ア","a","ah"],["イ","i","ee"],["ウ","u","oo"],["エ","e","eh"],["オ","o","oh"],
+  ["カ","ka","kah"],["キ","ki","kee"],["ク","ku","koo"],["ケ","ke","keh"],["コ","ko","koh"],
+  ["サ","sa","sah"],["シ","shi","shee"],["ス","su","soo"],["セ","se","seh"],["ソ","so","soh"],
+  ["タ","ta","tah"],["チ","chi","chee"],["ツ","tsu","tsoo"],["テ","te","teh"],["ト","to","toh"],
+  ["ナ","na","nah"],["ニ","ni","nee"],["ヌ","nu","noo"],["ネ","ne","neh"],["ノ","no","noh"],
+  ["ハ","ha","hah"],["ヒ","hi","hee"],["フ","fu","foo"],["ヘ","he","heh"],["ホ","ho","hoh"],
+  ["マ","ma","mah"],["ミ","mi","mee"],["ム","mu","moo"],["メ","me","meh"],["モ","mo","moh"],
+  ["ヤ","ya","yah"],["ユ","yu","yoo"],["ヨ","yo","yoh"],
+  ["ラ","ra","rah"],["リ","ri","ree"],["ル","ru","roo"],["レ","re","reh"],["ロ","ro","roh"],
+  ["ワ","wa","wah"],["ヲ","wo (o)","woh"],["ン","n","n"]
+];
+
+function slug(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,""); }
+
+function buildCardsFromVocab(setName) {
+  const out = [];
+  const categories = VOCAB[setName] || {};
+  for (const [cat, items] of Object.entries(categories)) {
+    for (const item of items) {
+      const id = `${slug(setName)}:${slug(cat)}:${slug(item.english)}:${slug(item.japanese)}`;
+      out.push({ id, set: setName, category: cat, type: "vocab",
+        english: item.english, japanese: item.japanese, romaji: item.romaji, pronunciation: item.pronunciation
+      });
+    }
+  }
+  return out;
+}
+
+function buildKanaCards(setName, kanaArr) {
+  return kanaArr.map(([ch, romaji, pron]) => ({
+    id: `${slug(setName)}:kana:${slug(ch)}:${slug(romaji)}`,
+    set: setName, category: "Gojūon", type: "kana",
+    english: romaji, japanese: ch, romaji, pronunciation: pron
+  }));
+}
+
+function dedupeCards(cards) {
+  const seen = new Set();
+  const out = [];
+  for (const c of cards) {
+    const key = `${c.type}|${c.japanese}|${c.english}|${c.romaji}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(c);
+  }
+  return out;
+}
+
+function shuffleInPlace(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// state
+let deckAll = [];
+let deckView = [];
+let index = 0;
+let isFront = true;
+let perCardFrontIsEnglish = new Map();
+const missed = new Set();
+
+// speech
+let speechSupported = false;
+let jaVoice = null;
+
+// DOM
+const el = (id) => document.getElementById(id);
+const cardEl = el("card");
+const bigEl = el("big");
+const midEl = el("mid");
+const smallEl = el("small");
+const badgeLeft = el("badge_left");
+const badgeRight = el("badge_right");
+const statsEl = el("stats");
+const toastEl = el("toast");
+const missCountEl = el("missCount");
+const actionsFront = el("actions_front");
+const actionsBack = el("actions_back");
+const byCategoryEl = el("by_category");
+
+const selAll = el("sel_all");
+const selEssentials = el("sel_essentials");
+const selCore = el("sel_core");
+const selHira = el("sel_hira");
+const selKata = el("sel_kata");
+
+const optRandomSide = el("opt_randomSide");
+const optShuffle = el("opt_shuffle");
+const optLimit = el("opt_limit");
+const optIncorrectOnly = el("opt_incorrectOnly");
+
+const btnSpeak = el("btn_speak");
+
+function showToast(msg) {
+  toastEl.textContent = msg || "";
+  if (msg) setTimeout(() => { if (toastEl.textContent === msg) toastEl.textContent = ""; }, 2400);
+}
+function updateMissCount() { missCountEl.textContent = `Incorrect: ${missed.size}`; }
+
+function selectedSets() {
+  const sets = [];
+  if (selEssentials.checked) sets.push(SETS.ESSENTIALS);
+  if (selCore.checked) sets.push(SETS.CORE);
+  if (selHira.checked) sets.push(SETS.HIRAGANA);
+  if (selKata.checked) sets.push(SETS.KATAKANA);
+  return sets;
+}
+
+function setCardActionVisibility() {
+  if (!deckView.length) {
+    actionsFront.classList.add("hidden");
+    actionsBack.classList.add("hidden");
+    return;
+  }
+  if (isFront) {
+    actionsFront.classList.remove("hidden");
+    actionsBack.classList.add("hidden");
+  } else {
+    actionsFront.classList.add("hidden");
+    actionsBack.classList.remove("hidden");
+  }
+}
+
+function applyIncorrectOnlyView() {
+  if (!deckAll.length) { deckView = []; return; }
+  if (!optIncorrectOnly.checked) { deckView = deckAll.slice(); return; }
+  deckView = deckAll.filter(c => missed.has(c.id));
+  if (deckView.length === 0) showToast("No incorrect cards yet.");
+}
+
+function getAllAvailableCategories() {
+  const cats = new Set();
+  for (const setName of Object.keys(VOCAB)) {
+    for (const catName of Object.keys(VOCAB[setName] || {})) cats.add(catName);
+  }
+  cats.add("Gojūon");
+  return Array.from(cats).sort((a,b) => a.localeCompare(b));
+}
+
+function populateCategoryDropdown() {
+  const categories = getAllAvailableCategories();
+  byCategoryEl.innerHTML = `<option value="">(None)</option>` +
+    categories.map(c => `<option value="${c}">${c}</option>`).join("");
+}
+
+function buildDeckByCategory(category) {
+  let cards = [];
+  for (const setName of Object.keys(VOCAB)) {
+    const cats = VOCAB[setName] || {};
+    if (cats[category]) {
+      for (const item of cats[category]) {
+        const id = `${slug(setName)}:${slug(category)}:${slug(item.english)}:${slug(item.japanese)}`;
+        cards.push({ id, set: setName, category, type: "vocab",
+          english: item.english, japanese: item.japanese, romaji: item.romaji, pronunciation: item.pronunciation
+        });
+      }
+    }
+  }
+  if (category === "Gojūon") {
+    cards.push(...buildKanaCards(SETS.HIRAGANA, HIRAGANA));
+    cards.push(...buildKanaCards(SETS.KATAKANA, KATAKANA));
+  }
+  cards = dedupeCards(cards);
+  const limit = parseInt(optLimit.value || "0", 10);
+  if (optShuffle.checked) shuffleInPlace(cards);
+  if (limit > 0) cards = cards.slice(0, limit);
+  return cards;
+}
+
+function rebuildDeck() {
+  const overrideCategory = byCategoryEl.value;
+  let cards = [];
+
+  if (overrideCategory) {
+    cards = buildDeckByCategory(overrideCategory);
+    showToast(`By Category override: ${overrideCategory}`);
+  } else {
+    const sets = selectedSets();
+    if (sets.length === 0) {
+      deckAll = []; deckView = []; index = 0; isFront = true;
+      render();
+      showToast("Select at least one set (or choose By Category).");
+      return;
+    }
+    for (const s of sets) {
+      if (s === SETS.HIRAGANA) cards.push(...buildKanaCards(SETS.HIRAGANA, HIRAGANA));
+      else if (s === SETS.KATAKANA) cards.push(...buildKanaCards(SETS.KATAKANA, KATAKANA));
+      else cards.push(...buildCardsFromVocab(s));
+    }
+    cards = dedupeCards(cards);
+    const limit = parseInt(optLimit.value || "0", 10);
+    if (optShuffle.checked) shuffleInPlace(cards);
+    if (limit > 0) cards = cards.slice(0, limit);
+  }
+
+  deckAll = cards;
+  perCardFrontIsEnglish = new Map();
+  index = 0;
+  isFront = true;
+
+  applyIncorrectOnlyView();
+  showToast(`Built deck with ${deckAll.length} cards.`);
+  render();
+}
+
+function computeFrontForCard(card) {
+  if (!optRandomSide.checked) {
+    if (card.type === "kana") return false; // kana: Japanese on front
+    return true; // vocab: English on front
+  }
+  if (perCardFrontIsEnglish.has(card.id)) return perCardFrontIsEnglish.get(card.id);
+  const val = Math.random() < 0.5;
+  perCardFrontIsEnglish.set(card.id, val);
+  return val;
+}
+
+/**
+ * v1.4.7 change:
+ * - Vocab Japanese face becomes 3-line layout:
+ *   big: romaji
+ *   mid: japanese (standalone line, more prominent)
+ *   small: pronunciation
+ */
+function faceContent(card, showEnglishFace) {
+  if (card.type === "kana") {
+    if (showEnglishFace) {
+      return { big: card.romaji.toUpperCase(), mid: `Pronunciation: ${card.pronunciation}`, small: `Kana: ${card.japanese}` };
+    } else {
+      return { big: card.japanese, mid: `${card.romaji.toUpperCase()} · Pronunciation: ${card.pronunciation}`, small: `Kana: ${card.japanese}` };
+    }
+  }
+
+  // VOCAB
+  if (showEnglishFace) return { big: card.english, mid: "", small: "" };
+
+  return {
+    big: card.romaji || "",
+    mid: card.japanese || "",
+    small: `Pronunciation: ${card.pronunciation || ""}`
+  };
+}
+
+function getCurrentCard() {
+  if (!deckView.length) return null;
+  return deckView[index];
+}
+
+/* Speech */
+function initSpeech() {
+  speechSupported = !!window.speechSynthesis && !!window.SpeechSynthesisUtterance;
+  if (!speechSupported) {
+    btnSpeak.disabled = true;
+    btnSpeak.title = "Speech not supported in this browser.";
+    return;
+  }
+
+  const loadVoices = () => {
+    const voices = window.speechSynthesis.getVoices() || [];
+    jaVoice = voices.find(v => (v.lang || "").toLowerCase() === "ja-jp")
+          || voices.find(v => (v.lang || "").toLowerCase().startsWith("ja"))
+          || null;
+    btnSpeak.title = jaVoice ? `Speak (voice: ${jaVoice.name})` : "Speak (Japanese voice not found; will attempt default)";
+  };
+
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = () => loadVoices();
+}
+
+function speakJapaneseForCard(card) {
+  if (!speechSupported) { showToast("Speech not supported in this browser."); return; }
+  if (!card) return;
+
+  const text = (card.type === "kana" ? (card.romaji || "") : (card.japanese || ""));
+  if (!text.trim()) { showToast("Nothing to speak for this card."); return; }
+
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "ja-JP";
+    if (jaVoice) u.voice = jaVoice;
+    u.rate = 0.95;
+    u.pitch = 1.0;
+    u.onstart = () => showToast("Speaking…");
+    u.onend = () => showToast("");
+    u.onerror = () => showToast("Unable to play speech (browser voice issue).");
+    window.speechSynthesis.speak(u);
+  } catch {
+    showToast("Unable to play speech in this browser.");
+  }
+}
+
+/* UI actions */
+function render() {
+  updateMissCount();
+
+  if (!deckView || deckView.length === 0) {
+    badgeLeft.textContent = "—";
+    badgeRight.textContent = optIncorrectOnly.checked ? "Incorrect Only" : "—";
+    bigEl.textContent = deckAll.length ? "No cards in this view" : "Build a deck to start";
+    midEl.textContent = deckAll.length
+      ? "You have no incorrect cards yet (or you cleared them)."
+      : "Select sets on the left, then click Build Deck.";
+    smallEl.textContent = "";
+    statsEl.textContent = deckAll.length
+      ? `Deck: ${deckAll.length} · Incorrect: ${missed.size}`
+      : "Deck not built yet.";
+
+    el("btn_prev").disabled = true;
+    el("btn_next").disabled = true;
+    el("btn_flip").disabled = true;
+
+    btnSpeak.classList.add("hidden");
+    btnSpeak.disabled = true;
+
+    setCardActionVisibility();
+    return;
+  }
+
+  const card = deckView[index];
+  const frontIsEnglish = computeFrontForCard(card);
+  const showEnglishFace = isFront ? frontIsEnglish : !frontIsEnglish;
+  const japaneseFaceShowing = !showEnglishFace;
+
+  const content = faceContent(card, showEnglishFace);
+
+  badgeLeft.textContent = `${card.set}`;
+  badgeRight.textContent = `${card.category}${optIncorrectOnly.checked ? " · Incorrect Only" : ""}`;
+
+  bigEl.textContent = content.big;
+
+  // If we're on vocab Japanese face, render the Japanese line with stronger styling.
+  const isVocabJapaneseFace = (card.type === "vocab") && japaneseFaceShowing;
+  if (isVocabJapaneseFace && content.mid) {
+    midEl.innerHTML = `<span class="jpLine">${escapeHtml(content.mid)}</span>`;
+  } else {
+    midEl.textContent = content.mid || (isFront ? "Click to flip" : "");
+  }
+
+  smallEl.textContent = content.small || "";
+
+  statsEl.textContent = `Card ${index + 1} of ${deckView.length} · ${isFront ? "Front" : "Back"} · Deck: ${deckAll.length} · Incorrect: ${missed.size}`;
+
+  const navDisabled = deckView.length <= 1;
+  el("btn_prev").disabled = navDisabled;
+  el("btn_next").disabled = navDisabled;
+  el("btn_flip").disabled = false;
+
+  setCardActionVisibility();
+
+  // Speak visible only on back AND only when Japanese is showing.
+  const canSpeakNow = speechSupported && japaneseFaceShowing && !isFront;
+  btnSpeak.classList.toggle("hidden", !canSpeakNow);
+  btnSpeak.disabled = !canSpeakNow;
+  btnSpeak.style.opacity = canSpeakNow ? "1" : "0.55";
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function flip() { if (!deckView.length) return; isFront = !isFront; render(); }
+function next() { if (!deckView.length) return; index = (index + 1) % deckView.length; isFront = true; render(); }
+function prev() { if (!deckView.length) return; index = (index - 1 + deckView.length) % deckView.length; isFront = true; render(); }
+
+function markCorrect() { if (!deckView.length) return; showToast("Marked correct."); deckView.length > 1 ? next() : (isFront=true, render()); }
+function markIncorrect() {
+  if (!deckView.length) return;
+  const card = deckView[index];
+  missed.add(card.id);
+  applyIncorrectOnlyView();
+  index = Math.min(index, Math.max(deckView.length - 1, 0));
+  showToast("Marked incorrect.");
+  deckView.length > 1 ? next() : (isFront=true, render());
+}
+function markUnsure() {
+  if (!deckView.length) return;
+  const card = deckView[index];
+  missed.add(card.id);
+  applyIncorrectOnlyView();
+  isFront = false;
+  showToast("Unsure → marked incorrect.");
+  render();
+}
+
+function clearMisses() { missed.clear(); applyIncorrectOnlyView(); index = 0; isFront = true; showToast("Cleared incorrect list."); render(); }
+
+function resetUI() {
+  selAll.checked = false;
+  selEssentials.checked = false;
+  selCore.checked = true;
+  selHira.checked = false;
+  selKata.checked = false;
+
+  byCategoryEl.value = "";
+  optRandomSide.checked = true;
+  optShuffle.checked = true;
+  optLimit.value = 0;
+  optIncorrectOnly.checked = false;
+
+  deckAll = [];
+  deckView = [];
+  index = 0;
+  isFront = true;
+  perCardFrontIsEnglish = new Map();
+  missed.clear();
+
+  if (speechSupported) window.speechSynthesis.cancel();
+
+  render();
+  showToast("Reset to defaults.");
+}
+
+function syncSelectAllCheckbox() {
+  const allChecked = selEssentials.checked && selCore.checked && selHira.checked && selKata.checked;
+  const noneChecked = !selEssentials.checked && !selCore.checked && !selHira.checked && !selKata.checked;
+  selAll.indeterminate = !allChecked && !noneChecked;
+  selAll.checked = allChecked;
+}
+selAll.addEventListener("change", () => {
+  const v = selAll.checked;
+  selEssentials.checked = v;
+  selCore.checked = v;
+  selHira.checked = v;
+  selKata.checked = v;
+  syncSelectAllCheckbox();
+});
+[selEssentials, selCore, selHira, selKata].forEach(cb => cb.addEventListener("change", syncSelectAllCheckbox()));
+
+el("btn_build").addEventListener("click", rebuildDeck);
+el("btn_reset").addEventListener("click", resetUI);
+
+el("btn_flip").addEventListener("click", flip);
+el("btn_next").addEventListener("click", next);
+el("btn_prev").addEventListener("click", prev);
+
+el("btn_correct").addEventListener("click", (e) => { e.stopPropagation(); markCorrect(); });
+el("btn_incorrect").addEventListener("click", (e) => { e.stopPropagation(); markIncorrect(); });
+el("btn_unsure").addEventListener("click", (e) => { e.stopPropagation(); markUnsure(); });
+
+btnSpeak.addEventListener("click", (e) => {
+  e.stopPropagation();
+  const card = getCurrentCard();
+  if (!card) return;
+  speakJapaneseForCard(card);
+});
+
+el("btn_clearMisses").addEventListener("click", clearMisses);
+
+optIncorrectOnly.addEventListener("change", () => {
+  applyIncorrectOnlyView();
+  index = 0;
+  isFront = true;
+  render();
+});
+
+byCategoryEl.addEventListener("change", () => {
+  if (byCategoryEl.value) showToast(`By Category selected: ${byCategoryEl.value} (will override on Build Deck)`);
+  else showToast("By Category cleared. Using Study Sets.");
+});
+
+cardEl.addEventListener("click", flip);
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === " " || e.code === "Space" || e.key === "ArrowUp" || e.key === "ArrowDown") {
+    e.preventDefault();
+    flip();
+    return;
+  }
+  if (e.key === "ArrowRight") { next(); return; }
+  if (e.key === "ArrowLeft") { prev(); return; }
+});
+
+populateCategoryDropdown();
+syncSelectAllCheckbox();
+initSpeech();
+render();
+</script>
+</body>
+</html>
