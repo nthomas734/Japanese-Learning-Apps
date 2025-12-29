@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Japanese Flash Cards — v1.5.2 (Build 19)</title>
+  <title>Japanese Flash Cards — v1.5.3 (Build 20)</title>
 
   <!--
     Japanese Flash Cards — v1.4.9 (Build 16)
@@ -259,7 +259,7 @@
         Click the card to flip. Use <span class="kbd">←</span>/<span class="kbd">→</span> prev/next,
         <span class="kbd">↑</span>/<span class="kbd">↓</span> or <span class="kbd">Space</span> flip.
       </span>
-      <span class="ver">v1.5.2 · Build 19</span>
+      <span class="ver">v1.5.3 · Build 20</span>
     </div>
   </header>
 
@@ -356,7 +356,7 @@
       </div>
 
       <details class="changelog">
-        <summary>Changelog (v1.5.2 · Build 19)</summary>
+        <summary>Changelog (v1.5.3 · Build 20)</summary>
         <div class="cl-body">
           <div class="cl-meta">
             <span class="cl-pill">Version: 1.5.1</span>
@@ -506,29 +506,279 @@ const VOCAB = {
   },
 
   [SETS.BASIC]: {
-    "Introductions": [
-      { english: "I am ~", japanese: "私は〜です", romaji: "Watashi wa ~ desu", pronunciation: "wah-tah-shee wah ~ dess" }
-    ],
-    "Essentials": [
-      { english: "I don’t understand", japanese: "わかりません", romaji: "Wakarimasen", pronunciation: "wah-kah-ree-mah-sen" }
-    ],
-    "Restaurants": [
+    "Key Phrases": [
+      { english: "Yes", japanese: "はい", romaji: "Hai", pronunciation: "hai" },
+      { english: "No", japanese: "いいえ", romaji: "Iie", pronunciation: "ee-eh" },
+      { english: "What is your name?", japanese: "名前はなんですか", romaji: "Namae wa nan desu ka", pronunciation: "nah-mah-eh wah nahn dess kah" },
+      { english: "I am ~", japanese: "私は〜です", romaji: "Watashi wa ~ desu", pronunciation: "wah-tah-shee wah dess" },
+      { english: "I came from ~ / I am from ~", japanese: "〜から来ました", romaji: "~ kara kimashita", pronunciation: "kah-rah kee-mah-shee-tah" },
+      { english: "What is this?", japanese: "これは何ですか", romaji: "Kore wa nan desu ka", pronunciation: "koh-reh wah nahn dess kah" },
+      { english: "How much?", japanese: "いくらですか", romaji: "Ikura desu ka", pronunciation: "ee-koo-rah dess kah" },
+      { english: "Can I get this one? / I'll take this one", japanese: "これください", romaji: "Kore kudasai", pronunciation: "koh-reh koo-dah-sigh" },
+      { english: "Please", japanese: "おねがいします", romaji: "Onegaishimasu", pronunciation: "oh-neh-guy-shee-mas" },
       { english: "Can I place an order?", japanese: "注文お願いします", romaji: "Chūmon onegaishimasu", pronunciation: "choo-mohn oh-neh-guy-shee-mas" },
       { english: "Water please", japanese: "水をお願いします", romaji: "Mizu o onegaishimasu", pronunciation: "mee-zoo oh oh-neh-guy-shee-mas" },
-      { english: "Can I get the check / bill please", japanese: "お会計お願いします", romaji: "Okaikei onegaishimasu", pronunciation: "oh-kai-kay oh-neh-guy-shee-mas" }
+      { english: "Can I get the check/bill?", japanese: "お会計お願いします", romaji: "Okaikei onegaishimasu", pronunciation: "oh-kai-kay oh-neh-guy-shee-mas" },
+      { english: "Where am I?", japanese: "ここはどこですか", romaji: "Koko wa doko desu ka", pronunciation: "koh-koh wah doh-koh dess kah" },
+      { english: "Where is the bathroom?", japanese: "トイレはどこですか", romaji: "Toire wa doko desu ka", pronunciation: "toy-reh wah doh-koh dess kah" },
+      { english: "Where is the train station?", japanese: "駅はどこですか", romaji: "Eki wa doko desu ka", pronunciation: "eh-kee wah doh-koh dess kah" },
+      { english: "What time is it now?", japanese: "今何時ですか", romaji: "Ima nan ji desu ka", pronunciation: "ee-mah nahn jee dess kah" },
+      { english: "I don't understand", japanese: "わかりません", romaji: "Wakarimasen", pronunciation: "wah-kah-ree-mah-sen" },
+      { english: "I can't speak Japanese", japanese: "日本語を話せません", romaji: "Nihongo o hanasemasen", pronunciation: "nee-hohn-goh oh hah-nah-seh-mah-sen" }
     ],
-    "Questions": [
-      { english: "What is this?", japanese: "これは何ですか", romaji: "Kore wa nan desu ka", pronunciation: "koh-reh wah nahn dess kah" },
-      { english: "What is your name?", japanese: "名前はなんですか", romaji: "Namae wa nan desu ka", pronunciation: "nah-mah-eh wah nahn dess kah" }
+    "Greetings": [
+      { english: "Good morning", japanese: "おはようございます", romaji: "Ohayō gozaimasu", pronunciation: "oh-hah-yoh goh-zah-ee-mas" },
+      { english: "Good afternoon", japanese: "こんにちは", romaji: "Konnichiwa", pronunciation: "kon-nee-chee-wah" },
+      { english: "Good evening", japanese: "こんばんは", romaji: "Konbanwa", pronunciation: "kon-bahn-wah" },
+      { english: "Thank you", japanese: "ありがとうございます", romaji: "Arigatō gozaimasu", pronunciation: "ah-ree-gah-toh goh-zah-ee-mas" },
+      { english: "Excuse me / I'm sorry", japanese: "すみません", romaji: "Sumimasen", pronunciation: "soo-mee-mah-sen" }
     ],
-    "Directions": [
-      { english: "Where is the bathroom?", japanese: "トイレはどこですか", romaji: "Toire wa doko desu ka", pronunciation: "toy-reh wah doh-koh dess kah" }
+    "People & Pronouns": [
+      { english: "I (watashi / boku / ore)", japanese: "私、僕、俺", romaji: "Watashi / Boku / Ore", pronunciation: "" },
+      { english: "Friend", japanese: "友達", romaji: "Tomodachi", pronunciation: "toh-moh-dah-chee" },
+      { english: "Co-worker", japanese: "同僚", romaji: "Dōryō", pronunciation: "doh-ryoh" },
+      { english: "Boss / Company president", japanese: "部長、社長", romaji: "Buchō / Shachō", pronunciation: "boo-choh / shah-choh" },
+      { english: "Family", japanese: "家族", romaji: "Kazoku", pronunciation: "kah-zoh-koo" },
+      { english: "Father", japanese: "お父さん", romaji: "Otō-san", pronunciation: "oh-toh-san" },
+      { english: "Mother", japanese: "お母さん", romaji: "Okā-san", pronunciation: "oh-kah-san" },
+      { english: "Older brother", japanese: "お兄さん", romaji: "Onii-san", pronunciation: "oh-nee-san" },
+      { english: "Older sister", japanese: "お姉さん", romaji: "Onee-san", pronunciation: "oh-neh-san" },
+      { english: "Younger brother", japanese: "弟", romaji: "Otōto", pronunciation: "oh-toh-toh" },
+      { english: "Younger sister", japanese: "妹", romaji: "Imōto", pronunciation: "ee-moh-toh" },
+      { english: "Adults", japanese: "大人", romaji: "Otona", pronunciation: "oh-toh-nah" },
+      { english: "Children", japanese: "子供", romaji: "Kodomo", pronunciation: "koh-doh-moh" },
+      { english: "Boyfriend", japanese: "彼氏", romaji: "Kareshi", pronunciation: "kah-reh-shee" },
+      { english: "Girlfriend", japanese: "彼女", romaji: "Kanojo", pronunciation: "kah-noh-joh" },
+      { english: "Man", japanese: "男の人", romaji: "Otoko no hito", pronunciation: "oh-toh-koh noh hee-toh" },
+      { english: "Woman", japanese: "女の人", romaji: "Onna no hito", pronunciation: "ohn-nah noh hee-toh" }
     ],
-    "Communication": [
-      { english: "I can’t speak Japanese", japanese: "日本語を話せません", romaji: "Nihongo o hanasemasen", pronunciation: "nee-hohn-goh oh hah-nah-seh-mah-sen" },
-      { english: "I am practicing my Japanese", japanese: "私は日本語を練習しています。", romaji: "Watashi wa nihongo o renshū shite imasu", pronunciation: "wah-tah-shee wah nee-hohn-goh oh ren-shoo sheh-teh ee-mas" }
+    "Food & Drink": [
+      { english: "Breakfast", japanese: "朝ご飯", romaji: "Asa-gohan", pronunciation: "ah-sah goh-hahn" },
+      { english: "Lunch", japanese: "昼ご飯", romaji: "Hiru-gohan", pronunciation: "hee-roo goh-hahn" },
+      { english: "Dinner", japanese: "夜ご飯", romaji: "Yoru-gohan", pronunciation: "yoh-roo goh-hahn" },
+      { english: "Rice / Meal", japanese: "ご飯", romaji: "Gohan", pronunciation: "goh-hahn" },
+      { english: "Bread", japanese: "パン", romaji: "Pan", pronunciation: "pahn" },
+      { english: "Meat", japanese: "肉", romaji: "Niku", pronunciation: "nee-koo" },
+      { english: "Fish", japanese: "魚", romaji: "Sakana", pronunciation: "sah-kah-nah" },
+      { english: "Vegetables", japanese: "野菜", romaji: "Yasai", pronunciation: "yah-sigh" },
+      { english: "Fruits", japanese: "果物", romaji: "Kudamono", pronunciation: "koo-dah-moh-noh" },
+      { english: "Soup", japanese: "スープ", romaji: "Sūpu", pronunciation: "soo-poo" },
+      { english: "Salad", japanese: "サラダ", romaji: "Sarada", pronunciation: "sah-rah-dah" },
+      { english: "Egg", japanese: "卵", romaji: "Tamago", pronunciation: "tah-mah-goh" },
+      { english: "Milk", japanese: "牛乳", romaji: "Gyūnyū", pronunciation: "gyoo-nyoo" },
+      { english: "Cheese", japanese: "チーズ", romaji: "Chīzu", pronunciation: "chee-zoo" },
+      { english: "Dessert", japanese: "デザート", romaji: "Dezāto", pronunciation: "deh-zah-toh" },
+      { english: "Water", japanese: "水", romaji: "Mizu", pronunciation: "mee-zoo" },
+      { english: "Tea / Green tea", japanese: "お茶", romaji: "Ocha", pronunciation: "oh-chah" },
+      { english: "Coffee", japanese: "コーヒー", romaji: "Kōhī", pronunciation: "koh-hee" },
+      { english: "Alcohol / Sake", japanese: "お酒", romaji: "Osake", pronunciation: "oh-sah-keh" },
+      { english: "Wine", japanese: "ワイン", romaji: "Wain", pronunciation: "wah-een" },
+      { english: "Beer", japanese: "ビール", romaji: "Bīru", pronunciation: "bee-roo" }
+    ],
+    "Numbers": [
+      { english: "0", japanese: "零", romaji: "rei", pronunciation: "rei" },
+      { english: "1", japanese: "一", romaji: "ichi", pronunciation: "ichi" },
+      { english: "2", japanese: "二", romaji: "ni", pronunciation: "ni" },
+      { english: "3", japanese: "三", romaji: "san", pronunciation: "san" },
+      { english: "4", japanese: "四", romaji: "shi", pronunciation: "shi" },
+      { english: "5", japanese: "五", romaji: "go", pronunciation: "go" },
+      { english: "6", japanese: "六", romaji: "roku", pronunciation: "roku" },
+      { english: "7", japanese: "七", romaji: "shichi", pronunciation: "shichi" },
+      { english: "8", japanese: "八", romaji: "hachi", pronunciation: "hachi" },
+      { english: "9", japanese: "九", romaji: "kyuu", pronunciation: "kyuu" },
+      { english: "10", japanese: "十", romaji: "juu", pronunciation: "juu" },
+      { english: "11", japanese: "十一", romaji: "juuichi", pronunciation: "juuichi" },
+      { english: "12", japanese: "十二", romaji: "juuni", pronunciation: "juuni" },
+      { english: "13", japanese: "十三", romaji: "juusan", pronunciation: "juusan" },
+      { english: "14", japanese: "十四", romaji: "juuyon", pronunciation: "juuyon" },
+      { english: "15", japanese: "十五", romaji: "juugo", pronunciation: "juugo" },
+      { english: "16", japanese: "十六", romaji: "juuroku", pronunciation: "juuroku" },
+      { english: "17", japanese: "十七", romaji: "juunana", pronunciation: "juunana" },
+      { english: "18", japanese: "十八", romaji: "juuhachi", pronunciation: "juuhachi" },
+      { english: "19", japanese: "十九", romaji: "juukyuu", pronunciation: "juukyuu" },
+      { english: "20", japanese: "二十", romaji: "nijuu", pronunciation: "nijuu" },
+      { english: "21", japanese: "二十一", romaji: "nijuuichi", pronunciation: "nijuuichi" },
+      { english: "22", japanese: "二十二", romaji: "nijuuni", pronunciation: "nijuuni" },
+      { english: "23", japanese: "二十三", romaji: "nijuusan", pronunciation: "nijuusan" },
+      { english: "24", japanese: "二十四", romaji: "nijuuyon", pronunciation: "nijuuyon" },
+      { english: "25", japanese: "二十五", romaji: "nijuugo", pronunciation: "nijuugo" },
+      { english: "26", japanese: "二十六", romaji: "nijuuroku", pronunciation: "nijuuroku" },
+      { english: "27", japanese: "二十七", romaji: "nijuunana", pronunciation: "nijuunana" },
+      { english: "28", japanese: "二十八", romaji: "nijuuhachi", pronunciation: "nijuuhachi" },
+      { english: "29", japanese: "二十九", romaji: "nijuukyuu", pronunciation: "nijuukyuu" },
+      { english: "30", japanese: "三十", romaji: "sanjuu", pronunciation: "sanjuu" },
+      { english: "31", japanese: "三十一", romaji: "sanjuuichi", pronunciation: "sanjuuichi" },
+      { english: "32", japanese: "三十二", romaji: "sanjuuni", pronunciation: "sanjuuni" },
+      { english: "33", japanese: "三十三", romaji: "sanjuusan", pronunciation: "sanjuusan" },
+      { english: "34", japanese: "三十四", romaji: "sanjuuyon", pronunciation: "sanjuuyon" },
+      { english: "35", japanese: "三十五", romaji: "sanjuugo", pronunciation: "sanjuugo" },
+      { english: "36", japanese: "三十六", romaji: "sanjuuroku", pronunciation: "sanjuuroku" },
+      { english: "37", japanese: "三十七", romaji: "sanjuunana", pronunciation: "sanjuunana" },
+      { english: "38", japanese: "三十八", romaji: "sanjuuhachi", pronunciation: "sanjuuhachi" },
+      { english: "39", japanese: "三十九", romaji: "sanjuukyuu", pronunciation: "sanjuukyuu" },
+      { english: "40", japanese: "四十", romaji: "yonjuu", pronunciation: "yonjuu" },
+      { english: "41", japanese: "四十一", romaji: "yonjuuichi", pronunciation: "yonjuuichi" },
+      { english: "42", japanese: "四十二", romaji: "yonjuuni", pronunciation: "yonjuuni" },
+      { english: "43", japanese: "四十三", romaji: "yonjuusan", pronunciation: "yonjuusan" },
+      { english: "44", japanese: "四十四", romaji: "yonjuuyon", pronunciation: "yonjuuyon" },
+      { english: "45", japanese: "四十五", romaji: "yonjuugo", pronunciation: "yonjuugo" },
+      { english: "46", japanese: "四十六", romaji: "yonjuuroku", pronunciation: "yonjuuroku" },
+      { english: "47", japanese: "四十七", romaji: "yonjuunana", pronunciation: "yonjuunana" },
+      { english: "48", japanese: "四十八", romaji: "yonjuuhachi", pronunciation: "yonjuuhachi" },
+      { english: "49", japanese: "四十九", romaji: "yonjuukyuu", pronunciation: "yonjuukyuu" },
+      { english: "50", japanese: "五十", romaji: "gojuu", pronunciation: "gojuu" },
+      { english: "51", japanese: "五十一", romaji: "gojuuichi", pronunciation: "gojuuichi" },
+      { english: "52", japanese: "五十二", romaji: "gojuuni", pronunciation: "gojuuni" },
+      { english: "53", japanese: "五十三", romaji: "gojuusan", pronunciation: "gojuusan" },
+      { english: "54", japanese: "五十四", romaji: "gojuuyon", pronunciation: "gojuuyon" },
+      { english: "55", japanese: "五十五", romaji: "gojuugo", pronunciation: "gojuugo" },
+      { english: "56", japanese: "五十六", romaji: "gojuuroku", pronunciation: "gojuuroku" },
+      { english: "57", japanese: "五十七", romaji: "gojuunana", pronunciation: "gojuunana" },
+      { english: "58", japanese: "五十八", romaji: "gojuuhachi", pronunciation: "gojuuhachi" },
+      { english: "59", japanese: "五十九", romaji: "gojuukyuu", pronunciation: "gojuukyuu" },
+      { english: "60", japanese: "六十", romaji: "rokujuu", pronunciation: "rokujuu" },
+      { english: "61", japanese: "六十一", romaji: "rokujuuichi", pronunciation: "rokujuuichi" },
+      { english: "62", japanese: "六十二", romaji: "rokujuuni", pronunciation: "rokujuuni" },
+      { english: "63", japanese: "六十三", romaji: "rokujuusan", pronunciation: "rokujuusan" },
+      { english: "64", japanese: "六十四", romaji: "rokujuuyon", pronunciation: "rokujuuyon" },
+      { english: "65", japanese: "六十五", romaji: "rokujuugo", pronunciation: "rokujuugo" },
+      { english: "66", japanese: "六十六", romaji: "rokujuuroku", pronunciation: "rokujuuroku" },
+      { english: "67", japanese: "六十七", romaji: "rokujuunana", pronunciation: "rokujuunana" },
+      { english: "68", japanese: "六十八", romaji: "rokujuuhachi", pronunciation: "rokujuuhachi" },
+      { english: "69", japanese: "六十九", romaji: "rokujuukyuu", pronunciation: "rokujuukyuu" },
+      { english: "70", japanese: "七十", romaji: "nanajuu", pronunciation: "nanajuu" },
+      { english: "71", japanese: "七十一", romaji: "nanajuuichi", pronunciation: "nanajuuichi" },
+      { english: "72", japanese: "七十二", romaji: "nanajuuni", pronunciation: "nanajuuni" },
+      { english: "73", japanese: "七十三", romaji: "nanajuusan", pronunciation: "nanajuusan" },
+      { english: "74", japanese: "七十四", romaji: "nanajuuyon", pronunciation: "nanajuuyon" },
+      { english: "75", japanese: "七十五", romaji: "nanajuugo", pronunciation: "nanajuugo" },
+      { english: "76", japanese: "七十六", romaji: "nanajuuroku", pronunciation: "nanajuuroku" },
+      { english: "77", japanese: "七十七", romaji: "nanajuunana", pronunciation: "nanajuunana" },
+      { english: "78", japanese: "七十八", romaji: "nanajuuhachi", pronunciation: "nanajuuhachi" },
+      { english: "79", japanese: "七十九", romaji: "nanajuukyuu", pronunciation: "nanajuukyuu" },
+      { english: "80", japanese: "八十", romaji: "hachijuu", pronunciation: "hachijuu" },
+      { english: "81", japanese: "八十一", romaji: "hachijuuichi", pronunciation: "hachijuuichi" },
+      { english: "82", japanese: "八十二", romaji: "hachijuuni", pronunciation: "hachijuuni" },
+      { english: "83", japanese: "八十三", romaji: "hachijuusan", pronunciation: "hachijuusan" },
+      { english: "84", japanese: "八十四", romaji: "hachijuuyon", pronunciation: "hachijuuyon" },
+      { english: "85", japanese: "八十五", romaji: "hachijuugo", pronunciation: "hachijuugo" },
+      { english: "86", japanese: "八十六", romaji: "hachijuuroku", pronunciation: "hachijuuroku" },
+      { english: "87", japanese: "八十七", romaji: "hachijuunana", pronunciation: "hachijuunana" },
+      { english: "88", japanese: "八十八", romaji: "hachijuuhachi", pronunciation: "hachijuuhachi" },
+      { english: "89", japanese: "八十九", romaji: "hachijuukyuu", pronunciation: "hachijuukyuu" },
+      { english: "90", japanese: "九十", romaji: "kyuujuu", pronunciation: "kyuujuu" },
+      { english: "91", japanese: "九十一", romaji: "kyuujuuichi", pronunciation: "kyuujuuichi" },
+      { english: "92", japanese: "九十二", romaji: "kyuujuuni", pronunciation: "kyuujuuni" },
+      { english: "93", japanese: "九十三", romaji: "kyuujuusan", pronunciation: "kyuujuusan" },
+      { english: "94", japanese: "九十四", romaji: "kyuujuuyon", pronunciation: "kyuujuuyon" },
+      { english: "95", japanese: "九十五", romaji: "kyuujuugo", pronunciation: "kyuujuugo" },
+      { english: "96", japanese: "九十六", romaji: "kyuujuuroku", pronunciation: "kyuujuuroku" },
+      { english: "97", japanese: "九十七", romaji: "kyuujuunana", pronunciation: "kyuujuunana" },
+      { english: "98", japanese: "九十八", romaji: "kyuujuuhachi", pronunciation: "kyuujuuhachi" },
+      { english: "99", japanese: "九十九", romaji: "kyuujuukyuu", pronunciation: "kyuujuukyuu" },
+      { english: "100", japanese: "百", romaji: "hyaku", pronunciation: "hyaku" }
+    ],
+    "Time & Dates": [
+      { english: "Sunday", japanese: "日曜日", romaji: "Nichiyōbi", pronunciation: "nee-chee-yoh-bee" },
+      { english: "Monday", japanese: "月曜日", romaji: "Getsuyōbi", pronunciation: "geh-tsoo-yoh-bee" },
+      { english: "Tuesday", japanese: "火曜日", romaji: "Kayōbi", pronunciation: "kah-yoh-bee" },
+      { english: "Wednesday", japanese: "水曜日", romaji: "Suiyōbi", pronunciation: "soo-ee-yoh-bee" },
+      { english: "Thursday", japanese: "木曜日", romaji: "Mokuyōbi", pronunciation: "moh-koo-yoh-bee" },
+      { english: "Friday", japanese: "金曜日", romaji: "Kinyōbi", pronunciation: "keen-yoh-bee" },
+      { english: "Saturday", japanese: "土曜日", romaji: "Doyōbi", pronunciation: "doh-yoh-bee" },
+      { english: "January", japanese: "一月", romaji: "Ichigatsu", pronunciation: "ee-chee-gah-tsoo" },
+      { english: "February", japanese: "二月", romaji: "Nigatsu", pronunciation: "nee-gah-tsoo" },
+      { english: "March", japanese: "三月", romaji: "Sangatsu", pronunciation: "sahn-gah-tsoo" },
+      { english: "April", japanese: "四月", romaji: "Shigatsu", pronunciation: "shee-gah-tsoo" },
+      { english: "May", japanese: "五月", romaji: "Gogatsu", pronunciation: "goh-gah-tsoo" },
+      { english: "June", japanese: "六月", romaji: "Rokugatsu", pronunciation: "roh-koo-gah-tsoo" },
+      { english: "July", japanese: "七月", romaji: "Shichigatsu", pronunciation: "shee-chee-gah-tsoo" },
+      { english: "August", japanese: "八月", romaji: "Hachigatsu", pronunciation: "hah-chee-gah-tsoo" },
+      { english: "September", japanese: "九月", romaji: "Kugatsu", pronunciation: "koo-gah-tsoo" },
+      { english: "October", japanese: "十月", romaji: "Jūgatsu", pronunciation: "joo-gah-tsoo" },
+      { english: "November", japanese: "十一月", romaji: "Jūichigatsu", pronunciation: "joo-ee-chee-gah-tsoo" },
+      { english: "December", japanese: "十二月", romaji: "Jūnigatsu", pronunciation: "joo-nee-gah-tsoo" },
+      { english: "Today", japanese: "今日", romaji: "Kyō", pronunciation: "kyoh" },
+      { english: "Yesterday", japanese: "昨日", romaji: "Kinō", pronunciation: "kee-noh" },
+      { english: "Tomorrow", japanese: "明日", romaji: "Ashita", pronunciation: "ah-shee-tah" },
+      { english: "This week", japanese: "今週", romaji: "Konshū", pronunciation: "kohn-shoo" },
+      { english: "Last week", japanese: "先週", romaji: "Senshū", pronunciation: "sen-shoo" },
+      { english: "Next week", japanese: "来週", romaji: "Raishū", pronunciation: "rye-shoo" },
+      { english: "This month", japanese: "今月", romaji: "Kongetsu", pronunciation: "kohn-geh-tsoo" },
+      { english: "Last month", japanese: "先月", romaji: "Sengetsu", pronunciation: "sen-geh-tsoo" },
+      { english: "Next month", japanese: "来月", romaji: "Raigetsu", pronunciation: "rye-gee-tsoo" },
+      { english: "This year", japanese: "今年", romaji: "Kotoshi", pronunciation: "koh-toh-shee" },
+      { english: "Last year", japanese: "去年", romaji: "Kyonen", pronunciation: "kyoh-nen" },
+      { english: "Next year", japanese: "来年", romaji: "Rainen", pronunciation: "rye-nen" },
+      { english: "1 o'clock", japanese: "一時", romaji: "ichi-ji", pronunciation: "ichi-ji" },
+      { english: "2 o'clock", japanese: "二時", romaji: "ni-ji", pronunciation: "ni-ji" },
+      { english: "3 o'clock", japanese: "三時", romaji: "san-ji", pronunciation: "san-ji" },
+      { english: "4 o'clock", japanese: "四時", romaji: "yon-ji", pronunciation: "yon-ji" },
+      { english: "5 o'clock", japanese: "五時", romaji: "go-ji", pronunciation: "go-ji" },
+      { english: "6 o'clock", japanese: "六時", romaji: "roku-ji", pronunciation: "roku-ji" },
+      { english: "7 o'clock", japanese: "七時", romaji: "nana-ji", pronunciation: "nana-ji" },
+      { english: "8 o'clock", japanese: "八時", romaji: "hachi-ji", pronunciation: "hachi-ji" },
+      { english: "9 o'clock", japanese: "九時", romaji: "ku-ji", pronunciation: "ku-ji" },
+      { english: "10 o'clock", japanese: "十時", romaji: "juu-ji", pronunciation: "juu-ji" },
+      { english: "11 o'clock", japanese: "十一時", romaji: "juu-ichi-ji", pronunciation: "juu-ichi-ji" },
+      { english: "12 o'clock", japanese: "十二時", romaji: "juu-ni-ji", pronunciation: "juu-ni-ji" }
+    ],
+    "Places": [
+      { english: "Station", japanese: "駅", romaji: "Eki", pronunciation: "eh-kee" },
+      { english: "Hospital", japanese: "病院", romaji: "Byōin", pronunciation: "byoh-een" },
+      { english: "Money exchange", japanese: "両替", romaji: "Ryōgae", pronunciation: "ryoh-guy" },
+      { english: "Bank", japanese: "銀行", romaji: "Ginkō", pronunciation: "geen-koh" },
+      { english: "Police station", japanese: "警察署", romaji: "Keisatsusho", pronunciation: "kay-sah-tsoo-shoh" },
+      { english: "Post office", japanese: "郵便局", romaji: "Yūbinkyoku", pronunciation: "yoo-been-kyoh-koo" },
+      { english: "Convenience store", japanese: "コンビニ", romaji: "Konbini", pronunciation: "kohn-bee-nee" },
+      { english: "Bakery", japanese: "パン屋", romaji: "Pan-ya", pronunciation: "pahn-yah" },
+      { english: "Store / Shop", japanese: "店", romaji: "Mise", pronunciation: "mee-seh" },
+      { english: "Supermarket", japanese: "スーパー", romaji: "Sūpā", pronunciation: "soo-pah" },
+      { english: "Airport", japanese: "空港", romaji: "Kūkō", pronunciation: "koo-koh" },
+      { english: "Bus stop", japanese: "バス停", romaji: "Basutei", pronunciation: "bah-soo-tay" },
+      { english: "Port", japanese: "港", romaji: "Minato", pronunciation: "mee-nah-toh" },
+      { english: "Shrine", japanese: "神社", romaji: "Jinja", pronunciation: "jeen-jah" },
+      { english: "Temple", japanese: "お寺", romaji: "Otera", pronunciation: "oh-teh-rah" },
+      { english: "Town", japanese: "町", romaji: "Machi", pronunciation: "mah-chee" },
+      { english: "Hotel", japanese: "ホテル", romaji: "Hoteru", pronunciation: "hoh-teh-roo" },
+      { english: "Reception", japanese: "受付", romaji: "Uketsuke", pronunciation: "oo-keh-tsoo-keh" }
+    ],
+    "Colors": [
+      { english: "Red", japanese: "赤", romaji: "Aka", pronunciation: "ah-kah" },
+      { english: "Blue", japanese: "青", romaji: "Ao", pronunciation: "ah-oh" },
+      { english: "Yellow", japanese: "黄色", romaji: "Kiiro", pronunciation: "kee-ee-roh" },
+      { english: "Green", japanese: "緑", romaji: "Midori", pronunciation: "mee-doh-ree" },
+      { english: "White", japanese: "白", romaji: "Shiro", pronunciation: "shee-roh" },
+      { english: "Black", japanese: "黒", romaji: "Kuro", pronunciation: "koo-roh" },
+      { english: "Purple", japanese: "紫", romaji: "Murasaki", pronunciation: "moo-rah-sah-kee" },
+      { english: "Orange", japanese: "オレンジ", romaji: "Orenji", pronunciation: "oh-ren-jee" },
+      { english: "Pink", japanese: "ピンク", romaji: "Pinku", pronunciation: "peen-koo" },
+      { english: "Brown", japanese: "茶色", romaji: "Chairo", pronunciation: "chah-ee-roh" }
+    ],
+    "Essential Verbs": [
+      { english: "to eat", japanese: "食べる", romaji: "Taberu", pronunciation: "tah-beh-roo" },
+      { english: "to go", japanese: "行く", romaji: "Iku", pronunciation: "ee-koo" },
+      { english: "to drink", japanese: "飲む", romaji: "Nomu", pronunciation: "noh-moo" },
+      { english: "to listen / hear", japanese: "聞く", romaji: "Kiku", pronunciation: "kee-koo" },
+      { english: "to read", japanese: "読む", romaji: "Yomu", pronunciation: "yoh-moo" },
+      { english: "to see / look / watch", japanese: "見る", romaji: "Miru", pronunciation: "mee-roo" },
+      { english: "to sleep", japanese: "寝る", romaji: "Neru", pronunciation: "neh-roo" },
+      { english: "to wake up", japanese: "起きる", romaji: "Okiru", pronunciation: "oh-kee-roo" },
+      { english: "to speak / talk", japanese: "話す", romaji: "Hanasu", pronunciation: "hah-nah-soo" },
+      { english: "to return / go back", japanese: "帰る", romaji: "Kaeru", pronunciation: "kah-eh-roo" },
+      { english: "to sit down", japanese: "座る", romaji: "Suwaru", pronunciation: "soo-wah-roo" },
+      { english: "to stand up", japanese: "立つ", romaji: "Tatsu", pronunciation: "tah-tsoo" },
+      { english: "to swim", japanese: "泳ぐ", romaji: "Oyogu", pronunciation: "oh-yoh-goo" },
+      { english: "to play", japanese: "遊ぶ", romaji: "Asobu", pronunciation: "ah-soh-boo" },
+      { english: "to ride", japanese: "乗る", romaji: "Noru", pronunciation: "noh-roo" },
+      { english: "to buy", japanese: "買う", romaji: "Kau", pronunciation: "kah-oo" },
+      { english: "to meet", japanese: "会う", romaji: "Au", pronunciation: "ah-oo" },
+      { english: "to write", japanese: "書く", romaji: "Kaku", pronunciation: "kah-koo" },
+      { english: "to wait", japanese: "待つ", romaji: "Matsu", pronunciation: "mah-tsoo" },
+      { english: "to take a picture", japanese: "撮る", romaji: "Toru", pronunciation: "toh-roo" }
     ]
   }
+
 };
 
 const HIRAGANA = [
