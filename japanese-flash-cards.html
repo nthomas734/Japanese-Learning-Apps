@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Japanese Flash Cards — v1.4.7 (Build 14)</title>
+  <title>Japanese Flash Cards — v1.4.9 (Build 16)</title>
 
   <!--
-    Japanese Flash Cards — v1.4.7 (Build 14)
+    Japanese Flash Cards — v1.4.9 (Build 16)
 
     CHANGELOG
     - UI: Vocab Japanese-side layout updated to 3-line hierarchy:
@@ -259,7 +259,7 @@
         Click the card to flip. Use <span class="kbd">←</span>/<span class="kbd">→</span> prev/next,
         <span class="kbd">↑</span>/<span class="kbd">↓</span> or <span class="kbd">Space</span> flip.
       </span>
-      <span class="ver">v1.4.7 · Build 14</span>
+      <span class="ver">v1.4.9 · Build 16</span>
     </div>
   </header>
 
@@ -352,15 +352,18 @@
       </div>
 
       <details class="changelog">
-        <summary>Changelog (v1.4.7 · Build 14)</summary>
+        <summary>Changelog (v1.4.9 · Build 16)</summary>
         <div class="cl-body">
           <div class="cl-meta">
-            <span class="cl-pill">Version: 1.4.7</span>
-            <span class="cl-pill">Build: 14</span>
+            <span class="cl-pill">Version: 1.4.9</span>
+            <span class="cl-pill">Build: 16</span>
             <span class="cl-pill">Type: PATCH</span>
           </div>
           <ul style="margin:0 0 0 16px; padding:0;">
-            <li><b>UI:</b> Japanese-face vocab cards now show Romaji (top) → Japanese (own line) → Pronunciation (below).</li>
+            <li><b>UI:</b> Speak button now appears whenever Japanese text is visible (front or back).</li>
+            <li><b>Audio:</b> Kana cards now speak the kana character (not romaji).</li>
+            <li><b>Bugfix:</b> Study Set checkbox changes correctly update Select All state.</li>
+            <li><b>Perf/UI:</b> Removed render-time <code>innerHTML</code> updates for the Japanese-line styling (now uses pre-created spans).</li>
           </ul>
         </div>
       </details>
@@ -385,14 +388,20 @@
 
         <div class="content">
           <div class="big" id="big">Build a deck to start</div>
-          <div class="mid" id="mid">Select sets on the left, then click <b>Build Deck</b>.</div>
+          <div class="mid" id="mid"><span id="mid_jp" class="jpLine hidden"></span><span id="mid_txt">Select sets on the left, then click <b>Build Deck</b>.</span></div>
           <div class="small" id="small"></div>
         </div>
 
         <div class="cardActions">
           <div class="group" id="actions_front">
             <button class="warn" id="btn_unsure" title="Mark incorrect and show answer">Unsure</button>
-          </div>
+          
+            <button class="icon-btn hidden" id="btn_speak_front" type="button" aria-label="Speak Japanese" title="Speak Japanese">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M3 10v4c0 1.1.9 2 2 2h3l4 3c.7.5 1.7 0 1.7-.9V5.9c0-.9-1-1.4-1.7-.9l-4 3H5c-1.1 0-2 .9-2 2zm14.5 2c0-1.8-1-3.4-2.5-4.2v8.4c1.5-.8 2.5-2.4 2.5-4.2zm-2.5-9.2v2.2c2.9 1 5 3.8 5 7s-2.1 6-5 7v2.2c4.1-1.1 7-4.8 7-9.2s-2.9-8.1-7-9.2z"/>
+              </svg>
+            </button>
+</div>
 
           <div class="group hidden" id="actions_back">
             <button class="icon-btn hidden" id="btn_speak" type="button" aria-label="Speak Japanese" title="Speak Japanese">
@@ -410,9 +419,9 @@
   </main>
 
 <script>
-/* ========= Japanese Flash Cards — v1.4.7 (Build 14) ========= */
+/* ========= Japanese Flash Cards — v1.4.9 (Build 16) ========= */
 
-const APP = { version: "1.4.7", build: 14 };
+const APP = { version: "1.4.9", build: 16 };
 
 const SETS = {
   ESSENTIALS: "Essentials",
@@ -561,7 +570,8 @@ let jaVoice = null;
 const el = (id) => document.getElementById(id);
 const cardEl = el("card");
 const bigEl = el("big");
-const midEl = el("mid");
+const midJpEl = el("mid_jp");
+const midTxtEl = el("mid_txt");
 const smallEl = el("small");
 const badgeLeft = el("badge_left");
 const badgeRight = el("badge_right");
@@ -584,6 +594,7 @@ const optLimit = el("opt_limit");
 const optIncorrectOnly = el("opt_incorrectOnly");
 
 const btnSpeak = el("btn_speak");
+const btnSpeakFront = el("btn_speak_front");
 
 function showToast(msg) {
   toastEl.textContent = msg || "";
@@ -744,7 +755,9 @@ function initSpeech() {
   speechSupported = !!window.speechSynthesis && !!window.SpeechSynthesisUtterance;
   if (!speechSupported) {
     btnSpeak.disabled = true;
+    btnSpeakFront.disabled = true;
     btnSpeak.title = "Speech not supported in this browser.";
+    btnSpeakFront.title = "Speech not supported in this browser.";
     return;
   }
 
@@ -753,7 +766,9 @@ function initSpeech() {
     jaVoice = voices.find(v => (v.lang || "").toLowerCase() === "ja-jp")
           || voices.find(v => (v.lang || "").toLowerCase().startsWith("ja"))
           || null;
-    btnSpeak.title = jaVoice ? `Speak (voice: ${jaVoice.name})` : "Speak (Japanese voice not found; will attempt default)";
+    const t = jaVoice ? `Speak (voice: ${jaVoice.name})` : "Speak (Japanese voice not found; will attempt default)";
+    btnSpeak.title = t;
+    btnSpeakFront.title = t;
   };
 
   loadVoices();
@@ -764,7 +779,7 @@ function speakJapaneseForCard(card) {
   if (!speechSupported) { showToast("Speech not supported in this browser."); return; }
   if (!card) return;
 
-  const text = (card.type === "kana" ? (card.romaji || "") : (card.japanese || ""));
+  const text = (card.japanese || "");
   if (!text.trim()) { showToast("Nothing to speak for this card."); return; }
 
   try {
@@ -791,7 +806,10 @@ function render() {
     badgeLeft.textContent = "—";
     badgeRight.textContent = optIncorrectOnly.checked ? "Incorrect Only" : "—";
     bigEl.textContent = deckAll.length ? "No cards in this view" : "Build a deck to start";
-    midEl.textContent = deckAll.length
+    midJpEl.classList.add("hidden");
+    midJpEl.textContent = "";
+    midTxtEl.classList.remove("hidden");
+    midTxtEl.textContent = deckAll.length
       ? "You have no incorrect cards yet (or you cleared them)."
       : "Select sets on the left, then click Build Deck.";
     smallEl.textContent = "";
@@ -805,6 +823,8 @@ function render() {
 
     btnSpeak.classList.add("hidden");
     btnSpeak.disabled = true;
+    btnSpeakFront.classList.add("hidden");
+    btnSpeakFront.disabled = true;
 
     setCardActionVisibility();
     return;
@@ -825,10 +845,17 @@ function render() {
   // If we're on vocab Japanese face, render the Japanese line with stronger styling.
   const isVocabJapaneseFace = (card.type === "vocab") && japaneseFaceShowing;
   if (isVocabJapaneseFace && content.mid) {
-    midEl.innerHTML = `<span class="jpLine">${escapeHtml(content.mid)}</span>`;
+    midJpEl.textContent = content.mid;
+    midJpEl.classList.remove("hidden");
+    midTxtEl.classList.add("hidden");
+    midTxtEl.textContent = "";
   } else {
-    midEl.textContent = content.mid || (isFront ? "Click to flip" : "");
+    midJpEl.classList.add("hidden");
+    midJpEl.textContent = "";
+    midTxtEl.classList.remove("hidden");
+    midTxtEl.textContent = content.mid || (isFront ? "Click to flip" : "");
   }
+
 
   smallEl.textContent = content.small || "";
 
@@ -841,11 +868,19 @@ function render() {
 
   setCardActionVisibility();
 
-  // Speak visible only on back AND only when Japanese is showing.
-  const canSpeakNow = speechSupported && japaneseFaceShowing && !isFront;
-  btnSpeak.classList.toggle("hidden", !canSpeakNow);
-  btnSpeak.disabled = !canSpeakNow;
-  btnSpeak.style.opacity = canSpeakNow ? "1" : "0.55";
+  // Speak visible whenever Japanese is showing (front or back).
+  const canSpeakNow = speechSupported && japaneseFaceShowing;
+
+  const showBackSpeak = canSpeakNow && !isFront;
+  const showFrontSpeak = canSpeakNow && isFront;
+
+  btnSpeak.classList.toggle("hidden", !showBackSpeak);
+  btnSpeak.disabled = !showBackSpeak;
+  btnSpeak.style.opacity = showBackSpeak ? "1" : "0.55";
+
+  btnSpeakFront.classList.toggle("hidden", !showFrontSpeak);
+  btnSpeakFront.disabled = !showFrontSpeak;
+  btnSpeakFront.style.opacity = showFrontSpeak ? "1" : "0.55";
 }
 
 function escapeHtml(s) {
@@ -923,7 +958,7 @@ selAll.addEventListener("change", () => {
   selKata.checked = v;
   syncSelectAllCheckbox();
 });
-[selEssentials, selCore, selHira, selKata].forEach(cb => cb.addEventListener("change", syncSelectAllCheckbox()));
+[selEssentials, selCore, selHira, selKata].forEach(cb => cb.addEventListener("change", syncSelectAllCheckbox));
 
 el("btn_build").addEventListener("click", rebuildDeck);
 el("btn_reset").addEventListener("click", resetUI);
@@ -937,6 +972,13 @@ el("btn_incorrect").addEventListener("click", (e) => { e.stopPropagation(); mark
 el("btn_unsure").addEventListener("click", (e) => { e.stopPropagation(); markUnsure(); });
 
 btnSpeak.addEventListener("click", (e) => {
+  e.stopPropagation();
+  const card = getCurrentCard();
+  if (!card) return;
+  speakJapaneseForCard(card);
+});
+
+btnSpeakFront.addEventListener("click", (e) => {
   e.stopPropagation();
   const card = getCurrentCard();
   if (!card) return;
