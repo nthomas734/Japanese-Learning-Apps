@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Japanese Flash Cards — v1.4.8 (Build 15)</title>
+  <title>Japanese Flash Cards — v1.4.7 (Build 14)</title>
 
   <!--
-    Japanese Flash Cards — v1.4.8 (Build 15)
+    Japanese Flash Cards — v1.4.7 (Build 14)
 
     CHANGELOG
     - UI: Vocab Japanese-side layout updated to 3-line hierarchy:
@@ -259,7 +259,7 @@
         Click the card to flip. Use <span class="kbd">←</span>/<span class="kbd">→</span> prev/next,
         <span class="kbd">↑</span>/<span class="kbd">↓</span> or <span class="kbd">Space</span> flip.
       </span>
-      <span class="ver">v1.4.8 · Build 15</span>
+      <span class="ver">v1.4.7 · Build 14</span>
     </div>
   </header>
 
@@ -352,16 +352,15 @@
       </div>
 
       <details class="changelog">
-        <summary>Changelog (v1.4.8 · Build 15)</summary>
+        <summary>Changelog (v1.4.7 · Build 14)</summary>
         <div class="cl-body">
           <div class="cl-meta">
-            <span class="cl-pill">Version: 1.4.8</span>
-            <span class="cl-pill">Build: 15</span>
+            <span class="cl-pill">Version: 1.4.7</span>
+            <span class="cl-pill">Build: 14</span>
             <span class="cl-pill">Type: PATCH</span>
           </div>
           <ul style="margin:0 0 0 16px; padding:0;">
-            <li><b>Bugfix:</b> Study Set checkbox changes now correctly update Select All state.</li>
-            <li><b>Perf/UI:</b> Removed render-time <code>innerHTML</code> updates for the Japanese-line styling (now uses pre-created spans).</li>
+            <li><b>UI:</b> Japanese-face vocab cards now show Romaji (top) → Japanese (own line) → Pronunciation (below).</li>
           </ul>
         </div>
       </details>
@@ -386,7 +385,7 @@
 
         <div class="content">
           <div class="big" id="big">Build a deck to start</div>
-          <div class="mid" id="mid"><span id="mid_jp" class="jpLine hidden"></span><span id="mid_txt">Select sets on the left, then click <b>Build Deck</b>.</span></div>
+          <div class="mid" id="mid">Select sets on the left, then click <b>Build Deck</b>.</div>
           <div class="small" id="small"></div>
         </div>
 
@@ -411,9 +410,9 @@
   </main>
 
 <script>
-/* ========= Japanese Flash Cards — v1.4.8 (Build 15) ========= */
+/* ========= Japanese Flash Cards — v1.4.7 (Build 14) ========= */
 
-const APP = { version: "1.4.8", build: 15 };
+const APP = { version: "1.4.7", build: 14 };
 
 const SETS = {
   ESSENTIALS: "Essentials",
@@ -562,8 +561,7 @@ let jaVoice = null;
 const el = (id) => document.getElementById(id);
 const cardEl = el("card");
 const bigEl = el("big");
-const midJpEl = el("mid_jp");
-const midTxtEl = el("mid_txt");
+const midEl = el("mid");
 const smallEl = el("small");
 const badgeLeft = el("badge_left");
 const badgeRight = el("badge_right");
@@ -793,10 +791,7 @@ function render() {
     badgeLeft.textContent = "—";
     badgeRight.textContent = optIncorrectOnly.checked ? "Incorrect Only" : "—";
     bigEl.textContent = deckAll.length ? "No cards in this view" : "Build a deck to start";
-    midJpEl.classList.add("hidden");
-    midJpEl.textContent = "";
-    midTxtEl.classList.remove("hidden");
-    midTxtEl.textContent = deckAll.length
+    midEl.textContent = deckAll.length
       ? "You have no incorrect cards yet (or you cleared them)."
       : "Select sets on the left, then click Build Deck.";
     smallEl.textContent = "";
@@ -830,17 +825,10 @@ function render() {
   // If we're on vocab Japanese face, render the Japanese line with stronger styling.
   const isVocabJapaneseFace = (card.type === "vocab") && japaneseFaceShowing;
   if (isVocabJapaneseFace && content.mid) {
-    midJpEl.textContent = content.mid;
-    midJpEl.classList.remove("hidden");
-    midTxtEl.classList.add("hidden");
-    midTxtEl.textContent = "";
+    midEl.innerHTML = `<span class="jpLine">${escapeHtml(content.mid)}</span>`;
   } else {
-    midJpEl.classList.add("hidden");
-    midJpEl.textContent = "";
-    midTxtEl.classList.remove("hidden");
-    midTxtEl.textContent = content.mid || (isFront ? "Click to flip" : "");
+    midEl.textContent = content.mid || (isFront ? "Click to flip" : "");
   }
-
 
   smallEl.textContent = content.small || "";
 
@@ -935,7 +923,7 @@ selAll.addEventListener("change", () => {
   selKata.checked = v;
   syncSelectAllCheckbox();
 });
-[selEssentials, selCore, selHira, selKata].forEach(cb => cb.addEventListener("change", syncSelectAllCheckbox));
+[selEssentials, selCore, selHira, selKata].forEach(cb => cb.addEventListener("change", syncSelectAllCheckbox()));
 
 el("btn_build").addEventListener("click", rebuildDeck);
 el("btn_reset").addEventListener("click", resetUI);
