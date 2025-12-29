@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Japanese Flash Cards — v1.5.1 (Build 18)</title>
+  <title>Japanese Flash Cards — v1.5.2 (Build 19)</title>
 
   <!--
     Japanese Flash Cards — v1.4.9 (Build 16)
@@ -259,7 +259,7 @@
         Click the card to flip. Use <span class="kbd">←</span>/<span class="kbd">→</span> prev/next,
         <span class="kbd">↑</span>/<span class="kbd">↓</span> or <span class="kbd">Space</span> flip.
       </span>
-      <span class="ver">v1.5.1 · Build 18</span>
+      <span class="ver">v1.5.2 · Build 19</span>
     </div>
   </header>
 
@@ -356,7 +356,7 @@
       </div>
 
       <details class="changelog">
-        <summary>Changelog (v1.5.1 · Build 18)</summary>
+        <summary>Changelog (v1.5.2 · Build 19)</summary>
         <div class="cl-body">
           <div class="cl-meta">
             <span class="cl-pill">Version: 1.5.1</span>
@@ -424,7 +424,7 @@
 <script>
 /* ========= Japanese Flash Cards — v1.4.9 (Build 16) ========= */
 
-const APP = { version: "1.5.1", build: 18 };
+const APP = { version: "1.5.2", build: 19 };
 
 const SETS = {
   ESSENTIALS: "Essentials",
@@ -443,22 +443,22 @@ const VOCAB = {
       { english: "That (near you)", japanese: "それ", romaji: "Sore", pronunciation: "soh-reh" },
       { english: "Please (requesting an item)", japanese: "ください", romaji: "Kudasai", pronunciation: "koo-dah-sigh" },
       { english: "Please (general favor)", japanese: "お願いします", romaji: "Onegaishimasu", pronunciation: "oh-neh-guy-shee-mas" },
-      { english: "No thank you / I'm good", japanese: "大丈夫です", romaji: "Daijōbu desu", pronunciation: "dye-joh-bu dess" }
+      { english: "No thank you / I'm good", japanese: "大丈夫です", romaji: "Daijōbu desu", pronunciation: "dye-joh-bu dess" },
       { english: "I am ~", japanese: "私は〜です", romaji: "Watashi wa ~ desu", pronunciation: "wah-tah-shee wah ~ dess" },
-      { english: "I don’t understand", japanese: "わかりません", romaji: "Wakarimasen", pronunciation: "wah-kah-ree-mah-sen" },
+      { english: "I don’t understand", japanese: "わかりません", romaji: "Wakarimasen", pronunciation: "wah-kah-ree-mah-sen" }
     ],
     "Greetings": [
       { english: "Hello / Good afternoon", japanese: "こんにちは", romaji: "Konnichiwa", pronunciation: "kon-nee-chee-wah" },
       { english: "Good morning", japanese: "おはようございます", romaji: "Ohayō gozaimasu", pronunciation: "oh-hah-yoh goh-zah-ee-mas" },
       { english: "Good evening", japanese: "こんばんは", romaji: "Konbanwa", pronunciation: "kon-bahn-wah" },
       { english: "Good night", japanese: "おやすみ", romaji: "Oyasumi", pronunciation: "oh-yah-soo-mee" }
-    ]
-  },
+    ],
     "Restaurants": [
       { english: "Can I place an order?", japanese: "注文お願いします", romaji: "Chūmon onegaishimasu", pronunciation: "choo-mohn oh-neh-guy-shee-mas" },
       { english: "Water please", japanese: "水をお願いします", romaji: "Mizu o onegaishimasu", pronunciation: "mee-zoo oh oh-neh-guy-shee-mas" },
-      { english: "Can I get the check / bill please", japanese: "お会計お願いします", romaji: "Okaikei onegaishimasu", pronunciation: "oh-kai-kay oh-neh-guy-shee-mas" },
-    ],
+      { english: "Can I get the check / bill please", japanese: "お会計お願いします", romaji: "Okaikei onegaishimasu", pronunciation: "oh-kai-kay oh-neh-guy-shee-mas" }
+    ]
+  },
 
   [SETS.CORE]: {
     "Restaurants": [
@@ -472,13 +472,17 @@ const VOCAB = {
     ],
     "Questions": [
       { english: "What is this?", japanese: "これは何ですか", romaji: "Kore wa nan desu ka", pronunciation: "koh-reh wah nahn dess kah" },
-      { english: "What is your name?", japanese: "名前はなんですか", romaji: "Namae wa nan desu ka", pronunciation: "nah-mah-eh wah nahn dess kah" },
+      { english: "What is your name?", japanese: "名前はなんですか", romaji: "Namae wa nan desu ka", pronunciation: "nah-mah-eh wah nahn dess kah" }
+    ],
+    "Directions": [
+      { english: "Where is the bathroom?", japanese: "トイレはどこですか", romaji: "Toire wa doko desu ka", pronunciation: "toy-reh wah doh-koh dess kah" }
+    ],
+    "Communication": [
+      { english: "I can’t speak Japanese", japanese: "日本語を話せません", romaji: "Nihongo o hanasemasen", pronunciation: "nee-hohn-goh oh hah-nah-seh-mah-sen" },
+      { english: "I am practicing my Japanese", japanese: "私は日本語を練習しています。", romaji: "Watashi wa nihongo o renshū shite imasu", pronunciation: "wah-tah-shee wah nee-hohn-goh oh ren-shoo sheh-teh ee-mas" }
     ],
     "Hotel": [
       { english: "Reservation / appointment", japanese: "よやく", romaji: "Yoyaku", pronunciation: "yoh-yah-koo" }
-    ],
-    "Directions": [
-      { english: "Where is the bathroom?", japanese: "トイレはどこですか", romaji: "Toire wa doko desu ka", pronunciation: "toy-reh wah doh-koh dess kah" },
     ],
     "Numbers": [
       { english: "Hundred", japanese: "ひゃく", romaji: "Hyaku", pronunciation: "hyah-koo" },
@@ -499,13 +503,14 @@ const VOCAB = {
       { english: "Morning / a.m.", japanese: "ごぜん", romaji: "Gozen", pronunciation: "goh-zen" },
       { english: "Afternoon / p.m.", japanese: "ごご", romaji: "Gogo", pronunciation: "goh-goh" }
     ]
-    "Communication": [
-      { english: "I can’t speak Japanese", japanese: "日本語を話せません", romaji: "Nihongo o hanasemasen", pronunciation: "nee-hohn-goh oh hah-nah-seh-mah-sen" },
-      { english: "I am practicing my Japanese", japanese: "私は日本語を練習しています。", romaji: "Watashi wa nihongo o renshū shite imasu", pronunciation: "wah-tah-shee wah nee-hohn-goh oh ren-shoo sheh-teh ee-mas" },
-    ],
-  },  [SETS.BASIC]: {
+  },
+
+  [SETS.BASIC]: {
     "Introductions": [
       { english: "I am ~", japanese: "私は〜です", romaji: "Watashi wa ~ desu", pronunciation: "wah-tah-shee wah ~ dess" }
+    ],
+    "Essentials": [
+      { english: "I don’t understand", japanese: "わかりません", romaji: "Wakarimasen", pronunciation: "wah-kah-ree-mah-sen" }
     ],
     "Restaurants": [
       { english: "Can I place an order?", japanese: "注文お願いします", romaji: "Chūmon onegaishimasu", pronunciation: "choo-mohn oh-neh-guy-shee-mas" },
@@ -521,11 +526,9 @@ const VOCAB = {
     ],
     "Communication": [
       { english: "I can’t speak Japanese", japanese: "日本語を話せません", romaji: "Nihongo o hanasemasen", pronunciation: "nee-hohn-goh oh hah-nah-seh-mah-sen" },
-      { english: "I am practicing my Japanese", japanese: "私は日本語を練習しています。", romaji: "Watashi wa nihongo o renshū shite imasu", pronunciation: "wah-tah-shee wah nee-hohn-goh oh ren-shoo sheh-teh ee-mas" },
-      { english: "I don’t understand", japanese: "わかりません", romaji: "Wakarimasen", pronunciation: "wah-kah-ree-mah-sen" }
+      { english: "I am practicing my Japanese", japanese: "私は日本語を練習しています。", romaji: "Watashi wa nihongo o renshū shite imasu", pronunciation: "wah-tah-shee wah nee-hohn-goh oh ren-shoo sheh-teh ee-mas" }
     ]
-  },
-
+  }
 };
 
 const HIRAGANA = [
