@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Japanese Flash Cards — v1.12.3</title>
+  <title>Nathan's Japanese Flash Cards — v1.12.4</title>
 
   <style>
     :root{
@@ -256,7 +256,7 @@
 <body>
   <header>
     <div class="title">
-      <h1>Japanese Flash Cards</h1>
+      <h1>Nathan's Japanese Flash Cards</h1>
       <div class="sub"><a href="https://github.com/nthomas734/Japanese-Learning-Apps/tree/main" target="_blank">Test Repository</a></div>
     </div>
     <div class="badgeTop" title="Local, single-file app"><span class="dot"></span><span class="mono">offline-ready</span></div>
@@ -288,8 +288,8 @@
 
         <div class="row" style="margin-top:14px;">
           <div style="flex:1; min-width:220px;">
-            <div class="small" style="margin:0 0 6px 2px;">Build by Category (optional override)</div>
-            <select id="by_category"><option value="">(None)</option></select>
+            <div class="small" style="margin:0 0 6px 2px;">Build by Category</div>
+            <select id="by_category"><option value="">None</option></select>
           </div>
         </div>
         <div class="row" style="margin-top:12px;">
@@ -299,6 +299,7 @@
         
         <div class="row" style="margin-top:14px; gap: 14px;">
           <div class="pill"><input id="opt_shuffle" type="checkbox" checked /><label for="opt_shuffle">Shuffle</label></div>
+          <div class="pill"><input id="opt_autoplay" type="checkbox" checked /><label for="opt_autoplay">Autoplay Audio</label></div>
           <div class="pill"><input id="opt_incorrectOnly" type="checkbox" /><label for="opt_incorrectOnly">Incorrect-only view</label></div>
         </div>
 
@@ -341,7 +342,7 @@
 
     <div class="right-col">
         <section class="panel" id="workspace">
-          <h2>Study <span class="small mono">v1.12.3</span></h2>
+          <h2>Study <span class="small mono">v1.12.4</span></h2>
           <div class="bd">
             <div class="flashcard" id="card" tabindex="0" title="Click to flip">
               <button id="btn_speak" class="btn-audio-card" type="button" title="Play Audio">
@@ -387,8 +388,8 @@
   </main>
 
 <script>
-/* ========= Japanese Flash Cards — v1.12.3 ========= */
-const APP = { version: "1.12.3", build: 47, storageKey: "jp_fc_v1" };
+/* ========= Japanese Flash Cards — v1.12.4 ========= */
+const APP = { version: "1.12.4", build: 48, storageKey: "jp_fc_v1" };
 
 const SETS = {
   ESSENTIALS: "Essentials",
@@ -427,7 +428,7 @@ const VOCAB = {
   },
   [SETS.TRAVEL]: {
     "Restaurants": [
-      { english: "Beer, one more", japanese: "ビールもう一杯", romaji: "Bīru mō ippai", pronunciation: "bee-roo moh ee-pie" },
+      { english: "One more beer", japanese: "ビールもう一杯", romaji: "Bīru mō ippai", pronunciation: "bee-roo moh ee-pie" },
       { english: "Reservation", japanese: "よやく", romaji: "Yoyaku", pronunciation: "yoh-yah-koo" }
     ],
     "Shopping": [
@@ -675,6 +676,7 @@ function saveData() {
       kata: selKata.checked,
       kanji: selKanji.checked,
       shuffle: optShuffle.checked,
+      autoplay: optAutoplay.checked, // NEW: Save autoplay setting
       incorrectOnly: optIncorrectOnly.checked,
       sideMode: optSideMode.value,
       limit: optLimitSelect.value,
@@ -732,6 +734,8 @@ function restoreFromObject(data) {
       selKata.checked = !!data.settings.kata;
       selKanji.checked = !!data.settings.kanji;
       optShuffle.checked = !!data.settings.shuffle;
+      // NEW: Restore autoplay (Default to true if undefined)
+      optAutoplay.checked = data.settings.autoplay !== false;
       optIncorrectOnly.checked = !!data.settings.incorrectOnly;
       optSideMode.value = data.settings.sideMode || "random";
       optLimitSelect.value = data.settings.limit || "0";
@@ -792,6 +796,7 @@ btnExport.addEventListener("click", () => {
           kata: selKata.checked,
           kanji: selKanji.checked,
           shuffle: optShuffle.checked,
+          autoplay: optAutoplay.checked, // NEW
           incorrectOnly: optIncorrectOnly.checked,
           sideMode: optSideMode.value,
           limit: optLimitSelect.value,
@@ -942,6 +947,7 @@ const selKata = el("sel_kata");
 const selKanji = el("sel_kanji");
 
 const optShuffle = el("opt_shuffle");
+const optAutoplay = el("opt_autoplay"); // NEW
 const optLimitSelect = el("opt_limit_select");
 const optSideMode = el("opt_side_mode");
 const optIncorrectOnly = el("opt_incorrectOnly");
@@ -1036,7 +1042,8 @@ function populateCategoryDropdown() {
   cats.add("Gojūon");
   cats.add("Kanji");
   const sorted = Array.from(cats).sort((a,b) => a.localeCompare(b));
-  byCategoryEl.innerHTML = `<option value="">(None)</option>` +
+  // UPDATED: Default is now "None" instead of "(None)"
+  byCategoryEl.innerHTML = `<option value="">None</option>` +
     sorted.map(c => `<option value="${c}">${c}</option>`).join("");
 }
 
@@ -1347,8 +1354,8 @@ function render() {
       btnSpeak.classList.add("disabled");
   }
   
-  // Autoplay
-  if (canSpeakNow && card) {
+  // Autoplay (ONLY IF CHECKBOX IS CHECKED)
+  if (canSpeakNow && card && optAutoplay.checked) {
     setTimeout(() => {
        speakJapaneseForCard(card);
     }, 50);
@@ -1470,6 +1477,7 @@ function resetUI() {
 
   byCategoryEl.value = "";
   optShuffle.checked = true;
+  optAutoplay.checked = true; // Default
   optLimitSelect.value = "0";
   optSideMode.value = "random";
   optIncorrectOnly.checked = false;
@@ -1559,7 +1567,7 @@ optIncorrectOnly.addEventListener("change", () => {
   saveData();
 });
 
-[optShuffle, optLimitSelect, optSideMode].forEach(el => el.addEventListener("change", saveData));
+[optShuffle, optAutoplay, optLimitSelect, optSideMode].forEach(el => el.addEventListener("change", saveData));
 
 byCategoryEl.addEventListener("change", () => {
   if (byCategoryEl.value) showToast(`By Category selected: ${byCategoryEl.value} (will override on Build Deck)`);
