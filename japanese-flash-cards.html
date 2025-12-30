@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Japanese Flash Cards — v1.6.2 (Autoplay Build)</title>
+  <title>Japanese Flash Cards — v1.6.2 (Full)</title>
 
   <style>
     :root{
@@ -47,126 +47,1165 @@
       justify-content:space-between;
       gap:16px;
     }
-    .title{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-    .title h1{
-      margin:0;
-      font-size:22px;
-      letter-spacing:.2px;
-      font-weight:720;
-    }
-    .title .sub{
-      color:var(--muted);
-      font-size:13px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
+    .title{ display:flex; flex-direction:column; gap:6px; }
+    .title h1{ margin:0; font-size:22px; letter-spacing:.2px; font-weight:720; }
+    .title .sub{ color:var(--muted); font-size:13px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    
     .badgeTop{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      border:1px solid var(--border);
+      display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border);
       background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      padding:8px 12px;
-      border-radius:999px;
-      box-shadow:0 10px 24px rgba(0,0,0,.25);
-      white-space:nowrap;
-      font-size:13px;
-      color:var(--muted);
-      height:fit-content;
+      padding:8px 12px; border-radius:999px; box-shadow:0 10px 24px rgba(0,0,0,.25);
+      white-space:nowrap; font-size:13px; color:var(--muted); height:fit-content;
     }
     .badgeTop .dot{
       width:10px;height:10px;border-radius:50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(255,255,255,.15)),
-                  var(--accent);
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(255,255,255,.15)), var(--accent);
       box-shadow:0 0 0 4px rgba(122,162,255,.14);
     }
     .mono{font-family:var(--mono)}
 
     main{
-      max-width:1200px;
-      margin:0 auto;
-      padding:14px 14px 28px;
-      display:grid;
-      grid-template-columns: 360px 1fr;
-      gap:14px;
-      align-items:start;
+      max-width:1200px; margin:0 auto; padding:14px 14px 28px;
+      display:grid; grid-template-columns: 360px 1fr; gap:14px; align-items:start;
     }
 
     .panel{
       background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-      border:1px solid var(--border);
-      border-radius:var(--radius2);
-      box-shadow:var(--shadow);
-      overflow:hidden;
+      border:1px solid var(--border); border-radius:var(--radius2);
+      box-shadow:var(--shadow); overflow:hidden;
     }
 
     .panel h2{
-      margin:0;
-      font-size:14px;
-      letter-spacing:.2px;
-      color:var(--text);
-      font-weight:700;
-      padding:14px 14px 12px;
-      border-bottom:1px solid rgba(255,255,255,.06);
+      margin:0; font-size:14px; letter-spacing:.2px; color:var(--text); font-weight:700;
+      padding:14px 14px 12px; border-bottom:1px solid rgba(255,255,255,.06);
       background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
     }
-
-    .bd{ padding:14px; }
+    .panel .bd{ padding:14px; }
 
     .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
     .row + .row{margin-top:10px}
 
     .pill{
-      display:flex; align-items:center; gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(0,0,0,.18);
+      display:flex; align-items:center; gap:8px; padding:8px 10px;
+      border-radius:999px; border:1px solid rgba(255,255,255,.08); background:rgba(0,0,0,.18);
     }
     .pill input{accent-color:var(--accent)}
     .pill label{font-size:13px; color:var(--muted); user-select:none}
 
     button{
-      appearance:none;
-      border:1px solid rgba(255,255,255,.10);
+      appearance:none; border:1px solid rgba(255,255,255,.10);
       background:linear-gradient(180deg, rgba(122,162,255,.22), rgba(122,162,255,.10));
-      color:var(--text);
-      padding:10px 12px;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:700;
-      font-size:13px;
-      letter-spacing:.15px;
-      box-shadow:0 10px 22px rgba(0,0,0,.28);
+      color:var(--text); padding:10px 12px; border-radius:12px; cursor:pointer;
+      font-weight:700; font-size:13px; letter-spacing:.15px; box-shadow:0 10px 22px rgba(0,0,0,.28);
       transition:transform .08s ease, filter .12s ease, opacity .12s ease;
     }
     button:hover{filter:brightness(1.04)}
     button:active{transform:translateY(1px)}
-    button.primary{
-      background:linear-gradient(180deg, rgba(122,162,255,.35), rgba(122,162,255,.14));
+    button.primary{ background:linear-gradient(180deg, rgba(122,162,255,.35), rgba(122,162,255,.14)); }
+    button.good{ background:linear-gradient(180deg, rgba(61,220,151,.22), rgba(61,220,151,.10)); }
+    button.bad{ background:linear-gradient(180deg, rgba(255,93,108,.22), rgba(255,93,108,.10)); }
+    button.warn{ background:linear-gradient(180deg, rgba(255,204,102,.24), rgba(255,204,102,.10)); color:#ffe7b0; }
+    button.ghost{ background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04)); border:1px solid rgba(255,255,255,.10); color:var(--muted); font-weight:650; box-shadow:none; }
+    button:disabled{ opacity:.45; cursor:not-allowed; transform:none; box-shadow:none; }
+
+    /* UPDATE: Dark Dropdown */
+    select{
+      width:100%; padding:10px 12px; border-radius:12px;
+      border:1px solid var(--border);
+      background: rgb(21, 22, 27);
+      color: var(--text); font-size: 13px; outline: none; cursor: pointer;
     }
-    button.good{
-      background:linear-gradient(180deg, rgba(61,220,151,.22), rgba(61,220,151,.10));
-    }
-    button.bad{
-      background:linear-gradient(180deg, rgba(255,93,108,.22), rgba(255,93,108,.10));
-    }
-    button.warn{
-      background:linear-gradient(180deg, rgba(255,204,102,.24), rgba(255,204,102,.10));
-      color:#ffe7b0;
-    }
-    button.ghost{
-      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+    .small{font-size:12px; color:var(--muted2)}
+    .muted{color:var(--muted); font-size:13px; line-height:1.35}
+
+    #workspace{ padding:14px; }
+
+    .flashcard {
+      position:relative; min-height:300px; border-radius:22px;
       border:1px solid rgba(255,255,255,.10);
-      color:var(--muted);
-      font-
+      background:
+        radial-gradient(1200px 420px at 50% -30%, rgba(122,162,255,.22), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      box-shadow:0 18px 48px rgba(0,0,0,.42);
+      padding:18px 18px 16px; overflow:hidden;
+      display:flex; flex-direction:column; justify-content:space-between;
+      user-select:none; cursor:pointer;
+    }
+
+    /* UPDATE: Card Audio Icon */
+    .btn-audio-card {
+      position: absolute; top: 12px; right: 12px; z-index: 10;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+      border-radius: 50%; width: 38px; height: 38px; padding: 0;
+      display: flex; align-items: center; justify-content: center; color: var(--accent);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: all 0.2s;
+    }
+    .btn-audio-card svg { width: 20px; height: 20px; fill: currentColor; }
+    .btn-audio-card:hover { background: rgba(255,255,255,0.12); transform: scale(1.05); }
+
+    .badge {
+      position:absolute; top: 12px; left: 12px; font-size: 12px; color: var(--muted);
+      border:1px solid var(--border); background: rgba(0,0,0,.18);
+      padding: 6px 10px; border-radius: 999px; z-index: 2;
+      max-width: calc(50% - 18px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    }
+    .badge.right{ left:auto; right:12px; }
+
+    .hidden{ display:none !important; }
+
+    .content{
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:10px; padding:26px 6px 10px; text-align:center; flex:1;
+    }
+
+    .big{ font-size:44px; font-weight:800; letter-spacing:.6px; line-height:1.08; }
+    .mid_jp{ font-size:22px; font-weight:750; letter-spacing:.2px; line-height:1.1; color:var(--text); }
+    .mid_txt{ font-size:18px; color:var(--muted); font-weight:650; }
+    .smallLine{ font-size:14px; color:var(--muted2); }
+
+    .controls{ display:flex; flex-direction:column; gap:10px; margin-top:12px; }
+    .controls .row{justify-content:center}
+    .stats{ text-align:center; color:var(--muted); font-size:13px; margin-top:6px; }
+    .toast {
+      margin-top: 6px; color: var(--muted); font-size: 12px; min-height: 16px;
+      padding: 8px 10px; border: 1px solid color-mix(in srgb, var(--border), #000 20%);
+      border-radius: 12px; background: rgba(0,0,0,.18);
+    }
+
+    @media (max-width: 720px) {
+      main{ grid-template-columns: 1fr; }
+      body.studying #sidebar { display: none; }
+      body.studying #workspace { margin-top: 0; }
+      body.studying .flashcard { margin-bottom: 34px; }
+      body.studying #workspace { padding-bottom: 26px; }
+      body.studying .settingsToggle { display: inline-flex; }
+      body.studying.showSettings #sidebar { display: block; position: fixed; inset: 0; z-index: 1000; overflow: auto; padding-bottom: 24px; background:var(--bg); }
+      body.studying.showSettings #workspace { filter: blur(2px); }
+      body.studying.showSettings .closeSettings { display: inline-flex; }
+    }
+  
+    .flashcard{ position:relative; padding-bottom:86px; }
+    
+    /* UPDATE: Centered Actions */
+    .cardActions{
+      position:absolute; left:14px; right:14px; bottom:14px;
+      display:flex; gap:12px; align-items:center; justify-content: center; /* Centered */
+    }
+    .cardActions button{ flex:1; min-width:0; }
+    .cardActions button#btn_unsure{ flex:1.1; }
+</style>
+</head>
+
+<body>
+  <header>
+    <div class="title">
+      <h1>Japanese Flash Cards</h1>
+      <div class="sub"><span class="ver">v1.6.2 · Full Restore</span></div>
+    </div>
+    <div class="badgeTop" title="Local, single-file app"><span class="dot"></span><span class="mono">offline-ready</span></div>
+  </header>
+
+  <main>
+    <section class="panel" id="sidebar">
+      <h2>Study Sets <button id="btn_closeSettings" class="ghost closeSettings hidden" type="button">Close</button></h2>
+      <div class="bd">
+        <div class="row">
+          <div class="pill"><input id="sel_all" type="checkbox" /><label for="sel_all"><b>Select All</b></label></div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <div class="pill"><input id="sel_essentials" type="checkbox" checked /><label for="sel_essentials">Essentials</label></div>
+          <div class="pill"><input id="sel_core" type="checkbox" checked /><label for="sel_core">Core Travel Vocabulary</label></div>
+          <div class="pill"><input id="sel_basic" type="checkbox" /><label for="sel_basic">Basic Japanese Words</label></div>
+          <div class="pill"><input id="sel_hira" type="checkbox" /><label for="sel_hira">Hiragana</label></div>
+          <div class="pill"><input id="sel_kata" type="checkbox" /><label for="sel_kata">Katakana</label></div>
+        </div>
+        <div class="row" style="margin-top:14px;">
+          <div style="flex:1; min-width:220px;">
+            <div class="small" style="margin:0 0 6px 2px;">Build by Category (optional override)</div>
+            <select id="by_category"><option value="">(No override)</option></select>
+          </div>
+        </div>
+        <div class="row" style="margin-top:12px;">
+          <button id="btn_build" class="primary" type="button">Build Deck</button>
+          <button id="btn_reset" class="ghost" type="button">Reset</button>
+        </div>
+        <div class="row" style="margin-top:10px;">
+          <div class="muted">Select one or more sets, then click <b>Build Deck</b>.</div>
+        </div>
+        <div class="row" style="margin-top:10px;">
+          <div class="pill"><input id="opt_shuffle" type="checkbox" checked /><label for="opt_shuffle">Shuffle</label></div>
+          <div class="pill"><input id="opt_randomSide" type="checkbox" checked /><label for="opt_randomSide">Random side</label></div>
+          <div class="pill"><input id="opt_incorrectOnly" type="checkbox" /><label for="opt_incorrectOnly">Incorrect-only view</label></div>
+          <div class="pill"><input id="opt_limit" type="number" min="0" value="0" style="width:80px" /><label for="opt_limit">Limit (0 = no limit)</label></div>
+        </div>
+        <div class="row" style="margin-top:10px;">
+          <button id="btn_clearMisses" class="ghost" type="button">Clear incorrect list</button>
+          <div class="small mono" id="missCount">Incorrect: 0</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="workspace">
+      <h2>Study <span class="small mono">v1.6.2</span></h2>
+      <div class="bd">
+        <div class="flashcard" id="card" tabindex="0" title="Click to flip">
+          <button id="btn_speak" class="btn-audio-card hidden" type="button" title="Play Audio">
+            <svg viewBox="0 0 24 24"><path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16.03C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z"></path></svg>
+          </button>
+
+          <div class="badge" id="badge_left">—</div>
+          <div class="badge right" id="badge_right">—</div>
+          <div class="content">
+            <div class="big" id="big">Build a deck to start</div>
+            <div class="mid_jp hidden" id="mid_jp"></div>
+            <div class="mid_txt" id="mid_txt"></div>
+            <div class="smallLine" id="small"></div>
+            <div class="cardActions" id="card_actions" aria-label="Answer actions">
+              <button class="good" id="btn_correct" type="button">Correct</button>
+              <button class="warn" id="btn_unsure" type="button">Unsure</button>
+              <button class="bad" id="btn_incorrect" type="button">Incorrect</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="row">
+            <button id="btn_prev">← Prev</button>
+            <button id="btn_hint" class="ghost" type="button">Hint</button>
+            <button class="primary" id="btn_flip">Flip</button>
+            <button id="btn_next">Next →</button>
+          </div>
+          <div class="stats" id="stats">Deck not built yet.</div>
+          <button id="btn_settings" class="ghost settingsToggle hidden" type="button">Settings</button>
+        </div>
+        <div class="toast" id="toast"></div>
+      </div>
+    </section>
+  </main>
+
+<script>
+/* ========= Japanese Flash Cards — v1.6.2 (Full Restore) ========= */
+const APP = { version: "1.6.2", build: 29 };
+
+const SETS = {
+  ESSENTIALS: "Essentials",
+  CORE: "Core Travel Vocabulary",
+  BASIC: "Basic Japanese Words",
+  HIRAGANA: "Hiragana",
+  KATAKANA: "Katakana"
+};
+
+const VOCAB = {
+  [SETS.ESSENTIALS]: {
+    "Essentials": [
+      { english: "Excuse me / Sorry", japanese: "すみません", romaji: "Sumimasen", pronunciation: "soo-mee-mah-sen" },
+      { english: "Thank you very much", japanese: "ありがとうございます", romaji: "Arigatō gozaimasu", pronunciation: "ah-ree-gah-toh goh-zah-ee-mas" },
+      { english: "This", japanese: "これ", romaji: "Kore", pronunciation: "koh-reh" },
+      { english: "That (near you)", japanese: "それ", romaji: "Sore", pronunciation: "soh-reh" },
+      { english: "Please (requesting an item)", japanese: "ください", romaji: "Kudasai", pronunciation: "koo-dah-sigh" },
+      { english: "Please (general favor)", japanese: "お願いします", romaji: "Onegaishimasu", pronunciation: "oh-neh-guy-shee-mas" },
+      { english: "No thank you / I'm good", japanese: "大丈夫です", romaji: "Daijōbu desu", pronunciation: "dye-joh-bu dess" },
+      { english: "I am ~", japanese: "私は〜です", romaji: "Watashi wa ~ desu", pronunciation: "wah-tah-shee wah ~ dess" },
+      { english: "I don’t understand", japanese: "わかりません", romaji: "Wakarimasen", pronunciation: "wah-kah-ree-mah-sen" }
+    ],
+    "Greetings": [
+      { english: "Hello / Good afternoon", japanese: "こんにちは", romaji: "Konnichiwa", pronunciation: "kon-nee-chee-wah" },
+      { english: "Good morning", japanese: "おはようございます", romaji: "Ohayō gozaimasu", pronunciation: "oh-hah-yoh goh-zah-ee-mas" },
+      { english: "Good evening", japanese: "こんばんは", romaji: "Konbanwa", pronunciation: "kon-bahn-wah" },
+      { english: "Good night", japanese: "おやすみ", romaji: "Oyasumi", pronunciation: "oh-yah-soo-mee" }
+    ],
+    "Restaurants": [
+      { english: "Can I place an order?", japanese: "注文お願いします", romaji: "Chūmon onegaishimasu", pronunciation: "choo-mohn oh-neh-guy-shee-mas" },
+      { english: "Water please", japanese: "水をお願いします", romaji: "Mizu o onegaishimasu", pronunciation: "mee-zoo oh oh-neh-guy-shee-mas" },
+      { english: "Can I get the check / bill please", japanese: "お会計お願いします", romaji: "Okaikei onegaishimasu", pronunciation: "oh-kai-kay oh-neh-guy-shee-mas" }
+    ]
+  },
+
+  [SETS.CORE]: {
+    "Restaurants": [
+      { english: "Beer, one more", japanese: "ビールもう一杯", romaji: "Bīru mō ippai", pronunciation: "bee-roo moh ee-pie" },
+      { english: "Reservation", japanese: "よやく", romaji: "Yoyaku", pronunciation: "yoh-yah-koo" }
+    ],
+    "Shopping": [
+      { english: "Do you have (it)?", japanese: "ありますか", romaji: "Arimasu ka", pronunciation: "ah-ree-mas kah" },
+      { english: "How much?", japanese: "いくら", romaji: "Ikura", pronunciation: "ee-koo-rah" },
+      { english: "Please show me", japanese: "見せてください", romaji: "Misete kudasai", pronunciation: "mee-seh-teh koo-dah-sigh" }
+    ],
+    "Questions": [
+      { english: "What is this?", japanese: "これは何ですか", romaji: "Kore wa nan desu ka", pronunciation: "koh-reh wah nahn dess kah" },
+      { english: "What is your name?", japanese: "名前はなんですか", romaji: "Namae wa nan desu ka", pronunciation: "nah-mah-eh wah nahn dess kah" }
+    ],
+    "Directions": [
+      { english: "Where is the bathroom?", japanese: "トイレはどこですか", romaji: "Toire wa doko desu ka", pronunciation: "toy-reh wah doh-koh dess kah" }
+    ],
+    "Communication": [
+      { english: "I can’t speak Japanese", japanese: "日本語を話せません", romaji: "Nihongo o hanasemasen", pronunciation: "nee-hohn-goh oh hah-nah-seh-mah-sen" },
+      { english: "I am practicing my Japanese", japanese: "私は日本語を練習しています。", romaji: "Watashi wa nihongo o renshū shite imasu", pronunciation: "wah-tah-shee wah nee-hohn-goh oh ren-shoo sheh-teh ee-mas" }
+    ],
+    "Hotel": [
+      { english: "Reservation / appointment", japanese: "よやく", romaji: "Yoyaku", pronunciation: "yoh-yah-koo" }
+    ],
+    "Numbers": [
+      { english: "Hundred", japanese: "ひゃく", romaji: "Hyaku", pronunciation: "hyah-koo" },
+      { english: "Two hundred", japanese: "にひゃく", romaji: "Ni-hyaku", pronunciation: "nee-hyah-koo" },
+      { english: "Three hundred", japanese: "さんびゃく", romaji: "San-byaku", pronunciation: "sahn-byah-koo" },
+      { english: "Four hundred", japanese: "よんひゃく", romaji: "Yon-hyaku", pronunciation: "yohn-hyah-koo" },
+      { english: "Six hundred", japanese: "ろっぴゃく", romaji: "Roppyaku", pronunciation: "roh-ppyah-koo" },
+      { english: "Eight hundred", japanese: "はっぴゃく", romaji: "Happyaku", pronunciation: "hah-ppyah-koo" },
+      { english: "Twenty", japanese: "にじゅう", romaji: "Ni-jū", pronunciation: "nee-joo" },
+      { english: "Thirty", japanese: "さんじゅう", romaji: "San-jū", pronunciation: "sahn-joo" },
+      { english: "Four thousand", japanese: "よんせん", romaji: "Yon-sen", pronunciation: "yohn-sen" },
+      { english: "Three thousand", japanese: "さんぜん", romaji: "Sanzen", pronunciation: "sahn-zen" },
+      { english: "Eight thousand", japanese: "はっせん", romaji: "Hassen", pronunciation: "hah-sen" }
+    ],
+    "Time & Dates": [
+      { english: "From", japanese: "から", romaji: "Kara", pronunciation: "kah-rah" },
+      { english: "Until / to", japanese: "まで", romaji: "Made", pronunciation: "mah-deh" },
+      { english: "Morning / a.m.", japanese: "ごぜん", romaji: "Gozen", pronunciation: "goh-zen" },
+      { english: "Afternoon / p.m.", japanese: "ごご", romaji: "Gogo", pronunciation: "goh-goh" }
+    ]
+  },
+
+  [SETS.BASIC]: {
+    "Key Phrases": [
+      { english: "Yes", japanese: "はい", romaji: "Hai", pronunciation: "hai" },
+      { english: "No", japanese: "いいえ", romaji: "Iie", pronunciation: "ee-eh" },
+      { english: "What is your name?", japanese: "名前はなんですか", romaji: "Namae wa nan desu ka", pronunciation: "nah-mah-eh wah nahn dess kah" },
+      { english: "I am ~", japanese: "私は〜です", romaji: "Watashi wa ~ desu", pronunciation: "wah-tah-shee wah dess" },
+      { english: "I came from ~ / I am from ~", japanese: "〜から来ました", romaji: "~ kara kimashita", pronunciation: "kah-rah kee-mah-shee-tah" },
+      { english: "What is this?", japanese: "これは何ですか", romaji: "Kore wa nan desu ka", pronunciation: "koh-reh wah nahn dess kah" },
+      { english: "How much?", japanese: "いくらですか", romaji: "Ikura desu ka", pronunciation: "ee-koo-rah dess kah" },
+      { english: "Can I get this one? / I'll take this one", japanese: "これください", romaji: "Kore kudasai", pronunciation: "koh-reh koo-dah-sigh" },
+      { english: "Please", japanese: "おねがいします", romaji: "Onegaishimasu", pronunciation: "oh-neh-guy-shee-mas" },
+      { english: "Can I place an order?", japanese: "注文お願いします", romaji: "Chūmon onegaishimasu", pronunciation: "choo-mohn oh-neh-guy-shee-mas" },
+      { english: "Water please", japanese: "水をお願いします", romaji: "Mizu o onegaishimasu", pronunciation: "mee-zoo oh oh-neh-guy-shee-mas" },
+      { english: "Can I get the check/bill?", japanese: "お会計お願いします", romaji: "Okaikei onegaishimasu", pronunciation: "oh-kai-kay oh-neh-guy-shee-mas" },
+      { english: "Where am I?", japanese: "ここはどこですか", romaji: "Koko wa doko desu ka", pronunciation: "koh-koh wah doh-koh dess kah" },
+      { english: "Where is the bathroom?", japanese: "トイレはどこですか", romaji: "Toire wa doko desu ka", pronunciation: "toy-reh wah doh-koh dess kah" },
+      { english: "Where is the train station?", japanese: "駅はどこですか", romaji: "Eki wa doko desu ka", pronunciation: "eh-kee wah doh-koh dess kah" },
+      { english: "What time is it now?", japanese: "今何時ですか", romaji: "Ima nan ji desu ka", pronunciation: "ee-mah nahn jee dess kah" },
+      { english: "I don't understand", japanese: "わかりません", romaji: "Wakarimasen", pronunciation: "wah-kah-ree-mah-sen" },
+      { english: "I can't speak Japanese", japanese: "日本語を話せません", romaji: "Nihongo o hanasemasen", pronunciation: "nee-hohn-goh oh hah-nah-seh-mah-sen" }
+    ],
+    "Greetings": [
+      { english: "Good morning", japanese: "おはようございます", romaji: "Ohayō gozaimasu", pronunciation: "oh-hah-yoh goh-zah-ee-mas" },
+      { english: "Good afternoon", japanese: "こんにちは", romaji: "Konnichiwa", pronunciation: "kon-nee-chee-wah" },
+      { english: "Good evening", japanese: "こんばんは", romaji: "Konbanwa", pronunciation: "kon-bahn-wah" },
+      { english: "Thank you", japanese: "ありがとうございます", romaji: "Arigatō gozaimasu", pronunciation: "ah-ree-gah-toh goh-zah-ee-mas" },
+      { english: "Excuse me / I'm sorry", japanese: "すみません", romaji: "Sumimasen", pronunciation: "soo-mee-mah-sen" }
+    ],
+    "People & Pronouns": [
+      { english: "I (watashi / boku / ore)", japanese: "私、僕、俺", romaji: "Watashi / Boku / Ore", pronunciation: "" },
+      { english: "Friend", japanese: "友達", romaji: "Tomodachi", pronunciation: "toh-moh-dah-chee" },
+      { english: "Co-worker", japanese: "同僚", romaji: "Dōryō", pronunciation: "doh-ryoh" },
+      { english: "Boss / Company president", japanese: "部長、社長", romaji: "Buchō / Shachō", pronunciation: "boo-choh / shah-choh" },
+      { english: "Family", japanese: "家族", romaji: "Kazoku", pronunciation: "kah-zoh-koo" },
+      { english: "Father", japanese: "お父さん", romaji: "Otō-san", pronunciation: "oh-toh-san" },
+      { english: "Mother", japanese: "お母さん", romaji: "Okā-san", pronunciation: "oh-kah-san" },
+      { english: "Older brother", japanese: "お兄さん", romaji: "Onii-san", pronunciation: "oh-nee-san" },
+      { english: "Older sister", japanese: "お姉さん", romaji: "Onee-san", pronunciation: "oh-neh-san" },
+      { english: "Younger brother", japanese: "弟", romaji: "Otōto", pronunciation: "oh-toh-toh" },
+      { english: "Younger sister", japanese: "妹", romaji: "Imōto", pronunciation: "ee-moh-toh" },
+      { english: "Adults", japanese: "大人", romaji: "Otona", pronunciation: "oh-toh-nah" },
+      { english: "Children", japanese: "子供", romaji: "Kodomo", pronunciation: "koh-doh-moh" },
+      { english: "Boyfriend", japanese: "彼氏", romaji: "Kareshi", pronunciation: "kah-reh-shee" },
+      { english: "Girlfriend", japanese: "彼女", romaji: "Kanojo", pronunciation: "kah-noh-joh" },
+      { english: "Man", japanese: "男の人", romaji: "Otoko no hito", pronunciation: "oh-toh-koh noh hee-toh" },
+      { english: "Woman", japanese: "女の人", romaji: "Onna no hito", pronunciation: "ohn-nah noh hee-toh" }
+    ],
+    "Food & Drink": [
+      { english: "Breakfast", japanese: "朝ご飯", romaji: "Asa-gohan", pronunciation: "ah-sah goh-hahn" },
+      { english: "Lunch", japanese: "昼ご飯", romaji: "Hiru-gohan", pronunciation: "hee-roo goh-hahn" },
+      { english: "Dinner", japanese: "夜ご飯", romaji: "Yoru-gohan", pronunciation: "yoh-roo goh-hahn" },
+      { english: "Rice / Meal", japanese: "ご飯", romaji: "Gohan", pronunciation: "goh-hahn" },
+      { english: "Bread", japanese: "パン", romaji: "Pan", pronunciation: "pahn" },
+      { english: "Meat", japanese: "肉", romaji: "Niku", pronunciation: "nee-koo" },
+      { english: "Fish", japanese: "魚", romaji: "Sakana", pronunciation: "sah-kah-nah" },
+      { english: "Vegetables", japanese: "野菜", romaji: "Yasai", pronunciation: "yah-sigh" },
+      { english: "Fruits", japanese: "果物", romaji: "Kudamono", pronunciation: "koo-dah-moh-noh" },
+      { english: "Soup", japanese: "スープ", romaji: "Sūpu", pronunciation: "soo-poo" },
+      { english: "Salad", japanese: "サラダ", romaji: "Sarada", pronunciation: "sah-rah-dah" },
+      { english: "Egg", japanese: "卵", romaji: "Tamago", pronunciation: "tah-mah-goh" },
+      { english: "Milk", japanese: "牛乳", romaji: "Gyūnyū", pronunciation: "gyoo-nyoo" },
+      { english: "Cheese", japanese: "チーズ", romaji: "Chīzu", pronunciation: "chee-zoo" },
+      { english: "Dessert", japanese: "デザート", romaji: "Dezāto", pronunciation: "deh-zah-toh" },
+      { english: "Water", japanese: "水", romaji: "Mizu", pronunciation: "mee-zoo" },
+      { english: "Tea / Green tea", japanese: "お茶", romaji: "Ocha", pronunciation: "oh-chah" },
+      { english: "Coffee", japanese: "コーヒー", romaji: "Kōhī", pronunciation: "koh-hee" },
+      { english: "Alcohol / Sake", japanese: "お酒", romaji: "Osake", pronunciation: "oh-sah-keh" },
+      { english: "Wine", japanese: "ワイン", romaji: "Wain", pronunciation: "wah-een" },
+      { english: "Beer", japanese: "ビール", romaji: "Bīru", pronunciation: "bee-roo" }
+    ],
+    "Numbers": [
+      { english: "1", japanese: "一", romaji: "ichi", pronunciation: "ee-chee" },
+      { english: "2", japanese: "二", romaji: "ni", pronunciation: "nee" },
+      { english: "3", japanese: "三", romaji: "san", pronunciation: "sahn" },
+      { english: "4", japanese: "四", romaji: "yon", pronunciation: "yohn" },
+      { english: "5", japanese: "五", romaji: "go", pronunciation: "goh" },
+      { english: "6", japanese: "六", romaji: "roku", pronunciation: "roh-koo" },
+      { english: "7", japanese: "七", romaji: "nana", pronunciation: "nah-nah" },
+      { english: "8", japanese: "八", romaji: "hachi", pronunciation: "hah-chee" },
+      { english: "9", japanese: "九", romaji: "kyū", pronunciation: "kyoo" },
+      { english: "10", japanese: "十", romaji: "jū", pronunciation: "joo" },
+      { english: "11", japanese: "十一", romaji: "jūichi", pronunciation: "joo-ee-chee" },
+      { english: "12", japanese: "十二", romaji: "jūni", pronunciation: "joo-nee" },
+      { english: "20", japanese: "二十", romaji: "nijū", pronunciation: "nee-joo" },
+      { english: "21", japanese: "二十一", romaji: "nijūichi", pronunciation: "nee-joo-ee-chee" },
+      { english: "30", japanese: "三十", romaji: "sanjū", pronunciation: "sahn-joo" },
+      { english: "32", japanese: "三十二", romaji: "sanjūni", pronunciation: "sahn-joo-nee" },
+      { english: "40", japanese: "四十", romaji: "yonjū", pronunciation: "yohn-joo" },
+      { english: "43", japanese: "四十三", romaji: "yonjūsan", pronunciation: "yohn-joo-sahn" },
+      { english: "50", japanese: "五十", romaji: "gojū", pronunciation: "goh-joo" },
+      { english: "54", japanese: "五十四", romaji: "gojūyon", pronunciation: "goh-joo-yohn" },
+      { english: "60", japanese: "六十", romaji: "rokujū", pronunciation: "roh-koo-joo" },
+      { english: "65", japanese: "六十五", romaji: "rokujūgo", pronunciation: "roh-koo-joo-goh" },
+      { english: "70", japanese: "七十", romaji: "nanajū", pronunciation: "nah-nah-joo" },
+      { english: "76", japanese: "七十六", romaji: "nanajūroku", pronunciation: "nah-nah-joo-roh-koo" },
+      { english: "80", japanese: "八十", romaji: "hachijū", pronunciation: "hah-chee-joo" },
+      { english: "87", japanese: "八十七", romaji: "hachijūnana", pronunciation: "hah-chee-joo-nah-nah" },
+      { english: "90", japanese: "九十", romaji: "kyūjū", pronunciation: "kyoo-joo" },
+      { english: "98", japanese: "九十八", romaji: "kyūjūhachi", pronunciation: "kyoo-joo-hah-chee" },
+      { english: "100", japanese: "百", romaji: "hyaku", pronunciation: "hyah-koo" },
+      { english: "1000", japanese: "千", romaji: "sen", pronunciation: "sen" },
+      { english: "2000", japanese: "二千", romaji: "nisen", pronunciation: "nee-sen" },
+      { english: "3000", japanese: "三千", romaji: "sanzen", pronunciation: "sahn-zen" },
+      { english: "5000", japanese: "五千", romaji: "gosen", pronunciation: "goh-sen" }
+    ],
+    "Time & Dates": [
+      { english: "Sunday", japanese: "日曜日", romaji: "Nichiyōbi", pronunciation: "nee-chee-yoh-bee" },
+      { english: "Monday", japanese: "月曜日", romaji: "Getsuyōbi", pronunciation: "geh-tsoo-yoh-bee" },
+      { english: "Tuesday", japanese: "火曜日", romaji: "Kayōbi", pronunciation: "kah-yoh-bee" },
+      { english: "Wednesday", japanese: "水曜日", romaji: "Suiyōbi", pronunciation: "soo-ee-yoh-bee" },
+      { english: "Thursday", japanese: "木曜日", romaji: "Mokuyōbi", pronunciation: "moh-koo-yoh-bee" },
+      { english: "Friday", japanese: "金曜日", romaji: "Kinyōbi", pronunciation: "keen-yoh-bee" },
+      { english: "Saturday", japanese: "土曜日", romaji: "Doyōbi", pronunciation: "doh-yoh-bee" },
+      { english: "January", japanese: "一月", romaji: "Ichigatsu", pronunciation: "ee-chee-gah-tsoo" },
+      { english: "February", japanese: "二月", romaji: "Nigatsu", pronunciation: "nee-gah-tsoo" },
+      { english: "March", japanese: "三月", romaji: "Sangatsu", pronunciation: "sahn-gah-tsoo" },
+      { english: "April", japanese: "四月", romaji: "Shigatsu", pronunciation: "shee-gah-tsoo" },
+      { english: "May", japanese: "五月", romaji: "Gogatsu", pronunciation: "goh-gah-tsoo" },
+      { english: "June", japanese: "六月", romaji: "Rokugatsu", pronunciation: "roh-koo-gah-tsoo" },
+      { english: "July", japanese: "七月", romaji: "Shichigatsu", pronunciation: "shee-chee-gah-tsoo" },
+      { english: "August", japanese: "八月", romaji: "Hachigatsu", pronunciation: "hah-chee-gah-tsoo" },
+      { english: "September", japanese: "九月", romaji: "Kugatsu", pronunciation: "koo-gah-tsoo" },
+      { english: "October", japanese: "十月", romaji: "Jūgatsu", pronunciation: "joo-gah-tsoo" },
+      { english: "November", japanese: "十一月", romaji: "Jūichigatsu", pronunciation: "joo-ee-chee-gah-tsoo" },
+      { english: "December", japanese: "十二月", romaji: "Jūnigatsu", pronunciation: "joo-nee-gah-tsoo" },
+      { english: "Today", japanese: "今日", romaji: "Kyō", pronunciation: "kyoh" },
+      { english: "Yesterday", japanese: "昨日", romaji: "Kinō", pronunciation: "kee-noh" },
+      { english: "Tomorrow", japanese: "明日", romaji: "Ashita", pronunciation: "ah-shee-tah" },
+      { english: "This week", japanese: "今週", romaji: "Konshū", pronunciation: "kohn-shoo" },
+      { english: "Last week", japanese: "先週", romaji: "Senshū", pronunciation: "sen-shoo" },
+      { english: "Next week", japanese: "来週", romaji: "Raishū", pronunciation: "rye-shoo" },
+      { english: "This month", japanese: "今月", romaji: "Kongetsu", pronunciation: "kohn-geh-tsoo" },
+      { english: "Last month", japanese: "先月", romaji: "Sengetsu", pronunciation: "sen-geh-tsoo" },
+      { english: "Next month", japanese: "来月", romaji: "Raigetsu", pronunciation: "rye-gee-tsoo" },
+      { english: "This year", japanese: "今年", romaji: "Kotoshi", pronunciation: "koh-toh-shee" },
+      { english: "Last year", japanese: "去年", romaji: "Kyonen", pronunciation: "kyoh-nen" },
+      { english: "Next year", japanese: "来年", romaji: "Rainen", pronunciation: "rye-nen" },
+      { english: "1 o'clock", japanese: "一時", romaji: "ichi-ji", pronunciation: "ichi-ji" },
+      { english: "2 o'clock", japanese: "二時", romaji: "ni-ji", pronunciation: "ni-ji" },
+      { english: "3 o'clock", japanese: "三時", romaji: "san-ji", pronunciation: "san-ji" },
+      { english: "4 o'clock", japanese: "四時", romaji: "yon-ji", pronunciation: "yon-ji" },
+      { english: "5 o'clock", japanese: "五時", romaji: "go-ji", pronunciation: "go-ji" },
+      { english: "6 o'clock", japanese: "六時", romaji: "roku-ji", pronunciation: "roku-ji" },
+      { english: "7 o'clock", japanese: "七時", romaji: "nana-ji", pronunciation: "nana-ji" },
+      { english: "8 o'clock", japanese: "八時", romaji: "hachi-ji", pronunciation: "hachi-ji" },
+      { english: "9 o'clock", japanese: "九時", romaji: "ku-ji", pronunciation: "ku-ji" },
+      { english: "10 o'clock", japanese: "十時", romaji: "juu-ji", pronunciation: "juu-ji" },
+      { english: "11 o'clock", japanese: "十一時", romaji: "juu-ichi-ji", pronunciation: "juu-ichi-ji" },
+      { english: "12 o'clock", japanese: "十二時", romaji: "juu-ni-ji", pronunciation: "juu-ni-ji" }
+    ],
+    "Places": [
+      { english: "Station", japanese: "駅", romaji: "Eki", pronunciation: "eh-kee" },
+      { english: "Hospital", japanese: "病院", romaji: "Byōin", pronunciation: "byoh-een" },
+      { english: "Money exchange", japanese: "両替", romaji: "Ryōgae", pronunciation: "ryoh-guy" },
+      { english: "Bank", japanese: "銀行", romaji: "Ginkō", pronunciation: "geen-koh" },
+      { english: "Police station", japanese: "警察署", romaji: "Keisatsusho", pronunciation: "kay-sah-tsoo-shoh" },
+      { english: "Post office", japanese: "郵便局", romaji: "Yūbinkyoku", pronunciation: "yoo-been-kyoh-koo" },
+      { english: "Convenience store", japanese: "コンビニ", romaji: "Konbini", pronunciation: "kohn-bee-nee" },
+      { english: "Bakery", japanese: "パン屋", romaji: "Pan-ya", pronunciation: "pahn-yah" },
+      { english: "Store / Shop", japanese: "店", romaji: "Mise", pronunciation: "mee-seh" },
+      { english: "Supermarket", japanese: "スーパー", romaji: "Sūpā", pronunciation: "soo-pah" },
+      { english: "Airport", japanese: "空港", romaji: "Kūkō", pronunciation: "koo-koh" },
+      { english: "Bus stop", japanese: "バス停", romaji: "Basutei", pronunciation: "bah-soo-tay" },
+      { english: "Port", japanese: "港", romaji: "Minato", pronunciation: "mee-nah-toh" },
+      { english: "Shrine", japanese: "神社", romaji: "Jinja", pronunciation: "jeen-jah" },
+      { english: "Temple", japanese: "お寺", romaji: "Otera", pronunciation: "oh-teh-rah" },
+      { english: "Town", japanese: "町", romaji: "Machi", pronunciation: "mah-chee" },
+      { english: "Hotel", japanese: "ホテル", romaji: "Hoteru", pronunciation: "hoh-teh-roo" },
+      { english: "Reception", japanese: "受付", romaji: "Uketsuke", pronunciation: "oo-keh-tsoo-keh" }
+    ],
+    "Colors": [
+      { english: "Red", japanese: "赤", romaji: "Aka", pronunciation: "ah-kah" },
+      { english: "Blue", japanese: "青", romaji: "Ao", pronunciation: "ah-oh" },
+      { english: "Yellow", japanese: "黄色", romaji: "Kiiro", pronunciation: "kee-ee-roh" },
+      { english: "Green", japanese: "緑", romaji: "Midori", pronunciation: "mee-doh-ree" },
+      { english: "White", japanese: "白", romaji: "Shiro", pronunciation: "shee-roh" },
+      { english: "Black", japanese: "黒", romaji: "Kuro", pronunciation: "koo-roh" },
+      { english: "Purple", japanese: "紫", romaji: "Murasaki", pronunciation: "moo-rah-sah-kee" },
+      { english: "Orange", japanese: "オレンジ", romaji: "Orenji", pronunciation: "oh-ren-jee" },
+      { english: "Pink", japanese: "ピンク", romaji: "Pinku", pronunciation: "peen-koo" },
+      { english: "Brown", japanese: "茶色", romaji: "Chairo", pronunciation: "chah-ee-roh" }
+    ],
+    "Essential Verbs": [
+      { english: "to eat", japanese: "食べる", romaji: "Taberu", pronunciation: "tah-beh-roo" },
+      { english: "to go", japanese: "行く", romaji: "Iku", pronunciation: "ee-koo" },
+      { english: "to drink", japanese: "飲む", romaji: "Nomu", pronunciation: "noh-moo" },
+      { english: "to listen / hear", japanese: "聞く", romaji: "Kiku", pronunciation: "kee-koo" },
+      { english: "to read", japanese: "読む", romaji: "Yomu", pronunciation: "yoh-moo" },
+      { english: "to see / look / watch", japanese: "見る", romaji: "Miru", pronunciation: "mee-roo" },
+      { english: "to sleep", japanese: "寝る", romaji: "Neru", pronunciation: "neh-roo" },
+      { english: "to wake up", japanese: "起きる", romaji: "Okiru", pronunciation: "oh-kee-roo" },
+      { english: "to speak / talk", japanese: "話す", romaji: "Hanasu", pronunciation: "hah-nah-soo" },
+      { english: "to return / go back", japanese: "帰る", romaji: "Kaeru", pronunciation: "kah-eh-roo" },
+      { english: "to sit down", japanese: "座る", romaji: "Suwaru", pronunciation: "soo-wah-roo" },
+      { english: "to stand up", japanese: "立つ", romaji: "Tatsu", pronunciation: "tah-tsoo" },
+      { english: "to swim", japanese: "泳ぐ", romaji: "Oyogu", pronunciation: "oh-yoh-goo" },
+      { english: "to play", japanese: "遊ぶ", romaji: "Asobu", pronunciation: "ah-soh-boo" },
+      { english: "to ride", japanese: "乗る", romaji: "Noru", pronunciation: "noh-roo" },
+      { english: "to buy", japanese: "買う", romaji: "Kau", pronunciation: "kah-oo" },
+      { english: "to meet", japanese: "会う", romaji: "Au", pronunciation: "ah-oo" },
+      { english: "to write", japanese: "書く", romaji: "Kaku", pronunciation: "kah-koo" },
+      { english: "to wait", japanese: "待つ", romaji: "Matsu", pronunciation: "mah-tsoo" },
+      { english: "to take a picture", japanese: "撮る", romaji: "Toru", pronunciation: "toh-roo" }
+    ]
+  }
+
+};
+
+const HIRAGANA = [
+  ["あ","a","ah"],["い","i","ee"],["う","u","oo"],["え","e","eh"],["お","o","oh"],
+  ["か","ka","kah"],["き","ki","kee"],["く","ku","koo"],["け","ke","keh"],["こ","ko","koh"],
+  ["さ","sa","sah"],["し","shi","shee"],["す","su","soo"],["せ","se","seh"],["そ","so","soh"],
+  ["た","ta","tah"],["ち","chi","chee"],["つ","tsu","tsoo"],["て","te","teh"],["と","to","toh"],
+  ["な","na","nah"],["に","ni","nee"],["ぬ","nu","noo"],["ね","ne","neh"],["の","no","noh"],
+  ["は","ha","hah"],["ひ","hi","hee"],["ふ","fu","foo"],["へ","he","heh"],["ほ","ho","hoh"],
+  ["ま","ma","mah"],["み","mi","mee"],["む","mu","moo"],["め","me","meh"],["も","mo","moh"],
+  ["や","ya","yah"],["ゆ","yu","yoo"],["よ","yo","yoh"],
+  ["ら","ra","rah"],["り","ri","ree"],["る","ru","roo"],["れ","re","reh"],["ろ","ro","roh"],
+  ["わ","wa","wah"],["を","wo (o)","woh"],["ん","n","n"]
+];
+
+const KATAKANA = [
+  ["ア","a","ah"],["イ","i","ee"],["ウ","u","oo"],["エ","e","eh"],["オ","o","oh"],
+  ["カ","ka","kah"],["キ","ki","kee"],["ク","ku","koo"],["ケ","ke","keh"],["コ","ko","koh"],
+  ["サ","sa","sah"],["シ","shi","shee"],["ス","su","soo"],["セ","se","seh"],["ソ","so","soh"],
+  ["タ","ta","tah"],["チ","chi","chee"],["ツ","tsu","tsoo"],["テ","te","teh"],["ト","to","toh"],
+  ["ナ","na","nah"],["ニ","ni","nee"],["ヌ","nu","noo"],["ネ","ne","neh"],["ノ","no","noh"],
+  ["ハ","ha","hah"],["ヒ","hi","hee"],["フ","fu","foo"],["ヘ","he","heh"],["ホ","ho","hoh"],
+  ["マ","ma","mah"],["ミ","mi","mee"],["ム","mu","moo"],["メ","me","meh"],["モ","mo","moh"],
+  ["ヤ","ya","yah"],["ユ","yu","yoo"],["ヨ","yo","yoh"],
+  ["ラ","ra","rah"],["リ","ri","ree"],["ル","ru","roo"],["レ","re","reh"],["ロ","ro","roh"],
+  ["ワ","wa","wah"],["ヲ","wo (o)","woh"],["ン","n","n"]
+];
+
+function slug(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,""); }
+
+function buildCardsFromVocab(setName) {
+  const out = [];
+  const categories = VOCAB[setName] || {};
+  for (const [cat, items] of Object.entries(categories)) {
+    for (const item of items) {
+      const id = `${slug(setName)}:${slug(cat)}:${slug(item.english)}:${slug(item.japanese)}`;
+      out.push({ id, set: setName, category: cat, type: "vocab",
+        english: item.english, japanese: item.japanese, romaji: item.romaji, pronunciation: item.pronunciation
+      });
+    }
+  }
+  return out;
+}
+
+function buildKanaCards(setName, kanaArr) {
+  return kanaArr.map(([ch, romaji, pron]) => ({
+    id: `${slug(setName)}:kana:${slug(ch)}:${slug(romaji)}`,
+    set: setName, category: "Gojūon", type: "kana",
+    english: romaji, japanese: ch, romaji, pronunciation: pron
+  }));
+}
+
+function dedupeCards(cards) {
+  const seen = new Set();
+  const out = [];
+  for (const c of cards) {
+    const key = `${c.type}|${c.japanese}|${c.english}|${c.romaji}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(c);
+  }
+  return out;
+}
+
+function shuffleInPlace(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// state
+let deckAll = [];
+let deckView = [];
+let index = 0;
+let isFront = true;
+let unsureLocked = false;
+let showHintOnFront = false;
+let perCardFrontIsEnglish = new Map();
+let mobileSettingsOpen = false;
+const missed = new Set();
+
+// speech
+let speechSupported = false;
+let jaVoice = null;
+
+// DOM
+const el = (id) => document.getElementById(id);
+const cardEl = el("card");
+const bigEl = el("big");
+const midJpEl = el("mid_jp");
+const midTxtEl = el("mid_txt");
+const smallEl = el("small");
+const badgeLeft = el("badge_left");
+const badgeRight = el("badge_right");
+const statsEl = el("stats");
+const toastEl = el("toast");
+const missCountEl = el("missCount");
+const byCategoryEl = el("by_category");
+
+const selAll = el("sel_all");
+const selEssentials = el("sel_essentials");
+const selCore = el("sel_core");
+const selHira = el("sel_hira");
+const selKata = el("sel_kata");
+const selBasic = el("sel_basic");
+
+const optRandomSide = el("opt_randomSide");
+const optShuffle = el("opt_shuffle");
+const optLimit = el("opt_limit");
+const optIncorrectOnly = el("opt_incorrectOnly");
+
+/* UPDATE: New Icon Button */
+const btnSpeak = el("btn_speak");
+const btnHint = el("btn_hint");
+const btnSettings = el("btn_settings");
+const btnCloseSettings = el("btn_closeSettings");
+const btnPrev = el("btn_prev");
+const btnNext = el("btn_next");
+const btnFlip = el("btn_flip");
+const btnCorrect = el("btn_correct");
+const btnUnsure = el("btn_unsure");
+const btnIncorrect = el("btn_incorrect");
+
+
+function showToast(msg) {
+  toastEl.textContent = msg || "";
+  if (msg) setTimeout(() => { if (toastEl.textContent === msg) toastEl.textContent = ""; }, 2400);
+}
+function updateMissCount() { missCountEl.textContent = `Incorrect: ${missed.size}`; }
+
+function selectedSets() {
+  const sets = [];
+  if (selEssentials.checked) sets.push(SETS.ESSENTIALS);
+  if (selCore.checked) sets.push(SETS.CORE);
+  if (selBasic.checked) sets.push(SETS.BASIC);
+  if (selHira.checked) sets.push(SETS.HIRAGANA);
+  if (selKata.checked) sets.push(SETS.KATAKANA);
+  return sets;
+}
+
+
+function updateActionState() {
+  const hasDeck = deckView && deckView.length > 0;
+
+  btnPrev.disabled = !hasDeck || deckView.length <= 1;
+  btnNext.disabled = !hasDeck || deckView.length <= 1;
+  btnFlip.disabled = !hasDeck;
+
+  const showUnsure = hasDeck && isFront && !unsureLocked;
+  const showGrade = hasDeck && !isFront && !unsureLocked;
+
+  btnUnsure.classList.toggle("hidden", !showUnsure);
+  btnCorrect.classList.toggle("hidden", !showGrade);
+  btnIncorrect.classList.toggle("hidden", !showGrade);
+
+  btnCorrect.disabled = !showGrade;
+  btnIncorrect.disabled = !showGrade;
+  btnUnsure.disabled = !showUnsure;
+
+  if (btnHint) btnHint.disabled = !hasDeck || !isFront;
+}
+
+
+function applyIncorrectOnlyView() {
+  if (!deckAll.length) { deckView = []; return; }
+  if (!optIncorrectOnly.checked) { deckView = deckAll.slice(); return; }
+  deckView = deckAll.filter(c => missed.has(c.id));
+  if (deckView.length === 0) showToast("No incorrect cards yet.");
+}
+
+function getAllAvailableCategories() {
+  const cats = new Set();
+  for (const setName of Object.keys(VOCAB)) {
+    for (const catName of Object.keys(VOCAB[setName] || {})) cats.add(catName);
+  }
+  cats.add("Gojūon");
+  return Array.from(cats).sort((a,b) => a.localeCompare(b));
+}
+
+function populateCategoryDropdown() {
+  const categories = getAllAvailableCategories();
+  byCategoryEl.innerHTML = `<option value="">(None)</option>` +
+    categories.map(c => `<option value="${c}">${c}</option>`).join("");
+}
+
+function buildDeckByCategory(category) {
+  let cards = [];
+  for (const setName of Object.keys(VOCAB)) {
+    const cats = VOCAB[setName] || {};
+    if (cats[category]) {
+      for (const item of cats[category]) {
+        const id = `${slug(setName)}:${slug(category)}:${slug(item.english)}:${slug(item.japanese)}`;
+        cards.push({ id, set: setName, category, type: "vocab",
+          english: item.english, japanese: item.japanese, romaji: item.romaji, pronunciation: item.pronunciation
+        });
+      }
+    }
+  }
+  if (category === "Gojūon") {
+    cards.push(...buildKanaCards(SETS.HIRAGANA, HIRAGANA));
+    cards.push(...buildKanaCards(SETS.KATAKANA, KATAKANA));
+  }
+  cards = dedupeCards(cards);
+  const limit = parseInt(optLimit.value || "0", 10);
+  if (optShuffle.checked) shuffleInPlace(cards);
+  if (limit > 0) cards = cards.slice(0, limit);
+  return cards;
+}
+
+function rebuildDeck() {
+  const overrideCategory = byCategoryEl.value;
+  let cards = [];
+
+  if (overrideCategory) {
+    cards = buildDeckByCategory(overrideCategory);
+    showToast(`By Category override: ${overrideCategory}`);
+  } else {
+    const sets = selectedSets();
+    if (sets.length === 0) {
+      deckAll = []; deckView = []; index = 0; isFront = true;
+      showHintOnFront = false;
+      mobileSettingsOpen = false;
+      document.body.classList.remove("studying","showSettings");
+      render();
+      showToast("Select at least one set (or choose By Category).");
+      return;
+    }
+    for (const s of sets) {
+      if (s === SETS.HIRAGANA) cards.push(...buildKanaCards(SETS.HIRAGANA, HIRAGANA));
+      else if (s === SETS.KATAKANA) cards.push(...buildKanaCards(SETS.KATAKANA, KATAKANA));
+      else cards.push(...buildCardsFromVocab(s));
+    }
+    cards = dedupeCards(cards);
+    const limit = parseInt(optLimit.value || "0", 10);
+    if (optShuffle.checked) shuffleInPlace(cards);
+    if (limit > 0) cards = cards.slice(0, limit);
+  }
+
+  deckAll = cards;
+  perCardFrontIsEnglish = new Map();
+  index = 0;
+  isFront = true;
+  showHintOnFront = false;
+  mobileSettingsOpen = false;
+  document.body.classList.remove("studying","showSettings");
+
+  applyIncorrectOnlyView();
+  showToast(`Built deck with ${deckAll.length} cards.`);
+  render();
+}
+
+function computeFrontForCard(card) {
+  if (!optRandomSide.checked) {
+    if (card.type === "kana") return false;
+    return true;
+  }
+  if (perCardFrontIsEnglish.has(card.id)) return perCardFrontIsEnglish.get(card.id);
+  const val = Math.random() < 0.5;
+  perCardFrontIsEnglish.set(card.id, val);
+  return val;
+}
+
+function faceContent(card, showEnglishFace) {
+  if (card.type === "kana") {
+    if (showEnglishFace) {
+      return { big: card.romaji.toUpperCase(), mid: `Pronunciation: ${card.pronunciation}`, small: `Kana: ${card.japanese}` };
+    } else {
+      return { big: card.japanese, mid: `${card.romaji.toUpperCase()} · Pronunciation: ${card.pronunciation}`, small: `Kana: ${card.japanese}` };
+    }
+  }
+
+  if (showEnglishFace) return { big: card.english, mid: "", small: "" };
+
+  return {
+    big: card.romaji || "",
+    mid: card.japanese || "",
+    small: `Pronunciation: ${card.pronunciation || ""}`
+  };
+}
+
+function getCurrentCard() {
+  if (!deckView.length) return null;
+  return deckView[index];
+}
+
+/* Speech */
+function initSpeech() {
+  speechSupported = !!window.speechSynthesis && !!window.SpeechSynthesisUtterance;
+  if (!speechSupported) {
+    btnSpeak.disabled = true;
+    btnSpeak.title = "Speech not supported in this browser.";
+    return;
+  }
+
+  const loadVoices = () => {
+    const voices = window.speechSynthesis.getVoices() || [];
+    jaVoice = voices.find(v => (v.lang || "").toLowerCase() === "ja-jp")
+          || voices.find(v => (v.lang || "").toLowerCase().startsWith("ja"))
+          || null;
+    const t = jaVoice ? `Speak (voice: ${jaVoice.name})` : "Speak (Japanese voice not found)";
+    btnSpeak.title = t;
+  };
+
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = () => loadVoices();
+}
+
+function speakJapaneseForCard(card) {
+  if (!speechSupported) { showToast("Speech not supported."); return; }
+  if (!card) return;
+
+  const text = (card.japanese || "");
+  if (!text.trim()) { return; }
+
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "ja-JP";
+    if (jaVoice) u.voice = jaVoice;
+    u.rate = 0.95;
+    u.pitch = 1.0;
+    // Removed onstart toast to reduce noise during autoplay
+    u.onerror = () => showToast("Unable to play speech.");
+    window.speechSynthesis.speak(u);
+  } catch {
+    showToast("Unable to play speech.");
+  }
+}
+
+/* UI actions */
+function render() {
+  updateMissCount();
+
+  const isMobile = window.matchMedia && window.matchMedia("(max-width: 720px)").matches;
+  const hasBuiltDeck = deckAll && deckAll.length > 0;
+  document.body.classList.toggle("studying", !!(isMobile && hasBuiltDeck));
+  if (typeof updateSettingsButtons === "function") updateSettingsButtons();
+
+  if (!deckView || deckView.length === 0) {
+    badgeLeft.textContent = "—";
+    badgeRight.textContent = optIncorrectOnly.checked ? "Incorrect Only" : "—";
+    bigEl.textContent = deckAll.length ? "No cards in this view" : "Build a deck to start";
+    midJpEl.classList.add("hidden");
+    midJpEl.textContent = "";
+    midTxtEl.classList.remove("hidden");
+    midTxtEl.textContent = deckAll.length
+      ? "You have no incorrect cards yet (or you cleared them)."
+      : "Select sets on the left, then click Build Deck.";
+    smallEl.textContent = "";
+    statsEl.textContent = deckAll.length
+      ? `Deck: ${deckAll.length} · Incorrect: ${missed.size}`
+      : "Deck not built yet.";
+
+    el("btn_prev").disabled = true;
+    el("btn_next").disabled = true;
+    el("btn_flip").disabled = true;
+
+    btnSpeak.classList.add("hidden");
+    btnSpeak.disabled = true;
+
+    updateActionState();
+    return;
+  }
+
+  const card = deckView[index];
+  const frontIsEnglish = computeFrontForCard(card);
+  const showEnglishFace = isFront ? frontIsEnglish : !frontIsEnglish;
+  const japaneseFaceShowing = !showEnglishFace;
+
+  const content = faceContent(card, showEnglishFace);
+
+  badgeLeft.textContent = `${card.set}`;
+  badgeRight.textContent = `${card.category}${optIncorrectOnly.checked ? " · Incorrect Only" : ""}`;
+
+  const hideMeta = isFront && !showHintOnFront;
+  badgeLeft.classList.toggle("hidden", hideMeta);
+  badgeRight.classList.toggle("hidden", hideMeta);
+  if (btnHint) btnHint.classList.toggle("hidden", !isFront);
+
+  bigEl.textContent = content.big;
+
+  const isVocabJapaneseFace = (card.type === "vocab") && japaneseFaceShowing;
+  if (isVocabJapaneseFace && content.mid) {
+    midJpEl.textContent = content.mid;
+    midJpEl.classList.remove("hidden");
+    midTxtEl.classList.add("hidden");
+    midTxtEl.textContent = "";
+  } else {
+    midJpEl.classList.add("hidden");
+    midJpEl.textContent = "";
+    midTxtEl.classList.remove("hidden");
+    midTxtEl.textContent = content.mid || (isFront ? "Click to flip" : "");
+  }
+
+  smallEl.textContent = content.small || "";
+  statsEl.textContent = `Card ${index + 1} / ${deckView.length} · ${isFront ? "Front" : "Back"} · Deck: ${deckAll.length} · Incorrect: ${missed.size}`;
+
+  const navDisabled = deckView.length <= 1;
+  el("btn_prev").disabled = navDisabled;
+  el("btn_next").disabled = navDisabled;
+  el("btn_flip").disabled = false;
+
+  updateActionState();
+
+  /* UPDATE: Audio Logic */
+  const canSpeakNow = speechSupported && japaneseFaceShowing;
+  btnSpeak.classList.toggle("hidden", !canSpeakNow);
+  btnSpeak.disabled = !canSpeakNow;
+  
+  // UPDATE: Autoplay Trigger
+  if (canSpeakNow && card) {
+    setTimeout(() => {
+       speakJapaneseForCard(card);
+    }, 50);
+  }
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function flip() {
+  showHintOnFront = false;
+  unsureLocked = false;
+  if (!deckView.length) return;
+  isFront = !isFront;
+  render();
+}
+function next() {
+  showHintOnFront = false;
+  unsureLocked = false;
+  if (!deckView.length) return; index = (index + 1) % deckView.length; isFront = true;
+  showHintOnFront = false;
+  mobileSettingsOpen = false;
+  document.body.classList.remove("studying","showSettings"); render(); }
+function prev() {
+  showHintOnFront = false;
+  if (!deckView.length) return; index = (index - 1 + deckView.length) % deckView.length; isFront = true;
+  showHintOnFront = false;
+  mobileSettingsOpen = false;
+  document.body.classList.remove("studying","showSettings"); render(); }
+
+
+function markCorrect() {
+  if (!deckView.length) return;
+  if (isFront) { showToast("Flip first to see the answer."); return; }
+  showToast("Correct.");
+  if (deckView.length > 1) next();
+  else { isFront = true;
+  showHintOnFront = false;
+  mobileSettingsOpen = false;
+  document.body.classList.remove("studying","showSettings"); render(); }
+}
+
+
+function markIncorrect() {
+  if (!deckView.length) return;
+  if (isFront) { showToast("Flip first to see the answer."); return; }
+  const card = deckView[index];
+  missed.add(card.id);
+  applyIncorrectOnlyView();
+  showToast("Incorrect.");
+  if (deckView.length > 1) next();
+  else { isFront = true;
+  showHintOnFront = false;
+  mobileSettingsOpen = false;
+  document.body.classList.remove("studying","showSettings"); render(); }
+}
+
+
+function markUnsure() {
+  if (!deckView.length) return;
+  const card = deckView[index];
+  missed.add(card.id);
+  applyIncorrectOnlyView();
+
+  if (isFront) {
+    isFront = false;
+    unsureLocked = true;
+    showToast("Unsure → marked incorrect. (Flipped to answer)");
+    render();
+  } else {
+    showToast("Unsure → Incorrect.");
+    if (deckView.length > 1) next();
+    else {
+      isFront = true;
+      showHintOnFront = false;
+      mobileSettingsOpen = false;
+      document.body.classList.remove("studying","showSettings");
+      render();
+    }
+  }
+}
+
+
+function clearMisses() { missed.clear(); applyIncorrectOnlyView(); index = 0; isFront = true;
+  showHintOnFront = false;
+  mobileSettingsOpen = false;
+  document.body.classList.remove("studying","showSettings"); showToast("Cleared incorrect list."); render(); }
+
+
+function resetUI() {
+  selAll.checked = false;
+  selEssentials.checked = false;
+  selCore.checked = true;
+  selHira.checked = false;
+  selKata.checked = false;
+  selBasic.checked = false;
+
+  byCategoryEl.value = "";
+  optRandomSide.checked = true;
+  optShuffle.checked = true;
+  optLimit.value = 0;
+  optIncorrectOnly.checked = false;
+
+  deckAll = [];
+  deckView = [];
+  index = 0;
+  isFront = true;
+  showHintOnFront = false;
+  perCardFrontIsEnglish = new Map();
+  missed.clear();
+
+  mobileSettingsOpen = false;
+  document.body.classList.remove("studying","showSettings");
+
+  if (speechSupported) window.speechSynthesis.cancel();
+
+  render();
+  showToast("Reset to defaults.");
+}
+
+
+function syncSelectAllCheckbox() {
+  const allChecked = selEssentials.checked && selCore.checked && selBasic.checked && selHira.checked && selKata.checked;
+  const noneChecked = !selEssentials.checked && !selCore.checked && !selBasic.checked && !selHira.checked && !selKata.checked;
+  selAll.indeterminate = !allChecked && !noneChecked;
+  selAll.checked = allChecked;
+}
+selAll.addEventListener("change", () => {
+  const v = selAll.checked;
+  selEssentials.checked = v;
+  selCore.checked = v;
+  selBasic.checked = v;
+  selHira.checked = v;
+  selKata.checked = v;
+  syncSelectAllCheckbox();
+});
+[selEssentials, selCore, selBasic, selHira, selKata].forEach(cb => cb.addEventListener("change", syncSelectAllCheckbox));
+
+el("btn_build").addEventListener("click", rebuildDeck);
+el("btn_reset").addEventListener("click", resetUI);
+
+el("btn_flip").addEventListener("click", flip);
+el("btn_next").addEventListener("click", next);
+el("btn_prev").addEventListener("click", prev);
+
+el("btn_correct").addEventListener("click", (e) => { e.stopPropagation(); markCorrect(); });
+el("btn_incorrect").addEventListener("click", (e) => { e.stopPropagation(); markIncorrect(); });
+el("btn_unsure").addEventListener("click", (e) => { e.stopPropagation(); markUnsure(); });
+
+btnSpeak.addEventListener("click", (e) => {
+  e.stopPropagation();
+  const card = getCurrentCard();
+  if (!card) return;
+  speakJapaneseForCard(card);
+});
+
+el("btn_clearMisses").addEventListener("click", clearMisses);
+
+optIncorrectOnly.addEventListener("change", () => {
+  applyIncorrectOnlyView();
+  index = 0;
+  isFront = true;
+  render();
+});
+
+byCategoryEl.addEventListener("change", () => {
+  if (byCategoryEl.value) showToast(`By Category selected: ${byCategoryEl.value} (will override on Build Deck)`);
+  else showToast("By Category cleared. Using Study Sets.");
+});
+
+
+if (btnHint) {
+  btnHint.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (!deckView.length) return;
+    showHintOnFront = true;
+    showToast("Hint: set/category revealed on the front.");
+    render();
+  });
+}
+
+if (btnSettings && btnCloseSettings) {
+  function isMobileViewport(){ return window.matchMedia("(max-width: 720px)").matches; }
+  function updateSettingsButtons(){
+    const studying = document.body.classList.contains("studying") && isMobileViewport();
+    btnSettings.classList.toggle("hidden", !studying);
+    btnCloseSettings.classList.toggle("hidden", !(studying && mobileSettingsOpen));
+  }
+  function toggleSettingsOverlay(open){
+    mobileSettingsOpen = (open !== undefined) ? !!open : !mobileSettingsOpen;
+    document.body.classList.toggle("showSettings", mobileSettingsOpen);
+    updateSettingsButtons();
+  }
+  btnSettings.addEventListener("click", (e)=>{ e.stopPropagation(); toggleSettingsOverlay(true); });
+  btnCloseSettings.addEventListener("click", (e)=>{ e.stopPropagation(); toggleSettingsOverlay(false); });
+  window.addEventListener("resize", updateSettingsButtons);
+}
+
+cardEl.addEventListener("click", flip);
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === " " || e.code === "Space" || e.key === "ArrowUp" || e.key === "ArrowDown") {
+    e.preventDefault();
+    flip();
+    return;
+  }
+  if (e.key === "ArrowRight") { next(); return; }
+  if (e.key === "ArrowLeft") { prev(); return; }
+});
+
+populateCategoryDropdown();
+syncSelectAllCheckbox();
+initSpeech();
+render();
+</script>
+</body>
+</html>
