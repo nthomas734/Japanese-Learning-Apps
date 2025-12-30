@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Japanese Flash Cards — v1.9.1</title>
+  <title>Japanese Flash Cards — v1.11.0</title>
 
   <style>
     :root{
@@ -27,7 +27,7 @@
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
+    html,body{ min-height:100%; height:auto; }
     body{
       margin:0;
       font-family:var(--sans);
@@ -49,7 +49,10 @@
     }
     .title{ display:flex; flex-direction:column; gap:6px; }
     .title h1{ margin:0; font-size:22px; letter-spacing:.2px; font-weight:720; }
-    .title .sub{ color:var(--muted); font-size:13px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    
+    /* UPDATED: Subtitle Link Styling */
+    .title .sub a { color:var(--muted); text-decoration:none; font-size:13px; border-bottom:1px dotted var(--muted); transition: color 0.2s; }
+    .title .sub a:hover { color:var(--accent); border-bottom-color:var(--accent); }
     
     .badgeTop{
       display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border);
@@ -66,7 +69,14 @@
 
     main{
       max-width:1200px; margin:0 auto; padding:14px 14px 28px;
-      display:grid; grid-template-columns: 360px 1fr; gap:14px; align-items:start;
+      display:grid; grid-template-columns: 360px 1fr; gap:14px;
+    }
+
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      height: 100%;
     }
 
     .panel{
@@ -80,7 +90,6 @@
       padding:14px 14px 12px; border-bottom:1px solid rgba(255,255,255,.06);
       background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
       display:flex; align-items:center; justify-content:space-between; gap:12px;
-      /* FIX: Explicit rounding to match container */
       border-radius: var(--radius2) var(--radius2) 0 0;
     }
     .panel .bd{ padding:14px; }
@@ -125,8 +134,6 @@
     }
     .small{font-size:12px; color:var(--muted2)}
     .muted{color:var(--muted); font-size:13px; line-height:1.35}
-
-    #workspace{ padding:14px; }
 
     .flashcard {
       position:relative; min-height:300px; border-radius:22px;
@@ -177,12 +184,8 @@
 
     .controls{ display:flex; flex-direction:column; gap:10px; margin-top:12px; }
     .controls .row{justify-content:center}
-    .stats{ text-align:center; color:var(--muted); font-size:13px; margin-top:6px; }
-    .toast {
-      margin-top: 6px; color: var(--muted); font-size: 12px; min-height: 16px;
-      padding: 8px 10px; border: 1px solid color-mix(in srgb, var(--border), #000 20%);
-      border-radius: 12px; background: rgba(0,0,0,.18);
-    }
+    
+    .stats{ text-align:center; color:var(--muted); font-size:15px; font-weight:600; margin-top:6px; letter-spacing: 0.3px; }
 
     .cardActions{
       position:absolute; left:14px; right:14px; bottom:14px;
@@ -191,16 +194,57 @@
     .cardActions button{ flex:1; min-width:0; }
     .cardActions button#btn_unsure{ flex:1.1; }
 
+    .toast {
+      margin-top: 12px; text-align: center; color: var(--text); font-size: 15px; font-weight: 700;
+      min-height: 24px; opacity: 0; transition: opacity 0.2s;
+    }
+    .toast.visible { opacity: 1; }
+    .toast.good { color: var(--good); text-shadow: 0 0 10px rgba(61,220,151,0.2); }
+    .toast.bad { color: var(--bad); text-shadow: 0 0 10px rgba(255,93,108,0.2); }
+    .toast.warn { color: var(--warn); }
+
+    /* SEPARATE PROGRESS PANEL STYLES */
+    #progress-section {
+      flex: 1; 
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      min-height: 140px; padding: 20px 24px;
+      gap: 12px;
+    }
+
+    .progress-text {
+      font-size: 14px; font-weight: 600; color: var(--muted); letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 32px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .progress-segment { height: 100%; transition: width 0.3s ease; }
+    .seg-green { background: var(--good); box-shadow: 0 0 10px rgba(61,220,151,0.3); }
+    .seg-red { background: var(--bad); box-shadow: 0 0 10px rgba(255,93,108,0.3); }
+    
+    .streak-container {
+      display: flex; align-items: center; gap: 8px; justify-content: center;
+      height: 32px; font-weight: 700; font-size: 15px; color: var(--text);
+    }
+    .streak-icon { font-size: 24px; }
+
     @media (max-width: 720px) {
-      main{ grid-template-columns: 1fr; }
+      main{ grid-template-columns: 1fr; height: auto; }
       body.studying #sidebar { display: none; }
-      body.studying #workspace { margin-top: 0; }
-      body.studying .flashcard { margin-bottom: 34px; }
-      body.studying #workspace { padding-bottom: 26px; }
+      body.studying .flashcard { margin-bottom: 20px; }
       body.studying .settingsToggle { display: inline-flex; }
       body.studying.showSettings #sidebar { display: block; position: fixed; inset: 0; z-index: 1000; overflow: auto; padding-bottom: 24px; background:var(--bg); }
       body.studying.showSettings #workspace { filter: blur(2px); }
       body.studying.showSettings .closeSettings { display: inline-flex; }
+      .right-col { height: auto; }
+      #progress-section { min-height: auto; padding: 24px; margin-bottom: 30px; }
     }
   </style>
 </head>
@@ -209,7 +253,7 @@
   <header>
     <div class="title">
       <h1>Japanese Flash Cards</h1>
-      <div class="sub"><span class="ver">v1.9.1</span></div>
+      <div class="sub"><a href="https://github.com/nthomas734/Japanese-Learning-Apps/tree/main" target="_blank">GitHub Repository</a></div>
     </div>
     <div class="badgeTop" title="Local, single-file app"><span class="dot"></span><span class="mono">offline-ready</span></div>
   </header>
@@ -224,8 +268,8 @@
         </div>
         <div class="row">
           <div class="pill"><input id="sel_essentials" type="checkbox" checked /><label for="sel_essentials">Essentials</label></div>
-          <div class="pill"><input id="sel_travel" type="checkbox" checked /><label for="sel_travel">Travel Vocab</label></div>
-          <div class="pill"><input id="sel_basic" type="checkbox" /><label for="sel_basic">Basic Vocab</label></div>
+          <div class="pill"><input id="sel_travel" type="checkbox" checked /><label for="sel_travel">Travel</label></div>
+          <div class="pill"><input id="sel_basic" type="checkbox" /><label for="sel_basic">Beginner</label></div>
         </div>
 
         <div class="section-label">Japanese Scripts</div>
@@ -286,52 +330,61 @@
       </div>
     </section>
 
-    <section class="panel" id="workspace">
-      <h2>Study <span class="small mono">v1.9.1</span></h2>
-      <div class="bd">
-        <div class="flashcard" id="card" tabindex="0" title="Click to flip">
-          <button id="btn_speak" class="btn-audio-card hidden" type="button" title="Play Audio">
-            <svg viewBox="0 0 24 24"><path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16.03C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z"></path></svg>
-          </button>
+    <div class="right-col">
+        <section class="panel" id="workspace">
+          <h2>Study <span class="small mono">v1.11.0</span></h2>
+          <div class="bd">
+            <div class="flashcard" id="card" tabindex="0" title="Click to flip">
+              <button id="btn_speak" class="btn-audio-card hidden" type="button" title="Play Audio">
+                <svg viewBox="0 0 24 24"><path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16.03C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z"></path></svg>
+              </button>
 
-          <div class="badge" id="badge_left">—</div>
-          <div class="badge right" id="badge_right">—</div>
-          <div class="content">
-            <div class="big" id="big">Build a deck to start</div>
-            <div class="mid_jp hidden" id="mid_jp"></div>
-            <div class="mid_txt" id="mid_txt"></div>
-            <div class="smallLine" id="small"></div>
-            <div class="cardActions" id="card_actions" aria-label="Answer actions">
-              <button class="good" id="btn_correct" type="button">Correct</button>
-              <button class="warn" id="btn_unsure" type="button">Unsure</button>
-              <button class="bad" id="btn_incorrect" type="button">Incorrect</button>
+              <div class="badge" id="badge_left">—</div>
+              <div class="badge right" id="badge_right">—</div>
+              <div class="content">
+                <div class="big" id="big">Build a deck to start</div>
+                <div class="mid_jp hidden" id="mid_jp"></div>
+                <div class="mid_txt" id="mid_txt"></div>
+                <div class="smallLine" id="small"></div>
+                <div class="cardActions" id="card_actions" aria-label="Answer actions">
+                  <button class="good" id="btn_correct" type="button">Correct</button>
+                  <button class="warn" id="btn_unsure" type="button">Unsure</button>
+                  <button class="bad" id="btn_incorrect" type="button">Incorrect</button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div class="controls">
-          <div class="row">
-            <button id="btn_prev">← Prev</button>
-            <button id="btn_hint" class="ghost" type="button">Hint</button>
-            <button class="primary" id="btn_flip">Flip</button>
-            <button id="btn_next">Next →</button>
+            <div class="controls" id="controls_area">
+              <div class="row">
+                <button id="btn_prev">← Prev</button>
+                <button id="btn_hint" class="ghost" type="button">Hint</button>
+                <button class="primary" id="btn_flip">Flip</button>
+                <button id="btn_next">Next →</button>
+              </div>
+              <div class="stats" id="stats">Deck not built yet.</div>
+              <button id="btn_settings" class="ghost settingsToggle hidden" type="button">Settings</button>
+            </div>
+            
+            <div class="toast" id="toast"></div>
           </div>
-          <div class="stats" id="stats">Deck not built yet.</div>
-          <button id="btn_settings" class="ghost settingsToggle hidden" type="button">Settings</button>
-        </div>
-        <div class="toast" id="toast"></div>
-      </div>
-    </section>
+        </section>
+
+        <section class="panel" id="progress-section">
+            <div class="progress-text" id="progress_text">0 / 0 Correct</div>
+            <div class="progress-track" id="progress_track"></div>
+            <div class="streak-container" id="streak_container"></div>
+        </section>
+    </div>
   </main>
 
 <script>
-/* ========= Japanese Flash Cards — v1.9.1 ========= */
-const APP = { version: "1.9.1", build: 39 };
+/* ========= Japanese Flash Cards — v1.11.0 ========= */
+const APP = { version: "1.11.0", build: 44 };
 
 const SETS = {
   ESSENTIALS: "Essentials",
-  TRAVEL: "Travel Vocab",
-  BASIC: "Basic Vocab",
+  TRAVEL: "Travel",
+  BASIC: "Beginner",
   HIRAGANA: "Hiragana",
   KATAKANA: "Katakana",
   KANJI: "Kanji"
@@ -512,83 +565,6 @@ const VOCAB = {
       { english: "3000", japanese: "三千", romaji: "sanzen", pronunciation: "sahn-zen" },
       { english: "5000", japanese: "五千", romaji: "gosen", pronunciation: "goh-sen" }
     ],
-    "Time & Dates": [
-      { english: "Sunday", japanese: "日曜日", romaji: "Nichiyōbi", pronunciation: "nee-chee-yoh-bee" },
-      { english: "Monday", japanese: "月曜日", romaji: "Getsuyōbi", pronunciation: "geh-tsoo-yoh-bee" },
-      { english: "Tuesday", japanese: "火曜日", romaji: "Kayōbi", pronunciation: "kah-yoh-bee" },
-      { english: "Wednesday", japanese: "水曜日", romaji: "Suiyōbi", pronunciation: "soo-ee-yoh-bee" },
-      { english: "Thursday", japanese: "木曜日", romaji: "Mokuyōbi", pronunciation: "moh-koo-yoh-bee" },
-      { english: "Friday", japanese: "金曜日", romaji: "Kinyōbi", pronunciation: "keen-yoh-bee" },
-      { english: "Saturday", japanese: "土曜日", romaji: "Doyōbi", pronunciation: "doh-yoh-bee" },
-      { english: "January", japanese: "一月", romaji: "Ichigatsu", pronunciation: "ee-chee-gah-tsoo" },
-      { english: "February", japanese: "二月", romaji: "Nigatsu", pronunciation: "nee-gah-tsoo" },
-      { english: "March", japanese: "三月", romaji: "Sangatsu", pronunciation: "sahn-gah-tsoo" },
-      { english: "April", japanese: "四月", romaji: "Shigatsu", pronunciation: "shee-gah-tsoo" },
-      { english: "May", japanese: "五月", romaji: "Gogatsu", pronunciation: "goh-gah-tsoo" },
-      { english: "June", japanese: "六月", romaji: "Rokugatsu", pronunciation: "roh-koo-gah-tsoo" },
-      { english: "July", japanese: "七月", romaji: "Shichigatsu", pronunciation: "shee-chee-gah-tsoo" },
-      { english: "August", japanese: "八月", romaji: "Hachigatsu", pronunciation: "hah-chee-gah-tsoo" },
-      { english: "September", japanese: "九月", romaji: "Kugatsu", pronunciation: "koo-gah-tsoo" },
-      { english: "October", japanese: "十月", romaji: "Jūgatsu", pronunciation: "joo-gah-tsoo" },
-      { english: "November", japanese: "十一月", romaji: "Jūichigatsu", pronunciation: "joo-ee-chee-gah-tsoo" },
-      { english: "December", japanese: "十二月", romaji: "Jūnigatsu", pronunciation: "joo-nee-gah-tsoo" },
-      { english: "Today", japanese: "今日", romaji: "Kyō", pronunciation: "kyoh" },
-      { english: "Yesterday", japanese: "昨日", romaji: "Kinō", pronunciation: "kee-noh" },
-      { english: "Tomorrow", japanese: "明日", romaji: "Ashita", pronunciation: "ah-shee-tah" },
-      { english: "This week", japanese: "今週", romaji: "Konshū", pronunciation: "kohn-shoo" },
-      { english: "Last week", japanese: "先週", romaji: "Senshū", pronunciation: "sen-shoo" },
-      { english: "Next week", japanese: "来週", romaji: "Raishū", pronunciation: "rye-shoo" },
-      { english: "This month", japanese: "今月", romaji: "Kongetsu", pronunciation: "kohn-geh-tsoo" },
-      { english: "Last month", japanese: "先月", romaji: "Sengetsu", pronunciation: "sen-geh-tsoo" },
-      { english: "Next month", japanese: "来月", romaji: "Raigetsu", pronunciation: "rye-gee-tsoo" },
-      { english: "This year", japanese: "今年", romaji: "Kotoshi", pronunciation: "koh-toh-shee" },
-      { english: "Last year", japanese: "去年", romaji: "Kyonen", pronunciation: "kyoh-nen" },
-      { english: "Next year", japanese: "来年", romaji: "Rainen", pronunciation: "rye-nen" },
-      { english: "1 o'clock", japanese: "一時", romaji: "ichi-ji", pronunciation: "ichi-ji" },
-      { english: "2 o'clock", japanese: "二時", romaji: "ni-ji", pronunciation: "ni-ji" },
-      { english: "3 o'clock", japanese: "三時", romaji: "san-ji", pronunciation: "san-ji" },
-      { english: "4 o'clock", japanese: "四時", romaji: "yon-ji", pronunciation: "yon-ji" },
-      { english: "5 o'clock", japanese: "五時", romaji: "go-ji", pronunciation: "go-ji" },
-      { english: "6 o'clock", japanese: "六時", romaji: "roku-ji", pronunciation: "roku-ji" },
-      { english: "7 o'clock", japanese: "七時", romaji: "nana-ji", pronunciation: "nana-ji" },
-      { english: "8 o'clock", japanese: "八時", romaji: "hachi-ji", pronunciation: "hachi-ji" },
-      { english: "9 o'clock", japanese: "九時", romaji: "ku-ji", pronunciation: "ku-ji" },
-      { english: "10 o'clock", japanese: "十時", romaji: "juu-ji", pronunciation: "juu-ji" },
-      { english: "11 o'clock", japanese: "十一時", romaji: "juu-ichi-ji", pronunciation: "juu-ichi-ji" },
-      { english: "12 o'clock", japanese: "十二時", romaji: "juu-ni-ji", pronunciation: "juu-ni-ji" }
-    ],
-    "Places": [
-      { english: "Station", japanese: "駅", romaji: "Eki", pronunciation: "eh-kee" },
-      { english: "Hospital", japanese: "病院", romaji: "Byōin", pronunciation: "byoh-een" },
-      { english: "Money exchange", japanese: "両替", romaji: "Ryōgae", pronunciation: "ryoh-guy" },
-      { english: "Bank", japanese: "銀行", romaji: "Ginkō", pronunciation: "geen-koh" },
-      { english: "Police station", japanese: "警察署", romaji: "Keisatsusho", pronunciation: "kay-sah-tsoo-shoh" },
-      { english: "Post office", japanese: "郵便局", romaji: "Yūbinkyoku", pronunciation: "yoo-been-kyoh-koo" },
-      { english: "Convenience store", japanese: "コンビニ", romaji: "Konbini", pronunciation: "kohn-bee-nee" },
-      { english: "Bakery", japanese: "パン屋", romaji: "Pan-ya", pronunciation: "pahn-yah" },
-      { english: "Store / Shop", japanese: "店", romaji: "Mise", pronunciation: "mee-seh" },
-      { english: "Supermarket", japanese: "スーパー", romaji: "Sūpā", pronunciation: "soo-pah" },
-      { english: "Airport", japanese: "空港", romaji: "Kūkō", pronunciation: "koo-koh" },
-      { english: "Bus stop", japanese: "バス停", romaji: "Basutei", pronunciation: "bah-soo-tay" },
-      { english: "Port", japanese: "港", romaji: "Minato", pronunciation: "mee-nah-toh" },
-      { english: "Shrine", japanese: "神社", romaji: "Jinja", pronunciation: "jeen-jah" },
-      { english: "Temple", japanese: "お寺", romaji: "Otera", pronunciation: "oh-teh-rah" },
-      { english: "Town", japanese: "町", romaji: "Machi", pronunciation: "mah-chee" },
-      { english: "Hotel", japanese: "ホテル", romaji: "Hoteru", pronunciation: "hoh-teh-roo" },
-      { english: "Reception", japanese: "受付", romaji: "Uketsuke", pronunciation: "oo-keh-tsoo-keh" }
-    ],
-    "Colors": [
-      { english: "Red", japanese: "赤", romaji: "Aka", pronunciation: "ah-kah" },
-      { english: "Blue", japanese: "青", romaji: "Ao", pronunciation: "ah-oh" },
-      { english: "Yellow", japanese: "黄色", romaji: "Kiiro", pronunciation: "kee-ee-roh" },
-      { english: "Green", japanese: "緑", romaji: "Midori", pronunciation: "mee-doh-ree" },
-      { english: "White", japanese: "白", romaji: "Shiro", pronunciation: "shee-roh" },
-      { english: "Black", japanese: "黒", romaji: "Kuro", pronunciation: "koo-roh" },
-      { english: "Purple", japanese: "紫", romaji: "Murasaki", pronunciation: "moo-rah-sah-kee" },
-      { english: "Orange", japanese: "オレンジ", romaji: "Orenji", pronunciation: "oh-ren-jee" },
-      { english: "Pink", japanese: "ピンク", romaji: "Pinku", pronunciation: "peen-koo" },
-      { english: "Brown", japanese: "茶色", romaji: "Chairo", pronunciation: "chah-ee-roh" }
-    ],
     "Essential Verbs": [
       { english: "to eat", japanese: "食べる", romaji: "Taberu", pronunciation: "tah-beh-roo" },
       { english: "to go", japanese: "行く", romaji: "Iku", pronunciation: "ee-koo" },
@@ -729,6 +705,11 @@ let perCardFrontIsEnglish = new Map();
 let mobileSettingsOpen = false;
 const missed = new Set();
 
+// Progress & Streak
+let currentStreak = 0;
+let answerHistory = []; // Array of 'correct' | 'incorrect'
+let correctCount = 0;
+
 // speech
 let speechSupported = false;
 let jaVoice = null;
@@ -746,6 +727,11 @@ const statsEl = el("stats");
 const toastEl = el("toast");
 const missCountEl = el("missCount");
 const byCategoryEl = el("by_category");
+const cardActionsEl = el("card_actions");
+const controlsArea = el("controls_area");
+const progressText = el("progress_text");
+const progressTrack = el("progress_track");
+const streakContainer = el("streak_container");
 
 const selAllVocab = el("sel_all_vocab");
 const selAllScripts = el("sel_all_scripts");
@@ -773,10 +759,21 @@ const btnUnsure = el("btn_unsure");
 const btnIncorrect = el("btn_incorrect");
 
 
-function showToast(msg) {
-  toastEl.textContent = msg || "";
-  if (msg) setTimeout(() => { if (toastEl.textContent === msg) toastEl.textContent = ""; }, 2400);
+function showToast(msg, type) {
+  if (!msg) {
+    toastEl.textContent = "";
+    toastEl.className = "toast";
+    return;
+  }
+  toastEl.textContent = msg;
+  toastEl.className = "toast visible " + (type || "");
+  setTimeout(() => { 
+    if (toastEl.textContent === msg) {
+        toastEl.classList.remove("visible");
+    }
+  }, 2000);
 }
+
 function updateMissCount() { missCountEl.textContent = `Incorrect: ${missed.size}`; }
 
 function selectedSets() {
@@ -793,9 +790,20 @@ function selectedSets() {
 
 function updateActionState() {
   const hasDeck = deckView && deckView.length > 0;
+  const isDone = index >= deckView.length;
 
-  btnPrev.disabled = !hasDeck || deckView.length <= 1;
-  btnNext.disabled = !hasDeck || deckView.length <= 1;
+  if (isDone) {
+    btnPrev.disabled = false; // allow going back to review
+    btnNext.disabled = true;
+    btnFlip.disabled = true;
+    cardActionsEl.classList.add("hidden");
+    if (btnHint) btnHint.disabled = true;
+    return;
+  }
+
+  cardActionsEl.classList.remove("hidden");
+  btnPrev.disabled = !hasDeck || index === 0;
+  btnNext.disabled = !hasDeck || isDone; // Should be impossible if linear
   btnFlip.disabled = !hasDeck;
 
   const showUnsure = hasDeck && isFront && !unsureLocked;
@@ -817,7 +825,7 @@ function applyIncorrectOnlyView() {
   if (!deckAll.length) { deckView = []; return; }
   if (!optIncorrectOnly.checked) { deckView = deckAll.slice(); return; }
   deckView = deckAll.filter(c => missed.has(c.id));
-  if (deckView.length === 0) showToast("No incorrect cards yet.");
+  if (deckView.length === 0) showToast("No incorrect cards yet.", "warn");
 }
 
 function getAllAvailableCategories() {
@@ -878,7 +886,7 @@ function rebuildDeck() {
       mobileSettingsOpen = false;
       document.body.classList.remove("studying","showSettings");
       render();
-      showToast("Select at least one set (or choose By Category).");
+      showToast("Select at least one set (or choose By Category).", "warn");
       return;
     }
     for (const s of sets) {
@@ -894,12 +902,18 @@ function rebuildDeck() {
   }
 
   deckAll = cards;
+  // FIX: Clear randomization history on new deck build
   perCardFrontIsEnglish = new Map();
   index = 0;
   isFront = true;
   showHintOnFront = false;
   mobileSettingsOpen = false;
   document.body.classList.remove("studying","showSettings");
+  
+  // Reset Progress
+  currentStreak = 0;
+  answerHistory = [];
+  correctCount = 0;
 
   applyIncorrectOnlyView();
   showToast(`Built deck with ${deckAll.length} cards.`);
@@ -927,10 +941,8 @@ function faceContent(card, showEnglishFace) {
   // KANA
   if (card.type === "kana") {
     if (showEnglishFace) {
-      // Back side: Romaji, Pronunciation, Large Kana (no 'Kana:' label)
       return { big: card.romaji.toUpperCase(), mid: `Pronunciation: ${card.pronunciation}`, small: card.japanese };
     } else {
-      // Front side: Strict big kana
       return { big: card.japanese, mid: "", small: "" };
     }
   }
@@ -938,10 +950,8 @@ function faceContent(card, showEnglishFace) {
   // KANJI
   if (card.type === "kanji") {
     if (showEnglishFace) {
-      // Back side: Meaning (English), Reading (Romaji), Character
       return { big: card.english, mid: `Reading: ${card.romaji}`, small: card.japanese };
     } else {
-      // Front side: Strict big Kanji
       return { big: card.japanese, mid: "", small: "" };
     }
   }
@@ -956,57 +966,43 @@ function faceContent(card, showEnglishFace) {
   };
 }
 
-function getCurrentCard() {
-  if (!deckView.length) return null;
-  return deckView[index];
-}
+/* Progress Logic */
+function renderProgress() {
+  const total = deckView.length || 1;
+  const answered = answerHistory.length;
+  
+  // Text Above
+  progressText.textContent = `${correctCount} / ${answered} Correct`;
 
-/* Speech */
-function initSpeech() {
-  speechSupported = !!window.speechSynthesis && !!window.SpeechSynthesisUtterance;
-  if (!speechSupported) {
-    btnSpeak.disabled = true;
-    btnSpeak.title = "Speech not supported in this browser.";
-    return;
+  // Bar
+  const segments = answerHistory.map(type => {
+    return `<div class="progress-segment ${type === 'correct' ? 'seg-green' : 'seg-red'}" style="width: ${100/total}%"></div>`;
+  }).join("");
+  progressTrack.innerHTML = segments;
+
+  // Streak Text Below
+  let html = "";
+  if (currentStreak >= 5) {
+      // Check for multiples of 5
+      if (currentStreak % 5 === 0) {
+          html = `<div class="streak-icon">🔥</div><div>${currentStreak} in a row!</div>`;
+      } else {
+          html = `<div class="streak-icon">🔥</div><div>${currentStreak} streak</div>`;
+      }
+  } else if (currentStreak <= -5) {
+      if (currentStreak % 5 === 0) {
+          html = `<div class="streak-icon">💩</div><div>${Math.abs(currentStreak)} misses in a row</div>`;
+      } else {
+          html = `<div class="streak-icon">💩</div><div>${Math.abs(currentStreak)} miss streak</div>`;
+      }
   }
-
-  const loadVoices = () => {
-    const voices = window.speechSynthesis.getVoices() || [];
-    jaVoice = voices.find(v => (v.lang || "").toLowerCase() === "ja-jp")
-          || voices.find(v => (v.lang || "").toLowerCase().startsWith("ja"))
-          || null;
-    const t = jaVoice ? `Speak (voice: ${jaVoice.name})` : "Speak (Japanese voice not found)";
-    btnSpeak.title = t;
-  };
-
-  loadVoices();
-  window.speechSynthesis.onvoiceschanged = () => loadVoices();
-}
-
-function speakJapaneseForCard(card) {
-  if (!speechSupported) { showToast("Speech not supported."); return; }
-  if (!card) return;
-
-  const text = (card.japanese || "");
-  if (!text.trim()) { return; }
-
-  try {
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "ja-JP";
-    if (jaVoice) u.voice = jaVoice;
-    u.rate = 0.95;
-    u.pitch = 1.0;
-    u.onerror = () => showToast("Unable to play speech.");
-    window.speechSynthesis.speak(u);
-  } catch {
-    showToast("Unable to play speech.");
-  }
+  streakContainer.innerHTML = html;
 }
 
 /* UI actions */
 function render() {
   updateMissCount();
+  renderProgress();
 
   const isMobile = window.matchMedia && window.matchMedia("(max-width: 720px)").matches;
   const hasBuiltDeck = deckAll && deckAll.length > 0;
@@ -1034,6 +1030,64 @@ function render() {
 
     btnSpeak.classList.add("hidden");
     btnSpeak.disabled = true;
+    
+    // Reset progress/streak visuals if no deck
+    progressTrack.innerHTML = "";
+    streakContainer.innerHTML = "";
+    progressText.textContent = "0 / 0 Correct";
+
+    updateActionState();
+    return;
+  }
+
+  // CHECK FOR DONE STATE
+  if (index >= deckView.length) {
+    badgeLeft.textContent = "Finished";
+    badgeRight.textContent = "";
+    bigEl.textContent = "Done";
+    midJpEl.classList.add("hidden");
+    midTxtEl.classList.remove("hidden");
+    
+    let subHtml = `You have completed this deck.<br/><br/>`;
+    
+    if (missed.size > 0) {
+        subHtml += `<button id="btn_review_missed" class="bad" style="margin-bottom:10px;">Review Incorrect Cards (${missed.size})</button><br/>`;
+    }
+    
+    subHtml += `<button id="btn_restart" class="ghost">Restart Deck</button>`;
+    
+    midTxtEl.innerHTML = subHtml;
+    smallEl.textContent = "";
+    statsEl.textContent = `Completed ${deckView.length} cards.`;
+    
+    btnSpeak.classList.add("hidden");
+    
+    // Wire up buttons
+    setTimeout(() => {
+        const btnReview = document.getElementById("btn_review_missed");
+        if (btnReview) {
+            btnReview.onclick = () => {
+                optIncorrectOnly.checked = true;
+                applyIncorrectOnlyView();
+                // Reset progress for the review session
+                index = 0; currentStreak = 0; answerHistory = []; correctCount = 0;
+                // FIX: Clear randomization history
+                perCardFrontIsEnglish = new Map();
+                render();
+            };
+        }
+        const btnRestart = document.getElementById("btn_restart");
+        if (btnRestart) {
+            btnRestart.onclick = () => {
+                index = 0; currentStreak = 0; answerHistory = []; correctCount = 0;
+                isFront = true;
+                // FIX: Clear randomization history on restart so it's truly random again
+                perCardFrontIsEnglish = new Map();
+                shuffleInPlace(deckView); 
+                render();
+            };
+        }
+    }, 0);
 
     updateActionState();
     return;
@@ -1085,12 +1139,8 @@ function render() {
     smallEl.classList.remove("kana-sub");
   }
 
-  statsEl.textContent = `Card ${index + 1} / ${deckView.length} · ${isFront ? "Front" : "Back"} · Deck: ${deckAll.length} · Incorrect: ${missed.size}`;
-
-  const navDisabled = deckView.length <= 1;
-  el("btn_prev").disabled = navDisabled;
-  el("btn_next").disabled = navDisabled;
-  el("btn_flip").disabled = false;
+  // Simplified Card Stats
+  statsEl.textContent = `Card ${index + 1} / ${deckView.length} · ${isFront ? "Front" : "Back"}`;
 
   updateActionState();
 
@@ -1117,15 +1167,6 @@ function render() {
   }
 }
 
-function escapeHtml(s) {
-  return String(s)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
 function flip() {
   showHintOnFront = false;
   unsureLocked = false;
@@ -1133,45 +1174,77 @@ function flip() {
   isFront = !isFront;
   render();
 }
+
+// Linear navigation
 function next() {
   showHintOnFront = false;
   unsureLocked = false;
-  if (!deckView.length) return; index = (index + 1) % deckView.length; isFront = true;
+  if (!deckView.length) return;
+  // Stop at the end
+  if (index < deckView.length) {
+      index++;
+  }
+  isFront = true;
   showHintOnFront = false;
   mobileSettingsOpen = false;
-  document.body.classList.remove("studying","showSettings"); render(); }
+  document.body.classList.remove("studying","showSettings"); 
+  render(); 
+}
+
 function prev() {
   showHintOnFront = false;
-  if (!deckView.length) return; index = (index - 1 + deckView.length) % deckView.length; isFront = true;
+  if (!deckView.length) return;
+  // Prevent going below 0
+  if (index > 0) {
+      index--;
+      // Remove last history entry logic?
+      // Simplified: Just go back, history remains (user can overwrite answer).
+      // If we go back, we don't necessarily undo streaks/score immediately unless they re-answer.
+      // But for simple "undo", let's pop history
+      const lastAnswer = answerHistory.pop();
+      if(lastAnswer === 'correct') correctCount--;
+      
+      // Reset streak logic is complex on back, simplified: just decrement count if it was pos
+      if(currentStreak > 0) currentStreak--;
+      else if(currentStreak < 0) currentStreak++;
+  }
+  isFront = true;
   showHintOnFront = false;
   mobileSettingsOpen = false;
-  document.body.classList.remove("studying","showSettings"); render(); }
+  document.body.classList.remove("studying","showSettings"); 
+  render(); 
+}
 
 
 function markCorrect() {
   if (!deckView.length) return;
-  if (isFront) { showToast("Flip first to see the answer."); return; }
-  showToast("Correct.");
-  if (deckView.length > 1) next();
-  else { isFront = true;
-  showHintOnFront = false;
-  mobileSettingsOpen = false;
-  document.body.classList.remove("studying","showSettings"); render(); }
+  if (isFront) { showToast("Flip first to see the answer.", "warn"); return; }
+  
+  // Streak Logic: Correct
+  if (currentStreak < 0) currentStreak = 0; // Reset negative streak
+  currentStreak++;
+  answerHistory.push('correct');
+  correctCount++;
+
+  showToast("Correct!", "good");
+  next();
 }
 
 
 function markIncorrect() {
   if (!deckView.length) return;
-  if (isFront) { showToast("Flip first to see the answer."); return; }
+  if (isFront) { showToast("Flip first to see the answer.", "warn"); return; }
   const card = deckView[index];
   missed.add(card.id);
   applyIncorrectOnlyView();
-  showToast("Incorrect.");
-  if (deckView.length > 1) next();
-  else { isFront = true;
-  showHintOnFront = false;
-  mobileSettingsOpen = false;
-  document.body.classList.remove("studying","showSettings"); render(); }
+  
+  // Streak Logic: Incorrect
+  if (currentStreak > 0) currentStreak = 0; // Reset positive streak
+  currentStreak--;
+  answerHistory.push('incorrect');
+
+  showToast("Incorrect", "bad");
+  next();
 }
 
 
@@ -1184,18 +1257,16 @@ function markUnsure() {
   if (isFront) {
     isFront = false;
     unsureLocked = true;
-    showToast("Unsure → marked incorrect. (Flipped to answer)");
+    showToast("Unsure → marked incorrect. (Flipped to answer)", "warn");
     render();
   } else {
-    showToast("Unsure → Incorrect.");
-    if (deckView.length > 1) next();
-    else {
-      isFront = true;
-      showHintOnFront = false;
-      mobileSettingsOpen = false;
-      document.body.classList.remove("studying","showSettings");
-      render();
-    }
+    // Treat unsure as incorrect for streak/progress
+    if (currentStreak > 0) currentStreak = 0;
+    currentStreak--;
+    answerHistory.push('incorrect');
+
+    showToast("Unsure → Incorrect", "warn");
+    next();
   }
 }
 
@@ -1227,8 +1298,13 @@ function resetUI() {
   index = 0;
   isFront = true;
   showHintOnFront = false;
+  // FIX: Clear randomization history
   perCardFrontIsEnglish = new Map();
   missed.clear();
+  
+  currentStreak = 0;
+  answerHistory = [];
+  correctCount = 0;
 
   mobileSettingsOpen = false;
   document.body.classList.remove("studying","showSettings");
