@@ -1,24 +1,184 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Japanese Flash Cards — v1.6.6</title>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<title>Japanese Flash Cards — v1.6.6 (Final)</title>
 
-  <script src="vocab.js"></script>
+<script src="vocab.js"></script>
 
-  <style>
+<style>
+    :root{
+      --bg:#0b0d12;
+      --panel:#121622;
+      --panel2:#0f131d;
+      --border:#22283a;
+      --text:#e9ecf5;
+      --muted:#aeb6cf;
+      --muted2:#7f8aa9;
+      --accent:#7aa2ff;
+      --good:#3ddc97;
+      --bad:#ff5d6c;
+      --warn:#ffcc66;
+      --shadow:0 14px 40px rgba(0,0,0,.35);
+      --radius:16px;
+      --radius2:22px;
+      --pad:14px;
+      --pad2:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:var(--sans);
+      background: radial-gradient(1200px 700px at 30% -10%, rgba(122,162,255,.28), transparent 60%),
+                  radial-gradient(900px 700px at 80% 10%, rgba(61,220,151,.18), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+    }
+    header{ max-width:1200px; margin:0 auto; padding:18px 14px 0; display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+    .title h1{ margin:0; font-size:22px; letter-spacing:.2px; font-weight:720; }
+    .title .sub{ color:var(--muted); font-size:13px; }
+    .badgeTop{ display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border); background:rgba(255,255,255,.05); padding:8px 12px; border-radius:999px; font-size:13px; color:var(--muted); }
+    .badgeTop .dot{ width:10px;height:10px;border-radius:50%; background: var(--accent); }
+    
+    main{ max-width:1200px; margin:0 auto; padding:14px 14px 28px; display:grid; grid-template-columns: 360px 1fr; gap:14px; align-items:start; }
+    .panel{ background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:var(--radius2); box-shadow:var(--shadow); overflow:hidden; }
+    .panel h2{ margin:0; font-size:14px; color:var(--text); padding:14px; border-bottom:1px solid rgba(255,255,255,.06); background:rgba(255,255,255,.03); display:flex; justify-content:space-between; }
+    .panel .bd{ padding:14px; }
+
+    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:10px;}
+    .pill{ display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.08); background:rgba(0,0,0,.18); }
+    .pill label{font-size:13px; color:var(--muted); user-select:none}
+    
+    input[type="number"]{ background: #15161b; border: 1px solid var(--border); color: var(--text); padding: 5px; border-radius: 6px; width: 60px; }
+    select{ width:100%; padding:10px; border-radius:12px; border:1px solid var(--border); background: rgb(21, 22, 27); color: var(--text); font-size: 13px; outline: none; cursor: pointer; }
+
+    button{ appearance:none; border:1px solid rgba(255,255,255,.1); background:rgba(122,162,255,.15); color:var(--text); padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:700; font-size:13px; transition:transform .1s; }
+    button.primary{ background:rgba(122,162,255,.3); }
+    button.good{ background:rgba(61,220,151,.2); }
+    button.bad{ background:rgba(255,93,108,.2); }
+    button.warn{ background:rgba(255,204,102,.2); color:#ffe7b0; }
+    button.ghost{ background:transparent; color:var(--muted); border-color:transparent; }
+    button:disabled{ opacity:.3; cursor:not-allowed; transform:none; }
+
+    .flashcard { position:relative; min-height:320px; border-radius:22px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,0.04); box-shadow:var(--shadow); padding:20px; display:flex; flex-direction:column; cursor:pointer; }
+    .btn-audio-card { position:absolute; top:12px; right:12px; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; color:var(--accent); background:rgba(255,255,255,0.05); border:1px solid var(--border); }
+    .btn-audio-card svg{ width:20px; fill:currentColor; }
+    .btn-audio-card:hover { background: rgba(255,255,255,0.12); transform: scale(1.05); }
+    
+    .badge { position:absolute; top:12px; left:12px; font-size:11px; color:var(--muted2); border:1px solid var(--border); background:rgba(0,0,0,.2); padding:4px 10px; border-radius:999px; }
+    .badge.right{ left:auto; right:12px; top:60px; }
+
+    .content{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px 0; }
+    .big{ font-size:44px; font-weight:800; line-height:1.1; margin-bottom:10px; }
+    .mid_jp{ font-size:26px; font-weight:700; color:var(--accent); }
+    .mid_txt{ font-size:18px; color:var(--muted); }
+    .smallLine{ font-size:14px; color:var(--muted2); margin-top:10px; }
+
+    .cardActions { display:flex; gap:12px; justify-content:center; margin-top:20px; }
+    .cardActions button { flex:1; }
+    .cardActions button#btn_unsure{ flex:1.1; }
+
+    .controls{ display:flex; flex-direction:column; gap:10px; margin-top:20px; }
+    .controls .row{ justify-content:center }
+    .stats{ text-align:center; color:var(--muted2); font-size:12px; margin-top:8px; }
+    .hidden{ display:none !important; }
+    .toast { text-align:center; color:var(--accent); font-size:13px; margin-top:10px; min-height:1.2em; }
+
+    @media (max-width: 720px) {
+      main{ grid-template-columns: 1fr; }
+      body.studying #sidebar { display: none; }
+    }
+</style>
+</head>
+<body>
+<header>
+<div class="title">
+    <h1>Japanese Flash Cards</h1>
+    <div class="sub">v1.6.6 · Build 36</div>
+</div>
+<div class="badgeTop"><span class="dot"></span><span class="mono">ready</span></div>
+</header>
+<main>
+<section class="panel" id="sidebar">
+<h2>Study Sets <button class="ghost hidden" id="btn_closeSettings">Close</button></h2>
+<div class="bd">
+    <div class="row"><div class="pill"><input id="sel_all" type="checkbox"/><label for="sel_all"><b>Select All</b></label></div></div>
+    <div class="row">
+        <div class="pill"><input checked id="sel_essentials" type="checkbox"/><label for="sel_essentials">Essentials</label></div>
+        <div class="pill"><input checked id="sel_core" type="checkbox"/><label for="sel_core">Core Travel</label></div>
+        <div class="pill"><input id="sel_basic" type="checkbox"/><label for="sel_basic">Basic</label></div>
+        <div class="pill"><input id="sel_hira" type="checkbox"/><label for="sel_hira">Hiragana</label></div>
+        <div class="pill"><input id="sel_kata" type="checkbox"/><label for="sel_kata">Katakana</label></div>
+    </div>
+    <div class="row">
+        <div style="flex:1">
+            <div style="font-size:12px; margin-bottom:4px">Category Override</div>
+            <select id="by_category"><option value="">(None)</option></select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="pill"><input checked id="opt_shuffle" type="checkbox"/><label>Shuffle</label></div>
+        <div class="pill"><input checked id="opt_randomSide" type="checkbox"/><label>Random Side</label></div>
+    </div>
+    <div class="row">
+        <div class="pill"><label>Limit:</label><input id="opt_limit" type="number" value="0"/></div>
+        <div class="pill"><input id="opt_incorrectOnly" type="checkbox"/><label>Misses Only</label></div>
+    </div>
+    <div class="row">
+        <button class="primary" id="btn_build" style="flex:1">Build Deck</button>
+        <button class="ghost" id="btn_reset">Reset</button>
+    </div>
+    <div class="row" style="border-top:1px solid var(--border); padding-top:10px">
+        <button class="ghost" id="btn_clearMisses" style="font-size:11px">Clear Incorrect List</button>
+        <div id="missCount" style="font-size:11px; color:var(--muted)">Incorrect: 0</div>
+    </div>
+</div>
+</section>
+
+<section class="panel" id="workspace">
+<h2>Flashcards</h2>
+<div class="bd">
+    <div class="flashcard" id="card" tabindex="0">
+        <button class="btn-audio-card hidden" id="btn_speak" title="Speak">
+            <svg viewBox="0 0 24 24"><path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16.03C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z"></path></svg>
+        </button>
+        <div class="badge" id="badge_left">—</div>
+        <div class="badge right" id="badge_right">—</div>
+        <div class="content">
+            <div class="big" id="big">Build a deck to start</div>
+            <div class="mid_jp hidden" id="mid_jp"></div>
+            <div class="mid_txt" id="mid_txt"></div>
+            <div class="smallLine" id="small"></div>
+        </div>
+        <div class="cardActions">
+            <button class="good hidden" id="btn_correct">Correct</button>
+            <button class="warn hidden" id="btn_unsure">Unsure</button>
+            <button class="bad hidden" id="btn_incorrect">Incorrect</button>
+        </div>
+    </div>
+    <div class="controls">
+        <div class="row">
+            <button id="btn_prev">← Prev</button>
+            <button class="ghost" id="btn_hint">Hint</button>
+            <button class="primary" id="btn_flip" style="min-width:80px">Flip</button>
+            <button id="btn_next">Next →</button>
+        </div>
+        <div class="stats" id="stats">Ready.</div>
+        <div class="toast" id="toast"></div>
+    </div>
+</div>
+</section>
+</main>
+
 <script>
-/* ========= Japanese Flash Cards — v1.6.6 (Build 36) ========= */
-
-/**
- * DATA SOURCE
- * This script expects VOCAB_DATA, HIRAGANA_DATA, and KATAKANA_DATA 
- * to be globally available from your 'vocab.js' file.
- */
+// --- GLOBAL DATA & CONSTANTS ---
+// We check if the external file loaded; if not, we use empty defaults to prevent crashing.
 const VOCAB = typeof VOCAB_DATA !== 'undefined' ? VOCAB_DATA : {};
-const HIRAGANA = typeof HIRAGANA_DATA !== 'undefined' ? HIRAGANA_DATA : [];
-const KATAKANA = typeof KATAKANA_DATA !== 'undefined' ? KATAKANA_DATA : [];
+const HIRAGANA_SET = typeof HIRAGANA_DATA !== 'undefined' ? HIRAGANA_DATA : [];
+const KATAKANA_SET = typeof KATAKANA_DATA !== 'undefined' ? KATAKANA_DATA : [];
 
 const SETS = {
   ESSENTIALS: "Essentials",
@@ -28,7 +188,7 @@ const SETS = {
   KATAKANA: "Katakana"
 };
 
-// state
+// --- STATE ---
 let deckAll = [];
 let deckView = [];
 let index = 0;
@@ -36,60 +196,37 @@ let isFront = true;
 let unsureLocked = false;
 let showHintOnFront = false;
 let perCardFrontIsEnglish = new Map();
-let mobileSettingsOpen = false;
 const missed = new Set();
-
-// speech
-let speechSupported = false;
+let speechSupported = !!window.speechSynthesis;
 let jaVoice = null;
 
-// DOM
-const el = (id) => document.getElementById(id);
-const cardEl = el("card");
-const bigEl = el("big");
-const midJpEl = el("mid_jp");
-const midTxtEl = el("mid_txt");
-const smallEl = el("small");
-const badgeLeft = el("badge_left");
-const badgeRight = el("badge_right");
-const statsEl = el("stats");
-const cardActionsEl = el("card_actions");
-const toastEl = el("toast");
-const missCountEl = el("missCount");
-const byCategoryEl = el("by_category");
-
-const selAll = el("sel_all");
-const selEssentials = el("sel_essentials");
-const selCore = el("sel_core");
-const selHira = el("sel_hira");
-const selKata = el("sel_kata");
-const selBasic = el("sel_basic");
-
-const optRandomSide = el("opt_randomSide");
-const optShuffle = el("opt_shuffle");
-const optLimit = el("opt_limit");
-const optIncorrectOnly = el("opt_incorrectOnly");
-
+// --- DOM ELEMENTS ---
+const el = id => document.getElementById(id);
+const btnBuild = el("btn_build");
 const btnSpeakIcon = el("btn_speak");
-const btnHint = el("btn_hint");
-const btnSettings = el("btn_settings");
-const btnCloseSettings = el("btn_closeSettings");
-const btnPrev = el("btn_prev");
-const btnNext = el("btn_next");
-const btnFlip = el("btn_flip");
-const btnCorrect = el("btn_correct");
-const btnUnsure = el("btn_unsure");
-const btnIncorrect = el("btn_incorrect");
+const cardEl = el("card");
+const cardActionsEl = el("card_actions"); // For centering 'Unsure'
 
+// --- HELPERS ---
 function slug(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,""); }
 
+function showToast(msg) {
+  const t = el("toast");
+  t.textContent = msg || "";
+  if (msg) setTimeout(() => { if (t.textContent === msg) t.textContent = ""; }, 2400);
+}
+
+function updateMissCount() { el("missCount").textContent = `Incorrect: ${missed.size}`; }
+
+// --- DATA BUILDING ---
 function buildCardsFromVocab(setName) {
   const out = [];
   const categories = VOCAB[setName] || {};
   for (const [cat, items] of Object.entries(categories)) {
     for (const item of items) {
       const id = `${slug(setName)}:${slug(cat)}:${slug(item.english)}:${slug(item.japanese)}`;
-      out.push({ id, set: setName, category: cat, type: "vocab",
+      out.push({ 
+        id, set: setName, category: cat, type: "vocab",
         english: item.english, japanese: item.japanese, romaji: item.romaji, pronunciation: item.pronunciation
       });
     }
@@ -117,144 +254,11 @@ function dedupeCards(cards) {
   return out;
 }
 
-function shuffleInPlace(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-function showToast(msg) {
-  toastEl.textContent = msg || "";
-  if (msg) setTimeout(() => { if (toastEl.textContent === msg) toastEl.textContent = ""; }, 2400);
-}
-
-function updateMissCount() { missCountEl.textContent = `Incorrect: ${missed.size}`; }
-
-function selectedSets() {
-  const sets = [];
-  if (selEssentials.checked) sets.push(SETS.ESSENTIALS);
-  if (selCore.checked) sets.push(SETS.CORE);
-  if (selBasic.checked) sets.push(SETS.BASIC);
-  if (selHira.checked) sets.push(SETS.HIRAGANA);
-  if (selKata.checked) sets.push(SETS.KATAKANA);
-  return sets;
-}
-
-function updateActionState() {
-  const hasDeck = deckView && deckView.length > 0;
-  btnPrev.disabled = !hasDeck || deckView.length <= 1;
-  btnNext.disabled = !hasDeck || deckView.length <= 1;
-  btnFlip.disabled = !hasDeck;
-
-  const showUnsure = hasDeck && isFront && !unsureLocked;
-  const showGrade = hasDeck && !isFront && !unsureLocked;
-
-  const onlyUnsure = showUnsure && !showGrade;
-  if (cardActionsEl) cardActionsEl.classList.toggle("onlyUnsure", onlyUnsure);
-
-  btnUnsure.classList.toggle("hidden", !showUnsure);
-  btnCorrect.classList.toggle("hidden", !showGrade);
-  btnIncorrect.classList.toggle("hidden", !showGrade);
-
-  btnCorrect.disabled = !showGrade;
-  btnIncorrect.disabled = !showGrade;
-  btnUnsure.disabled = !showUnsure;
-
-  if (btnHint) btnHint.disabled = !hasDeck || !isFront;
-}
-
-function applyIncorrectOnlyView() {
-  if (!deckAll.length) { deckView = []; return; }
-  if (!optIncorrectOnly.checked) { deckView = deckAll.slice(); return; }
-  deckView = deckAll.filter(c => missed.has(c.id));
-  if (deckView.length === 0) showToast("No incorrect cards yet.");
-}
-
-function getAllAvailableCategories() {
-  const cats = new Set();
-  for (const setName of Object.keys(VOCAB)) {
-    for (const catName of Object.keys(VOCAB[setName] || {})) cats.add(catName);
-  }
-  cats.add("Gojūon");
-  return Array.from(cats).sort((a,b) => a.localeCompare(b));
-}
-
-function populateCategoryDropdown() {
-  const categories = getAllAvailableCategories();
-  byCategoryEl.innerHTML = `<option value="">(None)</option>` +
-    categories.map(c => `<option value="${c}">${c}</option>`).join("");
-}
-
-function buildDeckByCategory(category) {
-  let cards = [];
-  for (const setName of Object.keys(VOCAB)) {
-    const cats = VOCAB[setName] || {};
-    if (cats[category]) {
-      for (const item of cats[category]) {
-        const id = `${slug(setName)}:${slug(category)}:${slug(item.english)}:${slug(item.japanese)}`;
-        cards.push({ id, set: setName, category, type: "vocab",
-          english: item.english, japanese: item.japanese, romaji: item.romaji, pronunciation: item.pronunciation
-        });
-      }
-    }
-  }
-  if (category === "Gojūon") {
-    cards.push(...buildKanaCards(SETS.HIRAGANA, HIRAGANA));
-    cards.push(...buildKanaCards(SETS.KATAKANA, KATAKANA));
-  }
-  cards = dedupeCards(cards);
-  const limit = parseInt(optLimit.value || "0", 10);
-  if (optShuffle.checked) shuffleInPlace(cards);
-  if (limit > 0) cards = cards.slice(0, limit);
-  return cards;
-}
-
-function rebuildDeck() {
-  const overrideCategory = byCategoryEl.value;
-  let cards = [];
-
-  if (overrideCategory) {
-    cards = buildDeckByCategory(overrideCategory);
-    showToast(`By Category override: ${overrideCategory}`);
-  } else {
-    const sets = selectedSets();
-    if (sets.length === 0) {
-      deckAll = []; deckView = []; index = 0; isFront = true;
-      showHintOnFront = false; mobileSettingsOpen = false;
-      document.body.classList.remove("studying","showSettings");
-      render();
-      showToast("Select at least one set.");
-      return;
-    }
-    for (const s of sets) {
-      if (s === SETS.HIRAGANA) cards.push(...buildKanaCards(SETS.HIRAGANA, HIRAGANA));
-      else if (s === SETS.KATAKANA) cards.push(...buildKanaCards(SETS.KATAKANA, KATAKANA));
-      else cards.push(...buildCardsFromVocab(s));
-    }
-    cards = dedupeCards(cards);
-    const limit = parseInt(optLimit.value || "0", 10);
-    if (optShuffle.checked) shuffleInPlace(cards);
-    if (limit > 0) cards = cards.slice(0, limit);
-  }
-
-  deckAll = cards;
-  perCardFrontIsEnglish = new Map();
-  index = 0;
-  isFront = true;
-  showHintOnFront = false;
-  mobileSettingsOpen = false;
-  document.body.classList.remove("studying","showSettings");
-  applyIncorrectOnlyView();
-  showToast(`Built deck with ${deckAll.length} cards.`);
-  render();
-}
-
 function computeFrontForCard(card) {
-  if (!optRandomSide.checked) {
-    if (card.type === "kana") return false;
-    return true;
+  const optRandom = el("opt_randomSide");
+  if (!optRandom.checked) {
+    if (card.type === "kana") return false; // kana: Japanese on front
+    return true; // vocab: English on front
   }
   if (perCardFrontIsEnglish.has(card.id)) return perCardFrontIsEnglish.get(card.id);
   const val = Math.random() < 0.5;
@@ -262,38 +266,189 @@ function computeFrontForCard(card) {
   return val;
 }
 
+// --- CORE RENDER LOGIC ---
 function faceContent(card, showEnglishFace) {
+  // SPECIAL KANA HANDLING (v1.6.6)
   if (card.type === "kana") {
     if (showEnglishFace) {
-      return { big: card.romaji.toUpperCase(), mid: `Pronunciation: ${card.pronunciation}`, small: `Kana: ${card.japanese}` };
+      // English side: Big Romaji, small details
+      return { 
+        big: card.romaji.toUpperCase(), 
+        mid: `Pronunciation: ${card.pronunciation}`, 
+        small: `Kana: ${card.japanese}` 
+      };
     } else {
-      // GOAL: Large character + Romaji only for Hiragana/Katakana Japanese side
-      return { big: card.japanese, mid: card.romaji, small: "" };
+      // Japanese side: Big Kana + Romaji ONLY (Clean look)
+      return { 
+        big: card.japanese, 
+        mid: card.romaji, 
+        small: "" 
+      };
     }
   }
+
+  // STANDARD VOCAB HANDLING
   if (showEnglishFace) return { big: card.english, mid: "", small: "" };
-  return { big: card.romaji || "", mid: card.japanese || "", small: `Pronunciation: ${card.pronunciation || ""}` };
+
+  return {
+    big: card.romaji || "",
+    mid: card.japanese || "",
+    small: `Pronunciation: ${card.pronunciation || ""}`
+  };
 }
 
-function getCurrentCard() {
-  if (!deckView.length) return null;
-  return deckView[index];
-}
+function render() {
+  updateMissCount();
 
-function initSpeech() {
-  speechSupported = !!window.speechSynthesis && !!window.SpeechSynthesisUtterance;
-  if (!speechSupported) {
-    if (btnSpeakIcon) { btnSpeakIcon.disabled = true; btnSpeakIcon.title = "Speech not supported."; }
+  if (!deckView || deckView.length === 0) {
+    el("big").textContent = "Build a deck to start";
+    el("mid_jp").classList.add("hidden");
+    el("mid_txt").classList.remove("hidden");
+    el("mid_txt").textContent = "Select sets and click Build Deck.";
+    el("small").textContent = "";
+    el("badge_left").textContent = "—";
+    el("badge_right").textContent = "—";
+    el("stats").textContent = "Deck not built.";
+    
+    // Disable nav
+    el("btn_prev").disabled = true;
+    el("btn_next").disabled = true;
+    el("btn_flip").disabled = true;
+    if (btnSpeakIcon) { btnSpeakIcon.classList.add("hidden"); btnSpeakIcon.disabled = true; }
+    
+    // Hide grading
+    el("btn_correct").classList.add("hidden");
+    el("btn_incorrect").classList.add("hidden");
+    el("btn_unsure").classList.add("hidden");
     return;
   }
-  const loadVoices = () => {
-    const voices = window.speechSynthesis.getVoices() || [];
-    jaVoice = voices.find(v => (v.lang || "").toLowerCase().startsWith("ja")) || null;
-    const t = jaVoice ? `Speak (voice: ${jaVoice.name})` : "Speak (Japanese voice not found)";
-    if (btnSpeakIcon) btnSpeakIcon.title = t;
-  };
-  loadVoices();
-  window.speechSynthesis.onvoiceschanged = () => loadVoices();
+
+  const card = deckView[index];
+  const frontIsEnglish = computeFrontForCard(card);
+  const showEnglishFace = isFront ? frontIsEnglish : !frontIsEnglish;
+  const japaneseFaceShowing = !showEnglishFace;
+
+  const content = faceContent(card, showEnglishFace);
+
+  // Badges
+  el("badge_left").textContent = card.set;
+  el("badge_right").textContent = card.category;
+  
+  // Hint logic: hide badges on front unless hint clicked
+  const hideMeta = isFront && !showHintOnFront;
+  el("badge_left").classList.toggle("hidden", hideMeta);
+  el("badge_right").classList.toggle("hidden", hideMeta);
+  el("btn_hint").disabled = !isFront;
+
+  // Text Content
+  el("big").textContent = content.big;
+  
+  // Mid/Small lines
+  if (japaneseFaceShowing && card.type === "vocab") {
+     // Special styling for Japanese text in vocab
+     el("mid_jp").textContent = content.mid;
+     el("mid_jp").classList.remove("hidden");
+     el("mid_txt").classList.add("hidden");
+  } else {
+     el("mid_jp").classList.add("hidden");
+     el("mid_txt").textContent = content.mid || (isFront ? "Click to flip" : "");
+     el("mid_txt").classList.remove("hidden");
+  }
+  el("small").textContent = content.small || "";
+
+  // Stats
+  el("stats").textContent = `Card ${index + 1} / ${deckView.length} · Incorrect: ${missed.size}`;
+
+  // Nav state
+  const navDisabled = deckView.length <= 1;
+  el("btn_prev").disabled = navDisabled;
+  el("btn_next").disabled = navDisabled;
+  el("btn_flip").disabled = false;
+
+  // Grading Buttons Logic
+  const showUnsure = isFront && !unsureLocked;
+  const showGrade = !isFront && !unsureLocked;
+  
+  el("btn_unsure").classList.toggle("hidden", !showUnsure);
+  el("btn_correct").classList.toggle("hidden", !showGrade);
+  el("btn_incorrect").classList.toggle("hidden", !showGrade);
+  
+  // Centering fix for when only 'Unsure' is showing
+  if (cardActionsEl) {
+      cardActionsEl.classList.toggle("onlyUnsure", showUnsure && !showGrade);
+  }
+
+  // Audio Logic
+  const canSpeakNow = speechSupported && japaneseFaceShowing;
+  if (btnSpeakIcon) {
+    btnSpeakIcon.classList.toggle("hidden", !canSpeakNow);
+    btnSpeakIcon.disabled = !canSpeakNow;
+  }
+
+  // Autoplay
+  if (canSpeakNow && card) {
+    if (window.speechTimer) clearTimeout(window.speechTimer);
+    window.speechTimer = setTimeout(() => {
+        speakJapaneseForCard(card);
+    }, 100);
+  }
+}
+
+// --- ACTIONS ---
+function rebuildDeck() {
+  const sets = [];
+  if (el("sel_essentials").checked) sets.push(SETS.ESSENTIALS);
+  if (el("sel_core").checked) sets.push(SETS.CORE);
+  if (el("sel_basic").checked) sets.push(SETS.BASIC);
+  if (el("sel_hira").checked) sets.push(SETS.HIRAGANA);
+  if (el("sel_kata").checked) sets.push(SETS.KATAKANA);
+
+  let cards = [];
+  const override = el("by_category").value;
+
+  if (override) {
+    // Category override logic
+    for (const setName of Object.keys(VOCAB)) {
+       const cats = VOCAB[setName] || {};
+       if (cats[override]) {
+          for(const item of cats[override]) {
+             const id = `${slug(setName)}:${slug(override)}:${slug(item.english)}:${slug(item.japanese)}`;
+             cards.push({ id, set: setName, category: override, type: "vocab", ...item });
+          }
+       }
+    }
+  } else {
+    // Normal Set logic
+    for (const s of sets) {
+      if (s === SETS.HIRAGANA) cards.push(...buildKanaCards(SETS.HIRAGANA, HIRAGANA_SET));
+      else if (s === SETS.KATAKANA) cards.push(...buildKanaCards(SETS.KATAKANA, KATAKANA_SET));
+      else cards.push(...buildCardsFromVocab(s));
+    }
+  }
+
+  cards = dedupeCards(cards);
+  if (el("opt_shuffle").checked) shuffleInPlace(cards);
+  
+  const limit = parseInt(el("opt_limit").value || "0");
+  if (limit > 0) cards = cards.slice(0, limit);
+
+  deckAll = cards;
+  index = 0; 
+  isFront = true; 
+  unsureLocked = false;
+  showHintOnFront = false;
+  perCardFrontIsEnglish = new Map();
+  
+  // Apply Incorrect Filter
+  if (el("opt_incorrectOnly").checked) {
+      deckView = deckAll.filter(c => missed.has(c.id));
+  } else {
+      deckView = [...deckAll];
+  }
+
+  render();
+  if (deckView.length > 0) showToast(`Deck built: ${deckView.length} cards.`);
+  else showToast("No cards found.");
 }
 
 function speakJapaneseForCard(card) {
@@ -305,166 +460,98 @@ function speakJapaneseForCard(card) {
     const u = new SpeechSynthesisUtterance(text);
     u.lang = "ja-JP";
     if (jaVoice) u.voice = jaVoice;
-    u.rate = 0.95;
-    u.pitch = 1.0;
+    u.rate = 0.95; 
     window.speechSynthesis.speak(u);
-  } catch {}
+  } catch(e) { console.error(e); }
 }
 
-function render() {
-  updateMissCount();
-  const isMobile = window.matchMedia && window.matchMedia("(max-width: 720px)").matches;
-  const hasBuiltDeck = deckAll && deckAll.length > 0;
-  document.body.classList.toggle("studying", !!(isMobile && hasBuiltDeck));
-  if (typeof updateSettingsButtons === "function") updateSettingsButtons();
+// --- EVENT LISTENERS ---
+btnBuild.addEventListener("click", rebuildDeck);
+el("btn_reset").addEventListener("click", () => location.reload());
 
-  if (!deckView || deckView.length === 0) {
-    badgeLeft.textContent = "—"; badgeRight.textContent = optIncorrectOnly.checked ? "Incorrect Only" : "—";
-    bigEl.textContent = deckAll.length ? "No cards in this view" : "Build a deck to start";
-    midJpEl.classList.add("hidden"); midTxtEl.classList.remove("hidden");
-    midTxtEl.textContent = deckAll.length ? "No incorrect cards yet." : "Select sets and Build Deck.";
-    smallEl.textContent = ""; statsEl.textContent = deckAll.length ? `Deck: ${deckAll.length}` : "Deck not built.";
-    el("btn_prev").disabled = true; el("btn_next").disabled = true; el("btn_flip").disabled = true;
-    if (btnSpeakIcon) { btnSpeakIcon.classList.add("hidden"); btnSpeakIcon.disabled = true; }
-    updateActionState();
-    return;
-  }
+// Navigation
+const next = () => {
+    if (!deckView.length) return;
+    index = (index + 1) % deckView.length;
+    isFront = true; unsureLocked = false; showHintOnFront = false;
+    render();
+};
+const prev = () => {
+    if (!deckView.length) return;
+    index = (index - 1 + deckView.length) % deckView.length;
+    isFront = true; unsureLocked = false; showHintOnFront = false;
+    render();
+};
+const flip = () => {
+    if (!deckView.length) return;
+    isFront = !isFront;
+    // If flipping FROM front via manual flip, we don't lock unsure.
+    if(isFront) { unsureLocked = false; } 
+    render();
+};
 
-  const card = deckView[index];
-  const frontIsEnglish = computeFrontForCard(card);
-  const showEnglishFace = isFront ? frontIsEnglish : !frontIsEnglish;
-  const japaneseFaceShowing = !showEnglishFace;
-  const content = faceContent(card, showEnglishFace);
-
-  badgeLeft.textContent = `${card.set}`;
-  badgeRight.textContent = `${card.category}${optIncorrectOnly.checked ? " · Incorrect Only" : ""}`;
-  const hideMeta = isFront && !showHintOnFront;
-  badgeLeft.classList.toggle("hidden", hideMeta);
-  badgeRight.classList.toggle("hidden", hideMeta);
-  if (btnHint) btnHint.classList.toggle("hidden", !isFront);
-
-  bigEl.textContent = content.big;
-  const isVocabJapaneseFace = (card.type === "vocab") && japaneseFaceShowing;
-  if (isVocabJapaneseFace && content.mid) {
-    midJpEl.textContent = content.mid; midJpEl.classList.remove("hidden");
-    midTxtEl.classList.add("hidden"); midTxtEl.textContent = "";
-  } else {
-    midJpEl.classList.add("hidden"); midTxtEl.classList.remove("hidden");
-    midTxtEl.textContent = content.mid || (isFront ? "Click to flip" : "");
-  }
-  smallEl.textContent = content.small || "";
-  statsEl.textContent = `Card ${index + 1} / ${deckView.length} · ${isFront ? "Front" : "Back"}`;
-
-  const navDisabled = deckView.length <= 1;
-  el("btn_prev").disabled = navDisabled; el("btn_next").disabled = navDisabled; el("btn_flip").disabled = false;
-  updateActionState();
-
-  const canSpeakNow = speechSupported && japaneseFaceShowing;
-  if (btnSpeakIcon) { btnSpeakIcon.classList.toggle("hidden", !canSpeakNow); btnSpeakIcon.disabled = !canSpeakNow; }
-  
-  if (canSpeakNow && card) {
-    setTimeout(() => { speakJapaneseForCard(card); }, 50);
-  }
-}
-
-function flip() { showHintOnFront = false; unsureLocked = false; if (!deckView.length) return; isFront = !isFront; render(); }
-function next() { showHintOnFront = false; unsureLocked = false; if (!deckView.length) return; index = (index + 1) % deckView.length; isFront = true; render(); }
-function prev() { showHintOnFront = false; if (!deckView.length) return; index = (index - 1 + deckView.length) % deckView.length; isFront = true; render(); }
-
-function markCorrect() { if (!deckView.length) return; if (isFront) { showToast("Flip first."); return; } showToast("Correct."); if (deckView.length > 1) next(); else { isFront = true; render(); } }
-function markIncorrect() { if (!deckView.length) return; if (isFront) { showToast("Flip first."); return; } const card = deckView[index]; missed.add(card.id); applyIncorrectOnlyView(); showToast("Incorrect."); if (deckView.length > 1) next(); else { isFront = true; render(); } }
-function markUnsure() { if (!deckView.length) return; const card = deckView[index]; missed.add(card.id); applyIncorrectOnlyView(); if (isFront) { isFront = false; unsureLocked = true; render(); } else { showToast("Incorrect."); if (deckView.length > 1) next(); else { isFront = true; render(); } } }
-
-function clearMisses() { missed.clear(); applyIncorrectOnlyView(); index = 0; isFront = true; render(); showToast("Cleared list."); }
-function resetUI() { selAll.checked = false; selEssentials.checked = false; selCore.checked = true; selHira.checked = false; selKata.checked = false; selBasic.checked = false; byCategoryEl.value = ""; optRandomSide.checked = true; optShuffle.checked = true; optLimit.value = 0; optIncorrectOnly.checked = false; deckAll = []; deckView = []; index = 0; isFront = true; perCardFrontIsEnglish = new Map(); missed.clear(); if (speechSupported) window.speechSynthesis.cancel(); render(); }
-
-function syncSelectAllCheckbox() {
-  const allChecked = selEssentials.checked && selCore.checked && selBasic.checked && selHira.checked && selKata.checked;
-  const noneChecked = !selEssentials.checked && !selCore.checked && !selBasic.checked && !selHira.checked && !selKata.checked;
-  selAll.indeterminate = !allChecked && !noneChecked;
-  selAll.checked = allChecked;
-}
-selAll.addEventListener("change", () => { const v = selAll.checked; [selEssentials, selCore, selBasic, selHira, selKata].forEach(cb => cb.checked = v); syncSelectAllCheckbox(); });
-[selEssentials, selCore, selBasic, selHira, selKata].forEach(cb => cb.addEventListener("change", syncSelectAllCheckbox));
-
-el("btn_build").addEventListener("click", rebuildDeck);
-el("btn_reset").addEventListener("click", resetUI);
-el("btn_flip").addEventListener("click", flip);
 el("btn_next").addEventListener("click", next);
 el("btn_prev").addEventListener("click", prev);
-el("btn_correct").addEventListener("click", (e) => { e.stopPropagation(); markCorrect(); });
-el("btn_incorrect").addEventListener("click", (e) => { e.stopPropagation(); markIncorrect(); });
-el("btn_unsure").addEventListener("click", (e) => { e.stopPropagation(); markUnsure(); });
-if (btnSpeakIcon) btnSpeakIcon.addEventListener("click", (e) => { e.stopPropagation(); speakJapaneseForCard(getCurrentCard()); });
-el("btn_clearMisses").addEventListener("click", clearMisses);
-optIncorrectOnly.addEventListener("change", () => { applyIncorrectOnlyView(); index = 0; isFront = true; render(); });
-
-if (btnHint) btnHint.addEventListener("click", (e) => { e.stopPropagation(); if (!deckView.length) return; showHintOnFront = true; render(); });
-
-if (btnSettings && btnCloseSettings) {
-  function isMobileViewport(){ return window.matchMedia("(max-width: 720px)").matches; }
-  function updateSettingsButtons(){
-    const studying = document.body.classList.contains("studying") && isMobileViewport();
-    btnSettings.classList.toggle("hidden", !studying);
-    btnCloseSettings.classList.toggle("hidden", !(studying && mobileSettingsOpen));
-  }
-  function toggleSettingsOverlay(open){
-    mobileSettingsOpen = (open !== undefined) ? !!open : !mobileSettingsOpen;
-    document.body.classList.toggle("showSettings", mobileSettingsOpen);
-    updateSettingsButtons();
-  }
-  btnSettings.addEventListener("click", (e)=>{ e.stopPropagation(); toggleSettingsOverlay(true); });
-  btnCloseSettings.addEventListener("click", (e)=>{ e.stopPropagation(); toggleSettingsOverlay(false); });
-  window.addEventListener("resize", updateSettingsButtons);
-}
-
+el("btn_flip").addEventListener("click", flip);
 cardEl.addEventListener("click", flip);
-window.addEventListener("keydown", (e) => {
-  if (e.key === " " || e.code === "Space" || e.key === "ArrowUp" || e.key === "ArrowDown") { e.preventDefault(); flip(); }
-  if (e.key === "ArrowRight") next();
-  if (e.key === "ArrowLeft") prev();
+
+// Grading
+el("btn_correct").addEventListener("click", (e) => { e.stopPropagation(); showToast("Correct"); next(); });
+el("btn_incorrect").addEventListener("click", (e) => { 
+    e.stopPropagation(); 
+    const c = deckView[index]; 
+    missed.add(c.id); 
+    showToast("Incorrect"); 
+    next(); 
+});
+el("btn_unsure").addEventListener("click", (e) => { 
+    e.stopPropagation(); 
+    const c = deckView[index]; 
+    missed.add(c.id); 
+    // Reveal answer, but stay on card
+    isFront = false; 
+    unsureLocked = true; 
+    showToast("Marked Incorrect. Answer revealed.");
+    render(); 
 });
 
-populateCategoryDropdown();
-syncSelectAllCheckbox();
-initSpeech();
-render();
-</script>
-  </style>
-</head>
+// Hint
+btnHint.addEventListener("click", (e) => {
+    e.stopPropagation();
+    showHintOnFront = true;
+    render();
+});
 
-<body>
-    <script>
-/* ========= App Logic — v1.6.6 ========= */
+// Settings & Toggles
+el("sel_all").addEventListener("change", (e) => {
+    [el("sel_essentials"), el("sel_core"), el("sel_basic"), el("sel_hira"), el("sel_kata")].forEach(b => b.checked = e.target.checked);
+});
+el("btn_clearMisses").addEventListener("click", () => { 
+    missed.clear(); 
+    if(el("opt_incorrectOnly").checked) rebuildDeck(); 
+    else { updateMissCount(); showToast("Misses cleared"); }
+});
+el("opt_incorrectOnly").addEventListener("change", rebuildDeck);
 
-// Logic starts here...
-const VOCAB = VOCAB_DATA; // Connect to external data
-const HIRAGANA = HIRAGANA_DATA;
-const KATAKANA = KATAKANA_DATA;
+// Dropdown population
+const allCats = new Set();
+Object.values(VOCAB).forEach(s => Object.keys(s).forEach(c => allCats.add(c)));
+// Add Gojuon for kana if not present (usually implicit)
+allCats.add("Gojūon");
+Array.from(allCats).sort().forEach(c => {
+    const o = document.createElement("option");
+    o.value = c; o.textContent = c;
+    byCategoryEl.appendChild(o);
+});
 
-// Copy and paste the rest of the original JavaScript logic from Build 28
-// including the render(), speak(), and buildDeck() functions.
-
-// ADD THIS SPECIFIC RENDER CHANGE FOR KANA:
-function faceContent(card, showEnglishFace) {
-  if (card.type === "kana") {
-    if (showEnglishFace) {
-      return { big: card.romaji.toUpperCase(), mid: `Pronunciation: ${card.pronunciation}`, small: `Kana: ${card.japanese}` };
-    } else {
-      // GOAL MET: Japanese side shows large character + romaji only
-      return { big: card.japanese, mid: card.romaji, small: "" };
-    }
-  }
-  // ... rest of faceContent() ...
+// Init
+if (window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = () => {
+        const voices = window.speechSynthesis.getVoices();
+        jaVoice = voices.find(v => v.lang.toLowerCase().includes("ja")) || null;
+    };
 }
-
-// ADD THIS AUTOPLAY LOGIC IN render():
-if (canSpeakNow && card) {
-    setTimeout(() => {
-        speakJapaneseForCard(card);
-    }, 50);
-}
+render(); // Initial empty state
 </script>
 </body>
 </html>
-
