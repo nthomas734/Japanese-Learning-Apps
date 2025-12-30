@@ -3,10 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Japanese Flash Cards — v1.6.6 (Stable Restore)</title>
+  <title>Japanese Flash Cards — v1.9.0</title>
 
   <style>
-    /* --- RESTORED v1.6.2 STYLING --- */
     :root{
       --bg:#0b0d12;
       --panel:#121622;
@@ -32,7 +31,6 @@
     body{
       margin:0;
       font-family:var(--sans);
-      /* THE CRITICAL GRADIENT BACKGROUND */
       background: radial-gradient(1200px 700px at 30% -10%, rgba(122,162,255,.28), transparent 60%),
                   radial-gradient(900px 700px at 80% 10%, rgba(61,220,151,.18), transparent 60%),
                   radial-gradient(900px 700px at 10% 60%, rgba(255,93,108,.12), transparent 60%),
@@ -84,6 +82,12 @@
       display:flex; align-items:center; justify-content:space-between; gap:12px;
     }
     .panel .bd{ padding:14px; }
+    
+    .section-label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted2);
+      margin: 16px 0 8px; font-weight: 700;
+    }
+    .section-label:first-of-type { margin-top: 0; }
 
     .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
     .row + .row{margin-top:10px}
@@ -125,7 +129,6 @@
     .flashcard {
       position:relative; min-height:300px; border-radius:22px;
       border:1px solid rgba(255,255,255,.10);
-      /* THE CARD GRADIENT */
       background:
         radial-gradient(1200px 420px at 50% -30%, rgba(122,162,255,.22), transparent 60%),
         linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
@@ -133,12 +136,11 @@
       padding:18px 18px 16px; overflow:hidden;
       display:flex; flex-direction:column; justify-content:space-between;
       user-select:none; cursor:pointer;
-      /* Add padding bottom for action buttons */
       padding-bottom:86px; 
     }
 
     .btn-audio-card {
-      position: absolute; top: 12px; right: 12px; z-index: 10;
+      position: absolute; top: 58px; right: 12px; z-index: 10;
       background: rgba(255,255,255,0.05); border: 1px solid var(--border);
       border-radius: 50%; width: 38px; height: 38px; padding: 0;
       display: flex; align-items: center; justify-content: center; color: var(--accent);
@@ -162,10 +164,14 @@
       gap:10px; padding:26px 6px 10px; text-align:center; flex:1;
     }
 
-    .big{ font-size:44px; font-weight:800; letter-spacing:.6px; line-height:1.08; }
+    .big{ font-size:44px; font-weight:800; letter-spacing:.6px; line-height:1.08; transition: font-size 0.2s; }
+    .super-big { font-size: 120px; font-weight: 800; line-height: 1.1; margin-bottom: 10px; }
+
     .mid_jp{ font-size:22px; font-weight:750; letter-spacing:.2px; line-height:1.1; color:var(--text); }
     .mid_txt{ font-size:18px; color:var(--muted); font-weight:650; }
     .smallLine{ font-size:14px; color:var(--muted2); }
+    
+    .kana-sub { font-size:32px; font-weight:700; color:var(--text); opacity:1; margin-top:8px; }
 
     .controls{ display:flex; flex-direction:column; gap:10px; margin-top:12px; }
     .controls .row{justify-content:center}
@@ -201,7 +207,7 @@
   <header>
     <div class="title">
       <h1>Japanese Flash Cards</h1>
-      <div class="sub"><span class="ver">v1.6.6 · Stable Restore</span></div>
+      <div class="sub"><span class="ver">v1.9.0</span></div>
     </div>
     <div class="badgeTop" title="Local, single-file app"><span class="dot"></span><span class="mono">offline-ready</span></div>
   </header>
@@ -210,16 +216,26 @@
     <section class="panel" id="sidebar">
       <h2>Study Sets <button id="btn_closeSettings" class="ghost closeSettings hidden" type="button">Close</button></h2>
       <div class="bd">
+        <div class="section-label">Vocabulary</div>
         <div class="row">
-          <div class="pill"><input id="sel_all" type="checkbox" /><label for="sel_all"><b>Select All</b></label></div>
+          <div class="pill"><input id="sel_all_vocab" type="checkbox" /><label for="sel_all_vocab">Select All</label></div>
         </div>
-        <div class="row" style="margin-top:10px">
+        <div class="row">
           <div class="pill"><input id="sel_essentials" type="checkbox" checked /><label for="sel_essentials">Essentials</label></div>
-          <div class="pill"><input id="sel_core" type="checkbox" checked /><label for="sel_core">Core Travel Vocabulary</label></div>
+          <div class="pill"><input id="sel_travel" type="checkbox" checked /><label for="sel_travel">Travel Vocab</label></div>
           <div class="pill"><input id="sel_basic" type="checkbox" /><label for="sel_basic">Basic Japanese Words</label></div>
+        </div>
+
+        <div class="section-label">Japanese Scripts</div>
+        <div class="row">
+          <div class="pill"><input id="sel_all_scripts" type="checkbox" /><label for="sel_all_scripts">Select All</label></div>
+        </div>
+        <div class="row">
           <div class="pill"><input id="sel_hira" type="checkbox" /><label for="sel_hira">Hiragana</label></div>
           <div class="pill"><input id="sel_kata" type="checkbox" /><label for="sel_kata">Katakana</label></div>
+          <div class="pill"><input id="sel_kanji" type="checkbox" /><label for="sel_kanji">Kanji</label></div>
         </div>
+
         <div class="row" style="margin-top:14px;">
           <div style="flex:1; min-width:220px;">
             <div class="small" style="margin:0 0 6px 2px;">Build by Category (optional override)</div>
@@ -233,13 +249,35 @@
         <div class="row" style="margin-top:10px;">
           <div class="muted">Select one or more sets, then click <b>Build Deck</b>.</div>
         </div>
-        <div class="row" style="margin-top:10px;">
+        
+        <div class="row" style="margin-top:14px; gap: 14px;">
           <div class="pill"><input id="opt_shuffle" type="checkbox" checked /><label for="opt_shuffle">Shuffle</label></div>
-          <div class="pill"><input id="opt_randomSide" type="checkbox" checked /><label for="opt_randomSide">Random side</label></div>
           <div class="pill"><input id="opt_incorrectOnly" type="checkbox" /><label for="opt_incorrectOnly">Incorrect-only view</label></div>
-          <div class="pill"><input id="opt_limit" type="number" min="0" value="0" style="width:80px" /><label for="opt_limit">Limit (0 = no limit)</label></div>
         </div>
-        <div class="row" style="margin-top:10px;">
+
+        <div class="row" style="margin-top:12px; align-items:flex-start;">
+           <div style="flex:1;">
+            <div class="small" style="margin:0 0 6px 2px;">Starting Side</div>
+            <select id="opt_side_mode">
+                <option value="random">Random</option>
+                <option value="jp">Japanese</option>
+                <option value="en">English</option>
+            </select>
+          </div>
+          <div style="flex:1;">
+            <div class="small" style="margin:0 0 6px 2px;">Card Limit</div>
+            <select id="opt_limit_select">
+                <option value="0">All</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:14px;">
           <button id="btn_clearMisses" class="ghost" type="button">Clear incorrect list</button>
           <div class="small mono" id="missCount">Incorrect: 0</div>
         </div>
@@ -247,7 +285,7 @@
     </section>
 
     <section class="panel" id="workspace">
-      <h2>Study <span class="small mono">v1.6.6</span></h2>
+      <h2>Study <span class="small mono">v1.9.0</span></h2>
       <div class="bd">
         <div class="flashcard" id="card" tabindex="0" title="Click to flip">
           <button id="btn_speak" class="btn-audio-card hidden" type="button" title="Play Audio">
@@ -285,20 +323,21 @@
   </main>
 
 <script>
-/* ========= Japanese Flash Cards — v1.6.6 (Stable Restore) ========= */
-const APP = { version: "1.6.6", build: 32 };
+/* ========= Japanese Flash Cards — v1.9.0 ========= */
+const APP = { version: "1.9.0", build: 38 };
 
 const SETS = {
   ESSENTIALS: "Essentials",
-  CORE: "Core Travel Vocabulary",
+  TRAVEL: "Travel Vocab",
   BASIC: "Basic Japanese Words",
   HIRAGANA: "Hiragana",
-  KATAKANA: "Katakana"
+  KATAKANA: "Katakana",
+  KANJI: "Kanji"
 };
 
-/* --- EMBEDDED DATA START (Restored for Build Deck Functionality) --- */
+/* --- EMBEDDED DATA START --- */
 const VOCAB = {
-  "Essentials": {
+  [SETS.ESSENTIALS]: {
     "Essentials": [
       { english: "Excuse me / Sorry", japanese: "すみません", romaji: "Sumimasen", pronunciation: "soo-mee-mah-sen" },
       { english: "Thank you very much", japanese: "ありがとうございます", romaji: "Arigatō gozaimasu", pronunciation: "ah-ree-gah-toh goh-zah-ee-mas" },
@@ -322,7 +361,7 @@ const VOCAB = {
       { english: "Can I get the check / bill please", japanese: "お会計お願いします", romaji: "Okaikei onegaishimasu", pronunciation: "oh-kai-kay oh-neh-guy-shee-mas" }
     ]
   },
-  "Core Travel Vocabulary": {
+  [SETS.TRAVEL]: {
     "Restaurants": [
       { english: "Beer, one more", japanese: "ビールもう一杯", romaji: "Bīru mō ippai", pronunciation: "bee-roo moh ee-pie" },
       { english: "Reservation", japanese: "よやく", romaji: "Yoyaku", pronunciation: "yoh-yah-koo" }
@@ -366,7 +405,7 @@ const VOCAB = {
       { english: "Afternoon / p.m.", japanese: "ごご", romaji: "Gogo", pronunciation: "goh-goh" }
     ]
   },
-  "Basic Japanese Words": {
+  [SETS.BASIC]: {
     "Key Phrases": [
       { english: "Yes", japanese: "はい", romaji: "Hai", pronunciation: "hai" },
       { english: "No", japanese: "いいえ", romaji: "Iie", pronunciation: "ee-eh" },
@@ -598,6 +637,31 @@ const KATAKANA = [
   ["ラ","ra","rah"],["リ","ri","ree"],["ル","ru","roo"],["レ","re","reh"],["ロ","ro","roh"],
   ["ワ","wa","wah"],["ヲ","wo (o)","woh"],["ン","n","n"]
 ];
+
+const KANJI = [
+  {j:"一",e:"One",r:"ichi"},{j:"二",e:"Two",r:"ni"},{j:"三",e:"Three",r:"san"},{j:"四",e:"Four",r:"yon"},{j:"五",e:"Five",r:"go"},
+  {j:"六",e:"Six",r:"roku"},{j:"七",e:"Seven",r:"nana"},{j:"八",e:"Eight",r:"hachi"},{j:"九",e:"Nine",r:"kyū"},{j:"十",e:"Ten",r:"jū"},
+  {j:"人",e:"Person",r:"hito"},{j:"今",e:"Now",r:"ima"},{j:"日",e:"Day/Sun",r:"hi/nichi"},{j:"週",e:"Week",r:"shū"},{j:"月",e:"Month/Moon",r:"tsuki/getsu"},
+  {j:"年",e:"Year",r:"toshi/nen"},{j:"中",e:"Inside/Middle",r:"naka/chū"},{j:"山",e:"Mountain",r:"yama"},{j:"川",e:"River",r:"kawa"},
+  {j:"左",e:"Left",r:"hidari"},{j:"右",e:"Right",r:"migi"},{j:"大",e:"Big",r:"ōkī/dai"},{j:"木",e:"Tree",r:"ki"},{j:"本",e:"Book/Root",r:"hon"},
+  {j:"水",e:"Water",r:"mizu"},{j:"火",e:"Fire",r:"hi"},{j:"父",e:"Father",r:"chichi"},{j:"母",e:"Mother",r:"haha"},
+  {j:"耳",e:"Ear",r:"mimi"},{j:"口",e:"Mouth",r:"kuchi"},{j:"休",e:"Rest",r:"yasumu"},{j:"何",e:"What",r:"nani"},{j:"入",e:"Enter",r:"hairu"},
+  {j:"上",e:"Up/Above",r:"ue"},{j:"前",e:"Before/Front",r:"mae"},{j:"下",e:"Down/Below",r:"shita"},{j:"千",e:"Thousand",r:"sen"},
+  {j:"午",e:"Noon",r:"go"},{j:"友",e:"Friend",r:"tomo"},{j:"古",e:"Old",r:"furui"},{j:"名",e:"Name",r:"na"},{j:"国",e:"Country",r:"kuni"},
+  {j:"外",e:"Outside",r:"soto/gai"},{j:"女",e:"Woman",r:"onna"},{j:"男",e:"Man",r:"otoko"},{j:"子",e:"Child",r:"ko"},
+  {j:"学",e:"Study",r:"gaku"},{j:"生",e:"Life/Born",r:"sei/iki"},{j:"小",e:"Small",r:"chīsai"},{j:"書",e:"Write",r:"kaku"},{j:"毎",e:"Every",r:"mai"},
+  {j:"先",e:"Previous/Ahead",r:"saki/sen"},{j:"会",e:"Meet",r:"au/kai"},{j:"万",e:"Ten Thousand",r:"man"},{j:"円",e:"Yen/Circle",r:"en"},
+  {j:"出",e:"Exit",r:"deru"},{j:"分",e:"Minute/Part",r:"fun/bun"},{j:"北",e:"North",r:"kita"},{j:"半",e:"Half",r:"han"},{j:"南",e:"South",r:"minami"},
+  {j:"土",e:"Earth/Soil",r:"tsuchi"},{j:"多",e:"Many",r:"ōi"},{j:"天",e:"Heaven",r:"ten"},{j:"安",e:"Cheap/Safe",r:"yasui"},{j:"少",e:"Few",r:"sukunai"},
+  {j:"店",e:"Shop",r:"mise"},{j:"後",e:"After",r:"ato/go"},{j:"手",e:"Hand",r:"te"},{j:"新",e:"New",r:"atarashī"},{j:"時",e:"Time",r:"toki/ji"},
+  {j:"来",e:"Come",r:"kuru/rai"},{j:"東",e:"East",r:"higashi"},{j:"校",e:"School",r:"kō"},{j:"気",e:"Spirit/Air",r:"ki"},{j:"白",e:"White",r:"shiro"},
+  {j:"百",e:"Hundred",r:"hyaku"},{j:"目",e:"Eye",r:"me"},{j:"社",e:"Company/Shrine",r:"sha"},{j:"空",e:"Sky/Empty",r:"sora"},{j:"立",e:"Stand",r:"tatsu"},
+  {j:"聞",e:"Listen",r:"kiku"},{j:"花",e:"Flower",r:"hana"},{j:"行",e:"Go",r:"iku"},{j:"西",e:"West",r:"nishi"},{j:"見",e:"See",r:"miru"},
+  {j:"言",e:"Say",r:"iu"},{j:"話",e:"Speak",r:"hanasu"},{j:"語",e:"Language",r:"go"},{j:"読",e:"Read",r:"yomu"},
+  {j:"買",e:"Buy",r:"kau"},{j:"足",e:"Leg/Foot",r:"ashi"},{j:"車",e:"Car",r:"kuruma"},{j:"道",e:"Road",r:"michi"},{j:"金",e:"Gold/Money",r:"kane/kin"},
+  {j:"長",e:"Long",r:"nagai"},{j:"間",e:"Interval/Between",r:"aida/kan"},{j:"雨",e:"Rain",r:"ame"},{j:"電",e:"Electricity",r:"den"},
+  {j:"食",e:"Eat",r:"taberu/shoku"},{j:"飲",e:"Drink",r:"nomu"},{j:"駅",e:"Station",r:"eki"},{j:"高",e:"High/Expensive",r:"takai"},{j:"魚",e:"Fish",r:"sakana"}
+];
 /* --- EMBEDDED DATA END --- */
 
 function slug(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,""); }
@@ -621,6 +685,14 @@ function buildKanaCards(setName, kanaArr) {
     id: `${slug(setName)}:kana:${slug(ch)}:${slug(romaji)}`,
     set: setName, category: "Gojūon", type: "kana",
     english: romaji, japanese: ch, romaji, pronunciation: pron
+  }));
+}
+
+function buildKanjiCards(setName, kanjiArr) {
+  return kanjiArr.map(k => ({
+    id: `${slug(setName)}:kanji:${slug(k.j)}`,
+    set: setName, category: "Kanji", type: "kanji",
+    english: k.e, japanese: k.j, romaji: k.r, pronunciation: k.r
   }));
 }
 
@@ -673,19 +745,20 @@ const toastEl = el("toast");
 const missCountEl = el("missCount");
 const byCategoryEl = el("by_category");
 
-const selAll = el("sel_all");
+const selAllVocab = el("sel_all_vocab");
+const selAllScripts = el("sel_all_scripts");
 const selEssentials = el("sel_essentials");
-const selCore = el("sel_core");
+const selTravel = el("sel_travel");
+const selBasic = el("sel_basic");
 const selHira = el("sel_hira");
 const selKata = el("sel_kata");
-const selBasic = el("sel_basic");
+const selKanji = el("sel_kanji");
 
-const optRandomSide = el("opt_randomSide");
 const optShuffle = el("opt_shuffle");
-const optLimit = el("opt_limit");
+const optLimitSelect = el("opt_limit_select");
+const optSideMode = el("opt_side_mode");
 const optIncorrectOnly = el("opt_incorrectOnly");
 
-/* UPDATE: New Icon Button */
 const btnSpeak = el("btn_speak");
 const btnHint = el("btn_hint");
 const btnSettings = el("btn_settings");
@@ -707,10 +780,11 @@ function updateMissCount() { missCountEl.textContent = `Incorrect: ${missed.size
 function selectedSets() {
   const sets = [];
   if (selEssentials.checked) sets.push(SETS.ESSENTIALS);
-  if (selCore.checked) sets.push(SETS.CORE);
+  if (selTravel.checked) sets.push(SETS.TRAVEL);
   if (selBasic.checked) sets.push(SETS.BASIC);
   if (selHira.checked) sets.push(SETS.HIRAGANA);
   if (selKata.checked) sets.push(SETS.KATAKANA);
+  if (selKanji.checked) sets.push(SETS.KANJI);
   return sets;
 }
 
@@ -750,6 +824,7 @@ function getAllAvailableCategories() {
     for (const catName of Object.keys(VOCAB[setName] || {})) cats.add(catName);
   }
   cats.add("Gojūon");
+  cats.add("Kanji");
   return Array.from(cats).sort((a,b) => a.localeCompare(b));
 }
 
@@ -776,8 +851,11 @@ function buildDeckByCategory(category) {
     cards.push(...buildKanaCards(SETS.HIRAGANA, HIRAGANA));
     cards.push(...buildKanaCards(SETS.KATAKANA, KATAKANA));
   }
+  if (category === "Kanji") {
+    cards.push(...buildKanjiCards(SETS.KANJI, KANJI));
+  }
   cards = dedupeCards(cards);
-  const limit = parseInt(optLimit.value || "0", 10);
+  const limit = parseInt(optLimitSelect.value, 10);
   if (optShuffle.checked) shuffleInPlace(cards);
   if (limit > 0) cards = cards.slice(0, limit);
   return cards;
@@ -804,10 +882,11 @@ function rebuildDeck() {
     for (const s of sets) {
       if (s === SETS.HIRAGANA) cards.push(...buildKanaCards(SETS.HIRAGANA, HIRAGANA));
       else if (s === SETS.KATAKANA) cards.push(...buildKanaCards(SETS.KATAKANA, KATAKANA));
+      else if (s === SETS.KANJI) cards.push(...buildKanjiCards(SETS.KANJI, KANJI));
       else cards.push(...buildCardsFromVocab(s));
     }
     cards = dedupeCards(cards);
-    const limit = parseInt(optLimit.value || "0", 10);
+    const limit = parseInt(optLimitSelect.value, 10);
     if (optShuffle.checked) shuffleInPlace(cards);
     if (limit > 0) cards = cards.slice(0, limit);
   }
@@ -826,10 +905,16 @@ function rebuildDeck() {
 }
 
 function computeFrontForCard(card) {
-  if (!optRandomSide.checked) {
-    if (card.type === "kana") return false;
-    return true;
-  }
+  const mode = optSideMode.value;
+  
+  if (mode === "jp") return false; // Force Japanese Side
+  if (mode === "en") return true;  // Force English Side
+
+  // RANDOM MODE LOGIC
+  // If random, allow Scripts (Kana/Kanji) to default to Japanese side, unless manually flipped later
+  if (card.type === "kana" || card.type === "kanji") return false;
+
+  // Otherwise, random for vocab
   if (perCardFrontIsEnglish.has(card.id)) return perCardFrontIsEnglish.get(card.id);
   const val = Math.random() < 0.5;
   perCardFrontIsEnglish.set(card.id, val);
@@ -837,15 +922,29 @@ function computeFrontForCard(card) {
 }
 
 function faceContent(card, showEnglishFace) {
+  // KANA
   if (card.type === "kana") {
     if (showEnglishFace) {
-      return { big: card.romaji.toUpperCase(), mid: `Pronunciation: ${card.pronunciation}`, small: `Kana: ${card.japanese}` };
+      // Back side: Romaji, Pronunciation, Large Kana (no 'Kana:' label)
+      return { big: card.romaji.toUpperCase(), mid: `Pronunciation: ${card.pronunciation}`, small: card.japanese };
     } else {
-      // FIX FROM 1.6.6: Japanese side shows large character + romaji only
-      return { big: card.japanese, mid: card.romaji, small: "" };
+      // Front side: Strict big kana
+      return { big: card.japanese, mid: "", small: "" };
     }
   }
 
+  // KANJI
+  if (card.type === "kanji") {
+    if (showEnglishFace) {
+      // Back side: Meaning (English), Reading (Romaji), Character
+      return { big: card.english, mid: `Reading: ${card.romaji}`, small: card.japanese };
+    } else {
+      // Front side: Strict big Kanji
+      return { big: card.japanese, mid: "", small: "" };
+    }
+  }
+
+  // VOCAB
   if (showEnglishFace) return { big: card.english, mid: "", small: "" };
 
   return {
@@ -896,7 +995,6 @@ function speakJapaneseForCard(card) {
     if (jaVoice) u.voice = jaVoice;
     u.rate = 0.95;
     u.pitch = 1.0;
-    // Removed onstart toast to reduce noise during autoplay
     u.onerror = () => showToast("Unable to play speech.");
     window.speechSynthesis.speak(u);
   } catch {
@@ -955,6 +1053,13 @@ function render() {
   if (btnHint) btnHint.classList.toggle("hidden", !isFront);
 
   bigEl.textContent = content.big;
+  
+  // Apply Super Big class for Kana/Kanji characters on Japanese face (Front)
+  if ((card.type === "kana" || card.type === "kanji") && japaneseFaceShowing) {
+    bigEl.classList.add("super-big");
+  } else {
+    bigEl.classList.remove("super-big");
+  }
 
   const isVocabJapaneseFace = (card.type === "vocab") && japaneseFaceShowing;
   if (isVocabJapaneseFace && content.mid) {
@@ -970,6 +1075,14 @@ function render() {
   }
 
   smallEl.textContent = content.small || "";
+
+  // Apply "kana-sub" class for Kana/Kanji characters on English face (Back)
+  if ((card.type === "kana" || card.type === "kanji") && showEnglishFace) {
+    smallEl.classList.add("kana-sub");
+  } else {
+    smallEl.classList.remove("kana-sub");
+  }
+
   statsEl.textContent = `Card ${index + 1} / ${deckView.length} · ${isFront ? "Front" : "Back"} · Deck: ${deckAll.length} · Incorrect: ${missed.size}`;
 
   const navDisabled = deckView.length <= 1;
@@ -980,11 +1093,21 @@ function render() {
   updateActionState();
 
   /* UPDATE: Audio Logic */
-  const canSpeakNow = speechSupported && japaneseFaceShowing;
+  let canSpeakNow = false;
+  if (speechSupported) {
+    if (card.type === "kana" || card.type === "kanji") {
+        // Scripts: Speak only if showing English (Back/Answer) side
+        canSpeakNow = showEnglishFace;
+    } else {
+        // Vocab: Speak only if showing Japanese side
+        canSpeakNow = japaneseFaceShowing;
+    }
+  }
+  
   btnSpeak.classList.toggle("hidden", !canSpeakNow);
   btnSpeak.disabled = !canSpeakNow;
   
-  // UPDATE: Autoplay Trigger (From 1.6.6)
+  // Autoplay
   if (canSpeakNow && card) {
     setTimeout(() => {
        speakJapaneseForCard(card);
@@ -1082,17 +1205,19 @@ function clearMisses() { missed.clear(); applyIncorrectOnlyView(); index = 0; is
 
 
 function resetUI() {
-  selAll.checked = false;
+  selAllVocab.checked = false;
+  selAllScripts.checked = false;
   selEssentials.checked = false;
-  selCore.checked = true;
+  selTravel.checked = true;
+  selBasic.checked = false;
   selHira.checked = false;
   selKata.checked = false;
-  selBasic.checked = false;
+  selKanji.checked = false;
 
   byCategoryEl.value = "";
-  optRandomSide.checked = true;
   optShuffle.checked = true;
-  optLimit.value = 0;
+  optLimitSelect.value = "0";
+  optSideMode.value = "random";
   optIncorrectOnly.checked = false;
 
   deckAll = [];
@@ -1113,22 +1238,38 @@ function resetUI() {
 }
 
 
-function syncSelectAllCheckbox() {
-  const allChecked = selEssentials.checked && selCore.checked && selBasic.checked && selHira.checked && selKata.checked;
-  const noneChecked = !selEssentials.checked && !selCore.checked && !selBasic.checked && !selHira.checked && !selKata.checked;
-  selAll.indeterminate = !allChecked && !noneChecked;
-  selAll.checked = allChecked;
+function syncSelectAllVocab() {
+  const allChecked = selEssentials.checked && selTravel.checked && selBasic.checked;
+  const noneChecked = !selEssentials.checked && !selTravel.checked && !selBasic.checked;
+  selAllVocab.indeterminate = !allChecked && !noneChecked;
+  selAllVocab.checked = allChecked;
 }
-selAll.addEventListener("change", () => {
-  const v = selAll.checked;
+
+function syncSelectAllScripts() {
+  const allChecked = selHira.checked && selKata.checked && selKanji.checked;
+  const noneChecked = !selHira.checked && !selKata.checked && !selKanji.checked;
+  selAllScripts.indeterminate = !allChecked && !noneChecked;
+  selAllScripts.checked = allChecked;
+}
+
+selAllVocab.addEventListener("change", () => {
+  const v = selAllVocab.checked;
   selEssentials.checked = v;
-  selCore.checked = v;
+  selTravel.checked = v;
   selBasic.checked = v;
+  syncSelectAllVocab();
+});
+
+selAllScripts.addEventListener("change", () => {
+  const v = selAllScripts.checked;
   selHira.checked = v;
   selKata.checked = v;
-  syncSelectAllCheckbox();
+  selKanji.checked = v;
+  syncSelectAllScripts();
 });
-[selEssentials, selCore, selBasic, selHira, selKata].forEach(cb => cb.addEventListener("change", syncSelectAllCheckbox));
+
+[selEssentials, selTravel, selBasic].forEach(cb => cb.addEventListener("change", syncSelectAllVocab));
+[selHira, selKata, selKanji].forEach(cb => cb.addEventListener("change", syncSelectAllScripts));
 
 el("btn_build").addEventListener("click", rebuildDeck);
 el("btn_reset").addEventListener("click", resetUI);
@@ -1203,7 +1344,8 @@ window.addEventListener("keydown", (e) => {
 });
 
 populateCategoryDropdown();
-syncSelectAllCheckbox();
+syncSelectAllVocab();
+syncSelectAllScripts();
 initSpeech();
 render();
 </script>
