@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Nathan's Japanese Flash Cards — v1.11.0</title>
+  <title>Japanese Flash Cards — v1.12.3</title>
 
   <style>
     :root{
@@ -50,7 +50,6 @@
     .title{ display:flex; flex-direction:column; gap:6px; }
     .title h1{ margin:0; font-size:22px; letter-spacing:.2px; font-weight:720; }
     
-    /* UPDATED: Subtitle Link Styling */
     .title .sub a { color:var(--muted); text-decoration:none; font-size:13px; border-bottom:1px dotted var(--muted); transition: color 0.2s; }
     .title .sub a:hover { color:var(--accent); border-bottom-color:var(--accent); }
     
@@ -149,14 +148,15 @@
     }
 
     .btn-audio-card {
-      position: absolute; top: 58px; right: 12px; z-index: 10;
-      background: rgba(255,255,255,0.05); border: 1px solid var(--border);
-      border-radius: 50%; width: 38px; height: 38px; padding: 0;
+      position: absolute; top: 52px; right: 12px; z-index: 100;
+      background: rgba(255,255,255,0.08); border: 1px solid var(--border);
+      border-radius: 50%; width: 42px; height: 42px; padding: 0;
       display: flex; align-items: center; justify-content: center; color: var(--accent);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: all 0.2s;
     }
-    .btn-audio-card svg { width: 20px; height: 20px; fill: currentColor; }
-    .btn-audio-card:hover { background: rgba(255,255,255,0.12); transform: scale(1.05); }
+    .btn-audio-card svg { width: 22px; height: 22px; fill: currentColor; }
+    .btn-audio-card:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
+    .btn-audio-card.disabled { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
 
     .badge {
       position:absolute; top: 12px; left: 12px; font-size: 12px; color: var(--muted);
@@ -234,6 +234,10 @@
       height: 32px; font-weight: 700; font-size: 15px; color: var(--text);
     }
     .streak-icon { font-size: 24px; }
+    
+    #storage-status {
+      font-size:11px; margin-top:8px; text-align:center; color:var(--muted2);
+    }
 
     @media (max-width: 720px) {
       main{ grid-template-columns: 1fr; height: auto; }
@@ -253,7 +257,7 @@
   <header>
     <div class="title">
       <h1>Japanese Flash Cards</h1>
-      <div class="sub"><a href="https://github.com/nthomas734/Japanese-Learning-Apps/tree/main" target="_blank">GitHub Repository</a></div>
+      <div class="sub"><a href="https://github.com/nthomas734/Japanese-Learning-Apps/tree/main" target="_blank">Test Repository</a></div>
     </div>
     <div class="badgeTop" title="Local, single-file app"><span class="dot"></span><span class="mono">offline-ready</span></div>
   </header>
@@ -285,15 +289,12 @@
         <div class="row" style="margin-top:14px;">
           <div style="flex:1; min-width:220px;">
             <div class="small" style="margin:0 0 6px 2px;">Build by Category (optional override)</div>
-            <select id="by_category"><option value="">(No override)</option></select>
+            <select id="by_category"><option value="">(None)</option></select>
           </div>
         </div>
         <div class="row" style="margin-top:12px;">
           <button id="btn_build" class="primary" type="button">Build Deck</button>
           <button id="btn_reset" class="ghost" type="button">Reset</button>
-        </div>
-        <div class="row" style="margin-top:10px;">
-          <div class="muted">Select one or more sets, then click <b>Build Deck</b>.</div>
         </div>
         
         <div class="row" style="margin-top:14px; gap: 14px;">
@@ -323,6 +324,14 @@
           </div>
         </div>
 
+        <div class="section-label" style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.1); padding-top:12px;">Data Management</div>
+        <div class="row">
+            <button id="btn_export" class="ghost" style="flex:1;">Export Save</button>
+            <button id="btn_import" class="ghost" style="flex:1;">Import Save</button>
+            <input type="file" id="file_import" style="display:none" accept=".json" />
+        </div>
+        <div id="storage-status">Checking storage...</div>
+
         <div class="row" style="margin-top:14px;">
           <button id="btn_clearMisses" class="ghost" type="button">Clear incorrect list</button>
           <div class="small mono" id="missCount">Incorrect: 0</div>
@@ -332,10 +341,10 @@
 
     <div class="right-col">
         <section class="panel" id="workspace">
-          <h2>Study <span class="small mono">v1.11.0</span></h2>
+          <h2>Study <span class="small mono">v1.12.3</span></h2>
           <div class="bd">
             <div class="flashcard" id="card" tabindex="0" title="Click to flip">
-              <button id="btn_speak" class="btn-audio-card hidden" type="button" title="Play Audio">
+              <button id="btn_speak" class="btn-audio-card" type="button" title="Play Audio">
                 <svg viewBox="0 0 24 24"><path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16.03C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z"></path></svg>
               </button>
 
@@ -378,8 +387,8 @@
   </main>
 
 <script>
-/* ========= Japanese Flash Cards — v1.11.0 ========= */
-const APP = { version: "1.11.0", build: 44 };
+/* ========= Japanese Flash Cards — v1.12.3 ========= */
+const APP = { version: "1.12.3", build: 47, storageKey: "jp_fc_v1" };
 
 const SETS = {
   ESSENTIALS: "Essentials",
@@ -472,7 +481,7 @@ const VOCAB = {
       { english: "Can I get this one? / I'll take this one", japanese: "これください", romaji: "Kore kudasai", pronunciation: "koh-reh koo-dah-sigh" },
       { english: "Please", japanese: "おねがいします", romaji: "Onegaishimasu", pronunciation: "oh-neh-guy-shee-mas" },
       { english: "Can I place an order?", japanese: "注文お願いします", romaji: "Chūmon onegaishimasu", pronunciation: "choo-mohn oh-neh-guy-shee-mas" },
-      { english: "Water please", japanese: "水をお願いします", romaji: "Mizu o onegaishimasu", pronunciation: "mee-zoo oh oh-neh-guy-shee-mas" },
+      { english: "Water please", japanese: "水をお願いします", romaji: "Mizu o onegaishimasu", pronunciation: "mee-zoo oh-neh-guy-shee-mas" },
       { english: "Can I get the check/bill?", japanese: "お会計お願いします", romaji: "Okaikei onegaishimasu", pronunciation: "oh-kai-kay oh-neh-guy-shee-mas" },
       { english: "Where am I?", japanese: "ここはどこですか", romaji: "Koko wa doko desu ka", pronunciation: "koh-koh wah doh-koh dess kah" },
       { english: "Where is the bathroom?", japanese: "トイレはどこですか", romaji: "Toire wa doko desu ka", pronunciation: "toy-reh wah doh-koh dess kah" },
@@ -644,6 +653,196 @@ const KANJI = [
 
 function slug(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,""); }
 
+// LOCAL STORAGE LOGIC
+function checkStorage() {
+    try {
+        const key = "__test_storage__";
+        localStorage.setItem(key, key);
+        localStorage.removeItem(key);
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
+function saveData() {
+  const data = {
+    settings: {
+      essentials: selEssentials.checked,
+      travel: selTravel.checked,
+      basic: selBasic.checked,
+      hira: selHira.checked,
+      kata: selKata.checked,
+      kanji: selKanji.checked,
+      shuffle: optShuffle.checked,
+      incorrectOnly: optIncorrectOnly.checked,
+      sideMode: optSideMode.value,
+      limit: optLimitSelect.value,
+      byCat: byCategoryEl.value
+    },
+    session: {
+      deckIds: deckAll.map(c => c.id),
+      index: index,
+      missed: Array.from(missed),
+      streak: currentStreak,
+      history: answerHistory,
+      correctCount: correctCount,
+      englishFaces: Array.from(perCardFrontIsEnglish.entries())
+    }
+  };
+  
+  const statusEl = document.getElementById("storage-status");
+  try {
+      localStorage.setItem(APP.storageKey, JSON.stringify(data));
+      if(statusEl) {
+          statusEl.textContent = "Auto-saved locally";
+          statusEl.style.color = "var(--good)";
+      }
+  } catch(e) {
+      if(statusEl) {
+          statusEl.textContent = "Auto-save blocked (Use Export)";
+          statusEl.style.color = "var(--bad)";
+      }
+  }
+}
+
+function loadData() {
+  const raw = localStorage.getItem(APP.storageKey);
+  if (!raw) {
+    rebuildDeck();
+    return;
+  }
+  
+  try {
+    const data = JSON.parse(raw);
+    restoreFromObject(data);
+    showToast("Progress loaded.", "good");
+  } catch (e) {
+    console.error("Load failed", e);
+    rebuildDeck();
+  }
+}
+
+function restoreFromObject(data) {
+    if(data.settings) {
+      selEssentials.checked = !!data.settings.essentials;
+      selTravel.checked = !!data.settings.travel;
+      selBasic.checked = !!data.settings.basic;
+      selHira.checked = !!data.settings.hira;
+      selKata.checked = !!data.settings.kata;
+      selKanji.checked = !!data.settings.kanji;
+      optShuffle.checked = !!data.settings.shuffle;
+      optIncorrectOnly.checked = !!data.settings.incorrectOnly;
+      optSideMode.value = data.settings.sideMode || "random";
+      optLimitSelect.value = data.settings.limit || "0";
+      byCategoryEl.value = data.settings.byCat || "";
+      
+      syncSelectAllVocab();
+      syncSelectAllScripts();
+    }
+
+    const allPossible = [];
+    for(const setName of [SETS.ESSENTIALS, SETS.TRAVEL, SETS.BASIC]) {
+       const cats = VOCAB[setName];
+       if(cats) {
+         for(const [cat, items] of Object.entries(cats)) {
+           for(const item of items) {
+             const id = `${slug(setName)}:${slug(cat)}:${slug(item.english)}:${slug(item.japanese)}`;
+             allPossible.push({ id, set: setName, category: cat, type: "vocab", ...item });
+           }
+         }
+       }
+    }
+    allPossible.push(...buildKanaCards(SETS.HIRAGANA, HIRAGANA));
+    allPossible.push(...buildKanaCards(SETS.KATAKANA, KATAKANA));
+    allPossible.push(...buildKanjiCards(SETS.KANJI, KANJI));
+    
+    const cardMap = new Map(allPossible.map(c => [c.id, c]));
+    
+    if (data.session && data.session.deckIds && data.session.deckIds.length > 0) {
+        deckAll = data.session.deckIds.map(id => cardMap.get(id)).filter(c => c);
+        index = data.session.index || 0;
+        missed.clear();
+        (data.session.missed || []).forEach(id => missed.add(id));
+        currentStreak = data.session.streak || 0;
+        answerHistory = data.session.history || [];
+        correctCount = data.session.correctCount || 0;
+        if (data.session.englishFaces) {
+            perCardFrontIsEnglish = new Map(data.session.englishFaces);
+        }
+        applyIncorrectOnlyView();
+        render();
+    } else {
+        rebuildDeck();
+    }
+}
+
+/* EXPORT / IMPORT LOGIC */
+const btnExport = document.getElementById("btn_export");
+const btnImport = document.getElementById("btn_import");
+const fileImport = document.getElementById("file_import");
+
+btnExport.addEventListener("click", () => {
+    const data = {
+        settings: {
+          essentials: selEssentials.checked,
+          travel: selTravel.checked,
+          basic: selBasic.checked,
+          hira: selHira.checked,
+          kata: selKata.checked,
+          kanji: selKanji.checked,
+          shuffle: optShuffle.checked,
+          incorrectOnly: optIncorrectOnly.checked,
+          sideMode: optSideMode.value,
+          limit: optLimitSelect.value,
+          byCat: byCategoryEl.value
+        },
+        session: {
+          deckIds: deckAll.map(c => c.id),
+          index: index,
+          missed: Array.from(missed),
+          streak: currentStreak,
+          history: answerHistory,
+          correctCount: correctCount,
+          englishFaces: Array.from(perCardFrontIsEnglish.entries())
+        }
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "japanese-flashcards-save.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast("Save file exported.", "good");
+});
+
+btnImport.addEventListener("click", () => {
+    fileImport.click();
+});
+
+fileImport.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+        try {
+            const data = JSON.parse(evt.target.result);
+            restoreFromObject(data);
+            saveData(); // Try to persist to local storage too
+            showToast("Progress imported successfully!", "good");
+        } catch (err) {
+            alert("Error parsing save file.");
+        }
+    };
+    reader.readAsText(file);
+    // Reset file input so change triggers again
+    fileImport.value = "";
+});
+
+
 function buildCardsFromVocab(setName) {
   const out = [];
   const categories = VOCAB[setName] || {};
@@ -707,7 +906,7 @@ const missed = new Set();
 
 // Progress & Streak
 let currentStreak = 0;
-let answerHistory = []; // Array of 'correct' | 'incorrect'
+let answerHistory = [];
 let correctCount = 0;
 
 // speech
@@ -803,7 +1002,7 @@ function updateActionState() {
 
   cardActionsEl.classList.remove("hidden");
   btnPrev.disabled = !hasDeck || index === 0;
-  btnNext.disabled = !hasDeck || isDone; // Should be impossible if linear
+  btnNext.disabled = !hasDeck || isDone; 
   btnFlip.disabled = !hasDeck;
 
   const showUnsure = hasDeck && isFront && !unsureLocked;
@@ -828,20 +1027,17 @@ function applyIncorrectOnlyView() {
   if (deckView.length === 0) showToast("No incorrect cards yet.", "warn");
 }
 
-function getAllAvailableCategories() {
+function populateCategoryDropdown() {
+  // FIX: defined 'cats' to match the loop variable below
   const cats = new Set();
   for (const setName of Object.keys(VOCAB)) {
     for (const catName of Object.keys(VOCAB[setName] || {})) cats.add(catName);
   }
   cats.add("Gojūon");
   cats.add("Kanji");
-  return Array.from(cats).sort((a,b) => a.localeCompare(b));
-}
-
-function populateCategoryDropdown() {
-  const categories = getAllAvailableCategories();
+  const sorted = Array.from(cats).sort((a,b) => a.localeCompare(b));
   byCategoryEl.innerHTML = `<option value="">(None)</option>` +
-    categories.map(c => `<option value="${c}">${c}</option>`).join("");
+    sorted.map(c => `<option value="${c}">${c}</option>`).join("");
 }
 
 function buildDeckByCategory(category) {
@@ -902,7 +1098,6 @@ function rebuildDeck() {
   }
 
   deckAll = cards;
-  // FIX: Clear randomization history on new deck build
   perCardFrontIsEnglish = new Map();
   index = 0;
   isFront = true;
@@ -918,6 +1113,7 @@ function rebuildDeck() {
   applyIncorrectOnlyView();
   showToast(`Built deck with ${deckAll.length} cards.`);
   render();
+  saveData();
 }
 
 function computeFrontForCard(card) {
@@ -938,7 +1134,6 @@ function computeFrontForCard(card) {
 }
 
 function faceContent(card, showEnglishFace) {
-  // KANA
   if (card.type === "kana") {
     if (showEnglishFace) {
       return { big: card.romaji.toUpperCase(), mid: `Pronunciation: ${card.pronunciation}`, small: card.japanese };
@@ -946,8 +1141,6 @@ function faceContent(card, showEnglishFace) {
       return { big: card.japanese, mid: "", small: "" };
     }
   }
-
-  // KANJI
   if (card.type === "kanji") {
     if (showEnglishFace) {
       return { big: card.english, mid: `Reading: ${card.romaji}`, small: card.japanese };
@@ -955,8 +1148,6 @@ function faceContent(card, showEnglishFace) {
       return { big: card.japanese, mid: "", small: "" };
     }
   }
-
-  // VOCAB
   if (showEnglishFace) return { big: card.english, mid: "", small: "" };
 
   return {
@@ -966,24 +1157,19 @@ function faceContent(card, showEnglishFace) {
   };
 }
 
-/* Progress Logic */
 function renderProgress() {
   const total = deckView.length || 1;
   const answered = answerHistory.length;
   
-  // Text Above
   progressText.textContent = `${correctCount} / ${answered} Correct`;
 
-  // Bar
   const segments = answerHistory.map(type => {
     return `<div class="progress-segment ${type === 'correct' ? 'seg-green' : 'seg-red'}" style="width: ${100/total}%"></div>`;
   }).join("");
   progressTrack.innerHTML = segments;
 
-  // Streak Text Below
   let html = "";
   if (currentStreak >= 5) {
-      // Check for multiples of 5
       if (currentStreak % 5 === 0) {
           html = `<div class="streak-icon">🔥</div><div>${currentStreak} in a row!</div>`;
       } else {
@@ -1031,7 +1217,6 @@ function render() {
     btnSpeak.classList.add("hidden");
     btnSpeak.disabled = true;
     
-    // Reset progress/streak visuals if no deck
     progressTrack.innerHTML = "";
     streakContainer.innerHTML = "";
     progressText.textContent = "0 / 0 Correct";
@@ -1069,11 +1254,10 @@ function render() {
             btnReview.onclick = () => {
                 optIncorrectOnly.checked = true;
                 applyIncorrectOnlyView();
-                // Reset progress for the review session
                 index = 0; currentStreak = 0; answerHistory = []; correctCount = 0;
-                // FIX: Clear randomization history
-                perCardFrontIsEnglish = new Map();
+                perCardFrontIsEnglish = new Map(); 
                 render();
+                saveData();
             };
         }
         const btnRestart = document.getElementById("btn_restart");
@@ -1081,10 +1265,10 @@ function render() {
             btnRestart.onclick = () => {
                 index = 0; currentStreak = 0; answerHistory = []; correctCount = 0;
                 isFront = true;
-                // FIX: Clear randomization history on restart so it's truly random again
                 perCardFrontIsEnglish = new Map();
                 shuffleInPlace(deckView); 
                 render();
+                saveData();
             };
         }
     }, 0);
@@ -1110,7 +1294,6 @@ function render() {
 
   bigEl.textContent = content.big;
   
-  // Apply Super Big class for Kana/Kanji characters on Japanese face (Front)
   if ((card.type === "kana" || card.type === "kanji") && japaneseFaceShowing) {
     bigEl.classList.add("super-big");
   } else {
@@ -1132,14 +1315,12 @@ function render() {
 
   smallEl.textContent = content.small || "";
 
-  // Apply "kana-sub" class for Kana/Kanji characters on English face (Back)
   if ((card.type === "kana" || card.type === "kanji") && showEnglishFace) {
     smallEl.classList.add("kana-sub");
   } else {
     smallEl.classList.remove("kana-sub");
   }
 
-  // Simplified Card Stats
   statsEl.textContent = `Card ${index + 1} / ${deckView.length} · ${isFront ? "Front" : "Back"}`;
 
   updateActionState();
@@ -1156,8 +1337,15 @@ function render() {
     }
   }
   
-  btnSpeak.classList.toggle("hidden", !canSpeakNow);
-  btnSpeak.disabled = !canSpeakNow;
+  // FIX: Don't hide the button, just disable it visually
+  btnSpeak.classList.remove("hidden");
+  if (canSpeakNow) {
+      btnSpeak.disabled = false;
+      btnSpeak.classList.remove("disabled");
+  } else {
+      btnSpeak.disabled = true;
+      btnSpeak.classList.add("disabled");
+  }
   
   // Autoplay
   if (canSpeakNow && card) {
@@ -1175,12 +1363,10 @@ function flip() {
   render();
 }
 
-// Linear navigation
 function next() {
   showHintOnFront = false;
   unsureLocked = false;
   if (!deckView.length) return;
-  // Stop at the end
   if (index < deckView.length) {
       index++;
   }
@@ -1189,22 +1375,17 @@ function next() {
   mobileSettingsOpen = false;
   document.body.classList.remove("studying","showSettings"); 
   render(); 
+  saveData();
 }
 
 function prev() {
   showHintOnFront = false;
   if (!deckView.length) return;
-  // Prevent going below 0
   if (index > 0) {
       index--;
-      // Remove last history entry logic?
-      // Simplified: Just go back, history remains (user can overwrite answer).
-      // If we go back, we don't necessarily undo streaks/score immediately unless they re-answer.
-      // But for simple "undo", let's pop history
       const lastAnswer = answerHistory.pop();
       if(lastAnswer === 'correct') correctCount--;
       
-      // Reset streak logic is complex on back, simplified: just decrement count if it was pos
       if(currentStreak > 0) currentStreak--;
       else if(currentStreak < 0) currentStreak++;
   }
@@ -1213,6 +1394,7 @@ function prev() {
   mobileSettingsOpen = false;
   document.body.classList.remove("studying","showSettings"); 
   render(); 
+  saveData();
 }
 
 
@@ -1220,8 +1402,7 @@ function markCorrect() {
   if (!deckView.length) return;
   if (isFront) { showToast("Flip first to see the answer.", "warn"); return; }
   
-  // Streak Logic: Correct
-  if (currentStreak < 0) currentStreak = 0; // Reset negative streak
+  if (currentStreak < 0) currentStreak = 0; 
   currentStreak++;
   answerHistory.push('correct');
   correctCount++;
@@ -1238,8 +1419,7 @@ function markIncorrect() {
   missed.add(card.id);
   applyIncorrectOnlyView();
   
-  // Streak Logic: Incorrect
-  if (currentStreak > 0) currentStreak = 0; // Reset positive streak
+  if (currentStreak > 0) currentStreak = 0; 
   currentStreak--;
   answerHistory.push('incorrect');
 
@@ -1260,7 +1440,6 @@ function markUnsure() {
     showToast("Unsure → marked incorrect. (Flipped to answer)", "warn");
     render();
   } else {
-    // Treat unsure as incorrect for streak/progress
     if (currentStreak > 0) currentStreak = 0;
     currentStreak--;
     answerHistory.push('incorrect');
@@ -1274,10 +1453,12 @@ function markUnsure() {
 function clearMisses() { missed.clear(); applyIncorrectOnlyView(); index = 0; isFront = true;
   showHintOnFront = false;
   mobileSettingsOpen = false;
-  document.body.classList.remove("studying","showSettings"); showToast("Cleared incorrect list."); render(); }
+  document.body.classList.remove("studying","showSettings"); showToast("Cleared incorrect list."); render(); saveData(); }
 
 
 function resetUI() {
+  localStorage.removeItem(APP.storageKey); 
+  
   selAllVocab.checked = false;
   selAllScripts.checked = false;
   selEssentials.checked = false;
@@ -1298,7 +1479,6 @@ function resetUI() {
   index = 0;
   isFront = true;
   showHintOnFront = false;
-  // FIX: Clear randomization history
   perCardFrontIsEnglish = new Map();
   missed.clear();
   
@@ -1336,6 +1516,7 @@ selAllVocab.addEventListener("change", () => {
   selTravel.checked = v;
   selBasic.checked = v;
   syncSelectAllVocab();
+  saveData();
 });
 
 selAllScripts.addEventListener("change", () => {
@@ -1344,10 +1525,11 @@ selAllScripts.addEventListener("change", () => {
   selKata.checked = v;
   selKanji.checked = v;
   syncSelectAllScripts();
+  saveData();
 });
 
-[selEssentials, selTravel, selBasic].forEach(cb => cb.addEventListener("change", syncSelectAllVocab));
-[selHira, selKata, selKanji].forEach(cb => cb.addEventListener("change", syncSelectAllScripts));
+[selEssentials, selTravel, selBasic].forEach(cb => cb.addEventListener("change", () => { syncSelectAllVocab(); saveData(); }));
+[selHira, selKata, selKanji].forEach(cb => cb.addEventListener("change", () => { syncSelectAllScripts(); saveData(); }));
 
 el("btn_build").addEventListener("click", rebuildDeck);
 el("btn_reset").addEventListener("click", resetUI);
@@ -1374,11 +1556,15 @@ optIncorrectOnly.addEventListener("change", () => {
   index = 0;
   isFront = true;
   render();
+  saveData();
 });
+
+[optShuffle, optLimitSelect, optSideMode].forEach(el => el.addEventListener("change", saveData));
 
 byCategoryEl.addEventListener("change", () => {
   if (byCategoryEl.value) showToast(`By Category selected: ${byCategoryEl.value} (will override on Build Deck)`);
   else showToast("By Category cleared. Using Study Sets.");
+  saveData();
 });
 
 
@@ -1421,12 +1607,63 @@ window.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft") { prev(); return; }
 });
 
+/* --- RESTORED AUDIO FUNCTIONS --- */
+function getCurrentCard() {
+    if (!deckView || deckView.length === 0 || index >= deckView.length) return null;
+    return deckView[index];
+}
+
+function initSpeech() {
+    if (!('speechSynthesis' in window)) {
+        showToast("Text-to-speech not supported.", "bad");
+        return;
+    }
+    speechSupported = true;
+
+    const synth = window.speechSynthesis;
+
+    function loadVoices() {
+        const voices = synth.getVoices();
+        // Prefer Google Japanese, then Microsoft, then any 'ja'
+        jaVoice = voices.find(v => v.lang === 'ja-JP' && v.name.includes('Google'))
+                || voices.find(v => v.lang === 'ja-JP')
+                || voices.find(v => v.lang.startsWith('ja'));
+    }
+
+    loadVoices();
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = loadVoices;
+    }
+}
+
+function speakJapaneseForCard(card) {
+    if (!speechSupported || !card) return;
+
+    // Determine text to speak based on card type
+    let textToSpeak = "";
+    if (card.type === "vocab") textToSpeak = card.japanese;
+    else if (card.type === "kana" || card.type === "kanji") textToSpeak = card.japanese;
+
+    if (!textToSpeak) return;
+
+    window.speechSynthesis.cancel(); // Fix for "No Autoplay"
+
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+    utterance.lang = 'ja-JP';
+    if (jaVoice) utterance.voice = jaVoice;
+    utterance.rate = 0.9; 
+
+    // Visual feedback on button
+    btnSpeak.style.color = "var(--good)";
+    utterance.onend = () => { btnSpeak.style.color = ""; };
+
+    window.speechSynthesis.speak(utterance);
+}
+
 populateCategoryDropdown();
-syncSelectAllVocab();
-syncSelectAllScripts();
+checkStorage(); // Init check
+loadData();
 initSpeech();
-render();
 </script>
 </body>
 </html>
-
