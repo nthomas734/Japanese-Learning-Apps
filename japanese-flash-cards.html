@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Japanese Flash Cards — v1.9.0</title>
+  <title>Japanese Flash Cards — v1.9.1</title>
 
   <style>
     :root{
@@ -80,6 +80,8 @@
       padding:14px 14px 12px; border-bottom:1px solid rgba(255,255,255,.06);
       background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
       display:flex; align-items:center; justify-content:space-between; gap:12px;
+      /* FIX: Explicit rounding to match container */
+      border-radius: var(--radius2) var(--radius2) 0 0;
     }
     .panel .bd{ padding:14px; }
     
@@ -207,7 +209,7 @@
   <header>
     <div class="title">
       <h1>Japanese Flash Cards</h1>
-      <div class="sub"><span class="ver">v1.9.0</span></div>
+      <div class="sub"><span class="ver">v1.9.1</span></div>
     </div>
     <div class="badgeTop" title="Local, single-file app"><span class="dot"></span><span class="mono">offline-ready</span></div>
   </header>
@@ -223,7 +225,7 @@
         <div class="row">
           <div class="pill"><input id="sel_essentials" type="checkbox" checked /><label for="sel_essentials">Essentials</label></div>
           <div class="pill"><input id="sel_travel" type="checkbox" checked /><label for="sel_travel">Travel Vocab</label></div>
-          <div class="pill"><input id="sel_basic" type="checkbox" /><label for="sel_basic">Basic Japanese Words</label></div>
+          <div class="pill"><input id="sel_basic" type="checkbox" /><label for="sel_basic">Basic Vocab</label></div>
         </div>
 
         <div class="section-label">Japanese Scripts</div>
@@ -285,7 +287,7 @@
     </section>
 
     <section class="panel" id="workspace">
-      <h2>Study <span class="small mono">v1.9.0</span></h2>
+      <h2>Study <span class="small mono">v1.9.1</span></h2>
       <div class="bd">
         <div class="flashcard" id="card" tabindex="0" title="Click to flip">
           <button id="btn_speak" class="btn-audio-card hidden" type="button" title="Play Audio">
@@ -323,13 +325,13 @@
   </main>
 
 <script>
-/* ========= Japanese Flash Cards — v1.9.0 ========= */
-const APP = { version: "1.9.0", build: 38 };
+/* ========= Japanese Flash Cards — v1.9.1 ========= */
+const APP = { version: "1.9.1", build: 39 };
 
 const SETS = {
   ESSENTIALS: "Essentials",
   TRAVEL: "Travel Vocab",
-  BASIC: "Basic Japanese Words",
+  BASIC: "Basic Vocab",
   HIRAGANA: "Hiragana",
   KATAKANA: "Katakana",
   KANJI: "Kanji"
@@ -363,7 +365,7 @@ const VOCAB = {
   },
   [SETS.TRAVEL]: {
     "Restaurants": [
-      { english: "One more beer", japanese: "ビールもう一杯", romaji: "Bīru mō ippai", pronunciation: "bee-roo moh ee-pie" },
+      { english: "Beer, one more", japanese: "ビールもう一杯", romaji: "Bīru mō ippai", pronunciation: "bee-roo moh ee-pie" },
       { english: "Reservation", japanese: "よやく", romaji: "Yoyaku", pronunciation: "yoh-yah-koo" }
     ],
     "Shopping": [
