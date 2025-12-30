@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Japanese Flash Cards — v1.6.1 (Build 28)</title>
+  <title>Japanese Flash Cards — v1.6.2</title>
 
   <style>
     :root{
@@ -47,472 +47,157 @@
       justify-content:space-between;
       gap:16px;
     }
-    .title{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-    .title h1{
-      margin:0;
-      font-size:22px;
-      letter-spacing:.2px;
-      font-weight:720;
-    }
-    .title .sub{
-      color:var(--muted);
-      font-size:13px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
+    .title{ display:flex; flex-direction:column; gap:6px; }
+    .title h1{ margin:0; font-size:22px; letter-spacing:.2px; font-weight:720; }
+    .title .sub{ color:var(--muted); font-size:13px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
     .badgeTop{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      border:1px solid var(--border);
+      display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border);
       background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      padding:8px 12px;
-      border-radius:999px;
-      box-shadow:0 10px 24px rgba(0,0,0,.25);
-      white-space:nowrap;
-      font-size:13px;
-      color:var(--muted);
-      height:fit-content;
+      padding:8px 12px; border-radius:999px; box-shadow:0 10px 24px rgba(0,0,0,.25);
+      white-space:nowrap; font-size:13px; color:var(--muted); height:fit-content;
     }
     .badgeTop .dot{
       width:10px;height:10px;border-radius:50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(255,255,255,.15)),
-                  var(--accent);
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(255,255,255,.15)), var(--accent);
       box-shadow:0 0 0 4px rgba(122,162,255,.14);
     }
-    .mono{font-family:var(--mono)}
 
     main{
-      max-width:1200px;
-      margin:0 auto;
-      padding:14px 14px 28px;
-      display:grid;
-      grid-template-columns: 360px 1fr;
-      gap:14px;
-      align-items:start;
+      max-width:1200px; margin:0 auto; padding:14px 14px 28px;
+      display:grid; grid-template-columns: 360px 1fr; gap:14px; align-items:start;
     }
 
     .panel{
       background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-      border:1px solid var(--border);
-      border-radius:var(--radius2);
-      box-shadow:var(--shadow);
-      overflow:hidden;
+      border:1px solid var(--border); border-radius:var(--radius2);
+      box-shadow:var(--shadow); overflow:hidden;
     }
 
     .panel h2{
-      margin:0;
-      font-size:14px;
-      letter-spacing:.2px;
-      color:var(--text);
-      font-weight:700;
-      padding:14px 14px 12px;
-      border-bottom:1px solid rgba(255,255,255,.06);
+      margin:0; font-size:14px; letter-spacing:.2px; color:var(--text); font-weight:700;
+      padding:14px 14px 12px; border-bottom:1px solid rgba(255,255,255,.06);
       background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
+      display:flex; align-items:center; justify-content:space-between;
     }
 
-    .panel .bd{ padding:14px; }
-
-    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
-    .row + .row{margin-top:10px}
+    .bd{ padding:14px; }
+    .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .row + .row{ margin-top:10px }
 
     .pill{
-      display:flex; align-items:center; gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(0,0,0,.18);
+      display:flex; align-items:center; gap:8px; padding:8px 10px;
+      border-radius:999px; border:1px solid rgba(255,255,255,.08); background:rgba(0,0,0,.18);
     }
-    .pill input{accent-color:var(--accent)}
-    .pill label{font-size:13px; color:var(--muted); user-select:none}
+    .pill label{ font-size:13px; color:var(--muted); user-select:none; }
 
     button{
-      appearance:none;
-      border:1px solid rgba(255,255,255,.10);
+      appearance:none; border:1px solid rgba(255,255,255,.10);
       background:linear-gradient(180deg, rgba(122,162,255,.22), rgba(122,162,255,.10));
-      color:var(--text);
-      padding:10px 12px;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:700;
-      font-size:13px;
-      letter-spacing:.15px;
-      box-shadow:0 10px 22px rgba(0,0,0,.28);
-      transition:transform .08s ease, filter .12s ease, opacity .12s ease;
+      color:var(--text); padding:10px 12px; border-radius:12px; cursor:pointer;
+      font-weight:700; font-size:13px; transition:transform .08s ease;
     }
-    button:hover{filter:brightness(1.04)}
-    button:active{transform:translateY(1px)}
-    button.primary{
-      background:linear-gradient(180deg, rgba(122,162,255,.35), rgba(122,162,255,.14));
-    }
-    button.good{
-      background:linear-gradient(180deg, rgba(61,220,151,.22), rgba(61,220,151,.10));
-    }
-    button.bad{
-      background:linear-gradient(180deg, rgba(255,93,108,.22), rgba(255,93,108,.10));
-    }
-    button.warn{
-      background:linear-gradient(180deg, rgba(255,204,102,.24), rgba(255,204,102,.10));
-      color:#ffe7b0;
-    }
-    button.ghost{
-      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
-      border:1px solid rgba(255,255,255,.10);
-      color:var(--muted);
-      font-weight:650;
-      box-shadow:none;
-    }
-    button:disabled{
-      opacity:.45;
-      cursor:not-allowed;
-      transform:none;
-      box-shadow:none;
-    }
+    button.primary{ background:linear-gradient(180deg, rgba(122,162,255,.35), rgba(122,162,255,.14)); }
+    button.good{ background:linear-gradient(180deg, rgba(61,220,151,.22), rgba(61,220,151,.10)); }
+    button.bad{ background:linear-gradient(180deg, rgba(255,93,108,.22), rgba(255,93,108,.10)); }
+    button.warn{ background:linear-gradient(180deg, rgba(255,204,102,.24), rgba(255,204,102,.10)); color:#ffe7b0; }
+    button.ghost{ background:transparent; border:1px solid rgba(255,255,255,.10); color:var(--muted); box-shadow:none; }
+    button:disabled{ opacity:.45; cursor:not-allowed; }
 
+    /* Fix: Styled Dropdown */
     select{
-      width:100%;
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.48);
-      color:var(--text);
-      font-size:13px;
-      outline:none;
+      width:100%; padding:10px 12px; border-radius:12px;
+      border:1px solid var(--border);
+      background: rgb(21, 22, 27);
+      color: var(--text); font-size: 13px; outline: none; cursor: pointer;
     }
-    .small{font-size:12px; color:var(--muted2)}
-    .muted{color:var(--muted); font-size:13px; line-height:1.35}
-
-    #workspace{ padding:14px; }
 
     .flashcard {
-      position:relative;
-      min-height:300px;
-      border-radius:22px;
+      position:relative; min-height:300px; border-radius:22px;
       border:1px solid rgba(255,255,255,.10);
-      background:
-        radial-gradient(1200px 420px at 50% -30%, rgba(122,162,255,.22), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      background: radial-gradient(1200px 420px at 50% -30%, rgba(122,162,255,.22), transparent 60%),
+                  linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
       box-shadow:0 18px 48px rgba(0,0,0,.42);
-      padding:18px 18px 16px;
-      overflow:hidden;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      user-select:none;
-      cursor:pointer;
+      padding:18px 18px 86px; display:flex; flex-direction:column; cursor:pointer;
     }
+
+    /* Icon Audio Button */
+    .btn-audio-icon {
+      position: absolute; top: 12px; right: 12px; z-index: 10;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+      border-radius: 50%; width: 36px; height: 36px; padding: 0;
+      display: flex; align-items: center; justify-content: center; color: var(--accent);
+    }
+    .btn-audio-icon svg { width: 18px; height: 18px; fill: currentColor; }
+    .btn-audio-icon:hover { background: rgba(255,255,255,0.1); }
 
     .badge {
-      position:absolute; top: 12px; left: 12px;
-      font-size: 12px; color: var(--muted);
-      border:1px solid var(--border);
-      background: rgba(0,0,0,.18);
+      position:absolute; top: 12px; left: 12px; font-size: 12px; color: var(--muted);
+      border:1px solid var(--border); background: rgba(0,0,0,.18);
       padding: 6px 10px; border-radius: 999px;
-      z-index: 2;
-      max-width: calc(50% - 18px);
-      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
     }
-    .badge.right{ left:auto; right:12px; }
 
+    .content{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+    .big{ font-size:44px; font-weight:800; }
+    .mid_jp{ font-size:24px; font-weight:750; color:var(--text); margin-top:10px;}
+    .mid_txt{ font-size:18px; color:var(--muted); font-weight:650; }
+    .smallLine{ font-size:14px; color:var(--muted2); margin-top:8px; }
+
+    /* Fix: Centered Action Buttons */
+    .cardActions {
+      position:absolute; left:14px; right:14px; bottom:14px;
+      display:flex; gap:10px; justify-content: center;
+    }
+    .cardActions button { flex: 1; min-width: 0; }
+
+    .controls{ display:flex; flex-direction:column; gap:10px; margin-top:12px; }
+    .controls .row{ justify-content:center }
+    .stats{ text-align:center; color:var(--muted); font-size:13px; margin-top:6px; }
     .hidden{ display:none !important; }
 
-    .content{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      padding:26px 6px 10px;
-      text-align:center;
-      flex:1;
-    }
-
-    .big{
-      font-size:44px;
-      font-weight:800;
-      letter-spacing:.6px;
-      line-height:1.08;
-    }
-    .mid_jp{
-      font-size:22px;
-      font-weight:750;
-      letter-spacing:.2px;
-      line-height:1.1;
-      color:var(--text);
-    }
-    .mid_txt{
-      font-size:18px;
-      color:var(--muted);
-      font-weight:650;
-    }
-    .smallLine{
-      font-size:14px;
-      color:var(--muted2);
-    }
-
-    .controls{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      margin-top:12px;
-    }
-    .controls .row{justify-content:center}
-    .stats{
-      text-align:center;
-      color:var(--muted);
-      font-size:13px;
-      margin-top:6px;
-    }
-    .toast {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 12px;
-      min-height: 16px;
-      padding: 8px 10px;
-      border: 1px solid color-mix(in srgb, var(--border), #000 20%);
-      border-radius: 12px;
-      background: rgba(0,0,0,.18);
-    }
-
-    /* Mobile study mode */
     @media (max-width: 720px) {
       main{ grid-template-columns: 1fr; }
       body.studying #sidebar { display: none; }
-      body.studying #workspace { margin-top: 0; }
-      body.studying .flashcard { margin-bottom: 34px; }
-      body.studying #workspace { padding-bottom: 26px; }
-      body.studying .settingsToggle { display: inline-flex; }
-      body.studying.showSettings #sidebar {
-        display: block;
-        position: fixed;
-        inset: 0;
-        z-index: 1000;
-        overflow: auto;
-        padding-bottom: 24px;
-      }
-      body.studying.showSettings #workspace { filter: blur(2px); }
-      body.studying.showSettings .closeSettings { display: inline-flex; }
     }
-  
-    .cardActions{ justify-content:space-between; }
-    .cardActions button{ min-width:0; }
-
-    .flashcard{ position:relative; padding-bottom:86px; }
-    .cardActions{
-      position:absolute;
-      left:14px; right:14px; bottom:14px;
-      display:flex; gap:12px;
-      align-items:center;
-    }
-    .cardActions button{ flex:1; }
-    .cardActions button#btn_unsure{ flex:0.9; }
-</style>
+  </style>
 </head>
 
 <body>
   <header>
     <div class="title">
       <h1>Japanese Flash Cards</h1>
-      <div class="sub">
-        <span class="ver">v1.6.1 · Build 28</span>
-      </div>
+      <div class="sub"><span>v1.6.2 · Autoplay Active</span></div>
     </div>
-
-    <div class="badgeTop" title="Local, single-file app">
-      <span class="dot"></span>
-      <span class="mono">offline-ready</span>
-    </div>
+    <div class="badgeTop"><span class="dot"></span><span class="mono">offline-ready</span></div>
   </header>
 
   <main>
     <section class="panel" id="sidebar">
-      <h2>
-        Study Sets
-        <button id="btn_closeSettings" class="ghost closeSettings hidden" type="button">Close</button>
-      </h2>
-
+      <h2>Study Sets</h2>
       <div class="bd">
         <div class="row">
-          <div class="pill">
-            <input id="sel_all" type="checkbox" />
-            <label for="sel_all"><b>Select All</b></label>
-          </div>
+          <div class="pill"><input id="sel_all" type="checkbox" /><label for="sel_all"><b>Select All</b></label></div>
         </div>
-
-        <div class="row" style="margin-top:10px">
-          <div class="pill">
-            <input id="sel_essentials" type="checkbox" checked />
-            <label for="sel_essentials">Essentials</label>
-          </div>
-          <div class="pill">
-            <input id="sel_core" type="checkbox" checked />
-            <label for="sel_core">Core Travel Vocabulary</label>
-          </div>
-          <div class="pill">
-            <input id="sel_basic" type="checkbox" />
-            <label for="sel_basic">Basic Japanese Words</label>
-          </div>
-          <div class="pill">
-            <input id="sel_hira" type="checkbox" />
-            <label for="sel_hira">Hiragana</label>
-          </div>
-          <div class="pill">
-            <input id="sel_kata" type="checkbox" />
-            <label for="sel_kata">Katakana</label>
-          </div>
+        <div class="row">
+          <div class="pill"><input id="sel_essentials" type="checkbox" checked /><label>Essentials</label></div>
+          <div class="pill"><input id="sel_core" type="checkbox" checked /><label>Core Travel</label></div>
+          <div class="pill"><input id="sel_basic" type="checkbox" /><label>Basic Words</label></div>
         </div>
-
         <div class="row" style="margin-top:14px;">
-          <div style="flex:1; min-width:220px;">
-            <div class="small" style="margin:0 0 6px 2px;">Build by Category (optional override)</div>
-            <select id="by_category">
-              <option value="">(No override)</option>
-            </select>
+          <div style="flex:1;">
+            <div style="font-size:12px; color:var(--muted2); margin-bottom:5px;">Build by Category</div>
+            <select id="by_category"><option value="">(No override)</option></select>
           </div>
         </div>
-
         <div class="row" style="margin-top:12px;">
-          <button id="btn_build" class="primary" type="button">Build Deck</button>
-          <button id="btn_reset" class="ghost" type="button">Reset</button>
+          <button id="btn_build" class="primary">Build Deck</button>
+          <button id="btn_reset" class="ghost">Reset</button>
         </div>
-
-        <div class="row" style="margin-top:10px;">
-          <div class="muted">
-            Select one or more sets, then click <b>Build Deck</b>.
-          </div>
-        </div>
-
-        <div class="row" style="margin-top:10px;">
-          <div class="pill">
-            <input id="opt_shuffle" type="checkbox" checked />
-            <label for="opt_shuffle">Shuffle</label>
-          </div>
-          <div class="pill">
-            <input id="opt_randomSide" type="checkbox" checked />
-            <label for="opt_randomSide">Random side</label>
-          </div>
-          <div class="pill">
-            <input id="opt_incorrectOnly" type="checkbox" />
-            <label for="opt_incorrectOnly">Incorrect-only view</label>
-          </div>
-          <div class="pill">
-            <input id="opt_limit" type="number" min="0" value="0" style="width:80px" />
-            <label for="opt_limit">Limit (0 = no limit)</label>
-          </div>
-        <div class="row" style="margin-top:10px;">
-          <button id="btn_clearMisses" class="ghost" type="button">Clear incorrect list</button>
-          <div class="small mono" id="missCount">Incorrect: 0</div>
-        </div>
-
       </div>
     </section>
 
     <section class="panel" id="workspace">
-      <h2>
-        Study
-        <span class="small mono">v1.6.1 · Build 28</span>
-      </h2>
-
+      <h2>Study</h2>
       <div class="bd">
-        <div class="flashcard" id="card" tabindex="0" title="Click to flip">
-          <div class="badge" id="badge_left">—</div>
-          <div class="badge right" id="badge_right">—</div>
-
-          <div class="content">
-            <div class="big" id="big">Build a deck to start</div>
-            <div class="mid_jp hidden" id="mid_jp"></div>
-            <div class="mid_txt" id="mid_txt"></div>
-            <div class="smallLine" id="small"></div>
-            <div class="cardActions" id="card_actions" aria-label="Answer actions">
-              <button class="good" id="btn_correct" type="button">Correct</button>
-              <button class="warn" id="btn_unsure" type="button">Unsure</button>
-              <button class="bad" id="btn_incorrect" type="button">Incorrect</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="controls">
-          <div class="row">
-            <button id="btn_prev">← Prev</button>
-            <button id="btn_hint" class="ghost" type="button">Hint</button>
-            <button class="primary" id="btn_flip">Flip</button>
-            <button id="btn_next">Next →</button>
-          </div>
-
-
-
-          <div class="row">
-            <button id="btn_speak" class="ghost" type="button">Audio (Back)</button>
-            <button id="btn_speakFront" class="ghost hidden" type="button">Audio (Front)</button>
-          </div>
-
-          <div class="stats" id="stats">Deck not built yet.</div>
-          <button id="btn_settings" class="ghost settingsToggle hidden" type="button">Settings</button>
-        </div>
-
-        <div class="toast" id="toast"></div>
-      </div>
-    </section>
-  </main>
-
-<script>
-/* ========= Japanese Flash Cards — v1.6.1 (Build 28) ========= */
-
-const APP = { version: "1.6.1", build: 28 };
-
-const SETS = {
-  ESSENTIALS: "Essentials",
-  CORE: "Core Travel Vocabulary",
-  BASIC: "Basic Japanese Words",
-  HIRAGANA: "Hiragana",
-  KATAKANA: "Katakana"
-};
-
-const VOCAB = {
-  [SETS.ESSENTIALS]: {
-    "Essentials": [
-      { english: "Excuse me / Sorry", japanese: "すみません", romaji: "Sumimasen", pronunciation: "soo-mee-mah-sen" },
-      { english: "Thank you very much", japanese: "ありがとうございます", romaji: "Arigatō gozaimasu", pronunciation: "ah-ree-gah-toh goh-zah-ee-mas" },
-      { english: "This", japanese: "これ", romaji: "Kore", pronunciation: "koh-reh" },
-      { english: "That (near you)", japanese: "それ", romaji: "Sore", pronunciation: "soh-reh" },
-      { english: "Please (requesting an item)", japanese: "ください", romaji: "Kudasai", pronunciation: "koo-dah-sigh" },
-      { english: "Please (general favor)", japanese: "お願いします", romaji: "Onegaishimasu", pronunciation: "oh-neh-guy-shee-mas" },
-      { english: "No thank you / I'm good", japanese: "大丈夫です", romaji: "Daijōbu desu", pronunciation: "dye-joh-bu dess" },
-      { english: "I am ~", japanese: "私は〜です", romaji: "Watashi wa ~ desu", pronunciation: "wah-tah-shee wah ~ dess" },
-      { english: "I don’t understand", japanese: "わかりません", romaji: "Wakarimasen", pronunciation: "wah-kah-ree-mah-sen" }
-    ],
-    "Greetings": [
-      { english: "Hello / Good afternoon", japanese: "こんにちは", romaji: "Konnichiwa", pronunciation: "kon-nee-chee-wah" },
-      { english: "Good morning", japanese: "おはようございます", romaji: "Ohayō gozaimasu", pronunciation: "oh-hah-yoh goh-zah-ee-mas" },
-      { english: "Good evening", japanese: "こんばんは", romaji: "Konbanwa", pronunciation: "kon-bahn-wah" },
-      { english: "Good night", japanese: "おやすみ", romaji: "Oyasumi", pronunciation: "oh-yah-soo-mee" }
-    ],
-    "Restaurants": [
-      { english: "Can I place an order?", japanese: "注文お願いします", romaji: "Chūmon onegaishimasu", pronunciation: "choo-mohn oh-neh-guy-shee-mas" },
-      { english: "Water please", japanese: "水をお願いします", romaji: "Mizu o onegaishimasu", pronunciation: "mee-zoo oh oh-neh-guy-shee-mas" },
-      { english: "Can I get the check / bill please", japanese: "お会計お願いします", romaji: "Okaikei onegaishimasu", pronunciation: "oh-kai-kay oh-neh-guy-shee-mas" }
-    ]
-  },
-
-  [SETS.CORE]: {
-    "Restaurants": [
-      { english: "Beer, one more", japanese: "ビールもう一杯", romaji: "Bīru mō ippai", pronunciation: "bee-roo moh ee-pie" },
-      { english: "Reservation", japanese: "よやく", romaji: "Yoyaku", pronunciation: "yoh-yah-koo" }
-    ],
-    "Shopping": [
-      { english: "Do you have (it)?", japanese: "ありますか", romaji: "Arimasu ka", pronunciation: "ah-ree-mas kah" },
-      { english: "How much?", japanese: "いくら", romaji: "Ikura", pronunciation: "ee-koo-rah" },
-      { english: "Please show me", japanese: "見せてください", romaji: "Misete kudasai", pronunciation: "mee-seh-teh koo-dah-sigh" }
-    ],
-    "Questions": [
-      { english: "What is this?", japanese: "これは何ですか", romaji: "Kore
+        <div class="flashcard" id="card" tabindex="0">
+          <button
