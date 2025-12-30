@@ -8,8 +8,428 @@
   <script src="vocab.js"></script>
 
   <style>
-    /* Paste ALL of the <style> code from Part 1 of my previous message here */
-    /* This includes your original glassmorphism styling and the centered button fix */
+<script>
+/* ========= Japanese Flash Cards — v1.6.6 (Build 36) ========= */
+
+/**
+ * DATA SOURCE
+ * This script expects VOCAB_DATA, HIRAGANA_DATA, and KATAKANA_DATA 
+ * to be globally available from your 'vocab.js' file.
+ */
+const VOCAB = typeof VOCAB_DATA !== 'undefined' ? VOCAB_DATA : {};
+const HIRAGANA = typeof HIRAGANA_DATA !== 'undefined' ? HIRAGANA_DATA : [];
+const KATAKANA = typeof KATAKANA_DATA !== 'undefined' ? KATAKANA_DATA : [];
+
+const SETS = {
+  ESSENTIALS: "Essentials",
+  CORE: "Core Travel Vocabulary",
+  BASIC: "Basic Japanese Words",
+  HIRAGANA: "Hiragana",
+  KATAKANA: "Katakana"
+};
+
+// state
+let deckAll = [];
+let deckView = [];
+let index = 0;
+let isFront = true;
+let unsureLocked = false;
+let showHintOnFront = false;
+let perCardFrontIsEnglish = new Map();
+let mobileSettingsOpen = false;
+const missed = new Set();
+
+// speech
+let speechSupported = false;
+let jaVoice = null;
+
+// DOM
+const el = (id) => document.getElementById(id);
+const cardEl = el("card");
+const bigEl = el("big");
+const midJpEl = el("mid_jp");
+const midTxtEl = el("mid_txt");
+const smallEl = el("small");
+const badgeLeft = el("badge_left");
+const badgeRight = el("badge_right");
+const statsEl = el("stats");
+const cardActionsEl = el("card_actions");
+const toastEl = el("toast");
+const missCountEl = el("missCount");
+const byCategoryEl = el("by_category");
+
+const selAll = el("sel_all");
+const selEssentials = el("sel_essentials");
+const selCore = el("sel_core");
+const selHira = el("sel_hira");
+const selKata = el("sel_kata");
+const selBasic = el("sel_basic");
+
+const optRandomSide = el("opt_randomSide");
+const optShuffle = el("opt_shuffle");
+const optLimit = el("opt_limit");
+const optIncorrectOnly = el("opt_incorrectOnly");
+
+const btnSpeakIcon = el("btn_speak");
+const btnHint = el("btn_hint");
+const btnSettings = el("btn_settings");
+const btnCloseSettings = el("btn_closeSettings");
+const btnPrev = el("btn_prev");
+const btnNext = el("btn_next");
+const btnFlip = el("btn_flip");
+const btnCorrect = el("btn_correct");
+const btnUnsure = el("btn_unsure");
+const btnIncorrect = el("btn_incorrect");
+
+function slug(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,""); }
+
+function buildCardsFromVocab(setName) {
+  const out = [];
+  const categories = VOCAB[setName] || {};
+  for (const [cat, items] of Object.entries(categories)) {
+    for (const item of items) {
+      const id = `${slug(setName)}:${slug(cat)}:${slug(item.english)}:${slug(item.japanese)}`;
+      out.push({ id, set: setName, category: cat, type: "vocab",
+        english: item.english, japanese: item.japanese, romaji: item.romaji, pronunciation: item.pronunciation
+      });
+    }
+  }
+  return out;
+}
+
+function buildKanaCards(setName, kanaArr) {
+  return kanaArr.map(([ch, romaji, pron]) => ({
+    id: `${slug(setName)}:kana:${slug(ch)}:${slug(romaji)}`,
+    set: setName, category: "Gojūon", type: "kana",
+    english: romaji, japanese: ch, romaji, pronunciation: pron
+  }));
+}
+
+function dedupeCards(cards) {
+  const seen = new Set();
+  const out = [];
+  for (const c of cards) {
+    const key = `${c.type}|${c.japanese}|${c.english}|${c.romaji}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(c);
+  }
+  return out;
+}
+
+function shuffleInPlace(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function showToast(msg) {
+  toastEl.textContent = msg || "";
+  if (msg) setTimeout(() => { if (toastEl.textContent === msg) toastEl.textContent = ""; }, 2400);
+}
+
+function updateMissCount() { missCountEl.textContent = `Incorrect: ${missed.size}`; }
+
+function selectedSets() {
+  const sets = [];
+  if (selEssentials.checked) sets.push(SETS.ESSENTIALS);
+  if (selCore.checked) sets.push(SETS.CORE);
+  if (selBasic.checked) sets.push(SETS.BASIC);
+  if (selHira.checked) sets.push(SETS.HIRAGANA);
+  if (selKata.checked) sets.push(SETS.KATAKANA);
+  return sets;
+}
+
+function updateActionState() {
+  const hasDeck = deckView && deckView.length > 0;
+  btnPrev.disabled = !hasDeck || deckView.length <= 1;
+  btnNext.disabled = !hasDeck || deckView.length <= 1;
+  btnFlip.disabled = !hasDeck;
+
+  const showUnsure = hasDeck && isFront && !unsureLocked;
+  const showGrade = hasDeck && !isFront && !unsureLocked;
+
+  const onlyUnsure = showUnsure && !showGrade;
+  if (cardActionsEl) cardActionsEl.classList.toggle("onlyUnsure", onlyUnsure);
+
+  btnUnsure.classList.toggle("hidden", !showUnsure);
+  btnCorrect.classList.toggle("hidden", !showGrade);
+  btnIncorrect.classList.toggle("hidden", !showGrade);
+
+  btnCorrect.disabled = !showGrade;
+  btnIncorrect.disabled = !showGrade;
+  btnUnsure.disabled = !showUnsure;
+
+  if (btnHint) btnHint.disabled = !hasDeck || !isFront;
+}
+
+function applyIncorrectOnlyView() {
+  if (!deckAll.length) { deckView = []; return; }
+  if (!optIncorrectOnly.checked) { deckView = deckAll.slice(); return; }
+  deckView = deckAll.filter(c => missed.has(c.id));
+  if (deckView.length === 0) showToast("No incorrect cards yet.");
+}
+
+function getAllAvailableCategories() {
+  const cats = new Set();
+  for (const setName of Object.keys(VOCAB)) {
+    for (const catName of Object.keys(VOCAB[setName] || {})) cats.add(catName);
+  }
+  cats.add("Gojūon");
+  return Array.from(cats).sort((a,b) => a.localeCompare(b));
+}
+
+function populateCategoryDropdown() {
+  const categories = getAllAvailableCategories();
+  byCategoryEl.innerHTML = `<option value="">(None)</option>` +
+    categories.map(c => `<option value="${c}">${c}</option>`).join("");
+}
+
+function buildDeckByCategory(category) {
+  let cards = [];
+  for (const setName of Object.keys(VOCAB)) {
+    const cats = VOCAB[setName] || {};
+    if (cats[category]) {
+      for (const item of cats[category]) {
+        const id = `${slug(setName)}:${slug(category)}:${slug(item.english)}:${slug(item.japanese)}`;
+        cards.push({ id, set: setName, category, type: "vocab",
+          english: item.english, japanese: item.japanese, romaji: item.romaji, pronunciation: item.pronunciation
+        });
+      }
+    }
+  }
+  if (category === "Gojūon") {
+    cards.push(...buildKanaCards(SETS.HIRAGANA, HIRAGANA));
+    cards.push(...buildKanaCards(SETS.KATAKANA, KATAKANA));
+  }
+  cards = dedupeCards(cards);
+  const limit = parseInt(optLimit.value || "0", 10);
+  if (optShuffle.checked) shuffleInPlace(cards);
+  if (limit > 0) cards = cards.slice(0, limit);
+  return cards;
+}
+
+function rebuildDeck() {
+  const overrideCategory = byCategoryEl.value;
+  let cards = [];
+
+  if (overrideCategory) {
+    cards = buildDeckByCategory(overrideCategory);
+    showToast(`By Category override: ${overrideCategory}`);
+  } else {
+    const sets = selectedSets();
+    if (sets.length === 0) {
+      deckAll = []; deckView = []; index = 0; isFront = true;
+      showHintOnFront = false; mobileSettingsOpen = false;
+      document.body.classList.remove("studying","showSettings");
+      render();
+      showToast("Select at least one set.");
+      return;
+    }
+    for (const s of sets) {
+      if (s === SETS.HIRAGANA) cards.push(...buildKanaCards(SETS.HIRAGANA, HIRAGANA));
+      else if (s === SETS.KATAKANA) cards.push(...buildKanaCards(SETS.KATAKANA, KATAKANA));
+      else cards.push(...buildCardsFromVocab(s));
+    }
+    cards = dedupeCards(cards);
+    const limit = parseInt(optLimit.value || "0", 10);
+    if (optShuffle.checked) shuffleInPlace(cards);
+    if (limit > 0) cards = cards.slice(0, limit);
+  }
+
+  deckAll = cards;
+  perCardFrontIsEnglish = new Map();
+  index = 0;
+  isFront = true;
+  showHintOnFront = false;
+  mobileSettingsOpen = false;
+  document.body.classList.remove("studying","showSettings");
+  applyIncorrectOnlyView();
+  showToast(`Built deck with ${deckAll.length} cards.`);
+  render();
+}
+
+function computeFrontForCard(card) {
+  if (!optRandomSide.checked) {
+    if (card.type === "kana") return false;
+    return true;
+  }
+  if (perCardFrontIsEnglish.has(card.id)) return perCardFrontIsEnglish.get(card.id);
+  const val = Math.random() < 0.5;
+  perCardFrontIsEnglish.set(card.id, val);
+  return val;
+}
+
+function faceContent(card, showEnglishFace) {
+  if (card.type === "kana") {
+    if (showEnglishFace) {
+      return { big: card.romaji.toUpperCase(), mid: `Pronunciation: ${card.pronunciation}`, small: `Kana: ${card.japanese}` };
+    } else {
+      // GOAL: Large character + Romaji only for Hiragana/Katakana Japanese side
+      return { big: card.japanese, mid: card.romaji, small: "" };
+    }
+  }
+  if (showEnglishFace) return { big: card.english, mid: "", small: "" };
+  return { big: card.romaji || "", mid: card.japanese || "", small: `Pronunciation: ${card.pronunciation || ""}` };
+}
+
+function getCurrentCard() {
+  if (!deckView.length) return null;
+  return deckView[index];
+}
+
+function initSpeech() {
+  speechSupported = !!window.speechSynthesis && !!window.SpeechSynthesisUtterance;
+  if (!speechSupported) {
+    if (btnSpeakIcon) { btnSpeakIcon.disabled = true; btnSpeakIcon.title = "Speech not supported."; }
+    return;
+  }
+  const loadVoices = () => {
+    const voices = window.speechSynthesis.getVoices() || [];
+    jaVoice = voices.find(v => (v.lang || "").toLowerCase().startsWith("ja")) || null;
+    const t = jaVoice ? `Speak (voice: ${jaVoice.name})` : "Speak (Japanese voice not found)";
+    if (btnSpeakIcon) btnSpeakIcon.title = t;
+  };
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = () => loadVoices();
+}
+
+function speakJapaneseForCard(card) {
+  if (!speechSupported || !card) return;
+  const text = card.japanese || "";
+  if (!text.trim()) return;
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "ja-JP";
+    if (jaVoice) u.voice = jaVoice;
+    u.rate = 0.95;
+    u.pitch = 1.0;
+    window.speechSynthesis.speak(u);
+  } catch {}
+}
+
+function render() {
+  updateMissCount();
+  const isMobile = window.matchMedia && window.matchMedia("(max-width: 720px)").matches;
+  const hasBuiltDeck = deckAll && deckAll.length > 0;
+  document.body.classList.toggle("studying", !!(isMobile && hasBuiltDeck));
+  if (typeof updateSettingsButtons === "function") updateSettingsButtons();
+
+  if (!deckView || deckView.length === 0) {
+    badgeLeft.textContent = "—"; badgeRight.textContent = optIncorrectOnly.checked ? "Incorrect Only" : "—";
+    bigEl.textContent = deckAll.length ? "No cards in this view" : "Build a deck to start";
+    midJpEl.classList.add("hidden"); midTxtEl.classList.remove("hidden");
+    midTxtEl.textContent = deckAll.length ? "No incorrect cards yet." : "Select sets and Build Deck.";
+    smallEl.textContent = ""; statsEl.textContent = deckAll.length ? `Deck: ${deckAll.length}` : "Deck not built.";
+    el("btn_prev").disabled = true; el("btn_next").disabled = true; el("btn_flip").disabled = true;
+    if (btnSpeakIcon) { btnSpeakIcon.classList.add("hidden"); btnSpeakIcon.disabled = true; }
+    updateActionState();
+    return;
+  }
+
+  const card = deckView[index];
+  const frontIsEnglish = computeFrontForCard(card);
+  const showEnglishFace = isFront ? frontIsEnglish : !frontIsEnglish;
+  const japaneseFaceShowing = !showEnglishFace;
+  const content = faceContent(card, showEnglishFace);
+
+  badgeLeft.textContent = `${card.set}`;
+  badgeRight.textContent = `${card.category}${optIncorrectOnly.checked ? " · Incorrect Only" : ""}`;
+  const hideMeta = isFront && !showHintOnFront;
+  badgeLeft.classList.toggle("hidden", hideMeta);
+  badgeRight.classList.toggle("hidden", hideMeta);
+  if (btnHint) btnHint.classList.toggle("hidden", !isFront);
+
+  bigEl.textContent = content.big;
+  const isVocabJapaneseFace = (card.type === "vocab") && japaneseFaceShowing;
+  if (isVocabJapaneseFace && content.mid) {
+    midJpEl.textContent = content.mid; midJpEl.classList.remove("hidden");
+    midTxtEl.classList.add("hidden"); midTxtEl.textContent = "";
+  } else {
+    midJpEl.classList.add("hidden"); midTxtEl.classList.remove("hidden");
+    midTxtEl.textContent = content.mid || (isFront ? "Click to flip" : "");
+  }
+  smallEl.textContent = content.small || "";
+  statsEl.textContent = `Card ${index + 1} / ${deckView.length} · ${isFront ? "Front" : "Back"}`;
+
+  const navDisabled = deckView.length <= 1;
+  el("btn_prev").disabled = navDisabled; el("btn_next").disabled = navDisabled; el("btn_flip").disabled = false;
+  updateActionState();
+
+  const canSpeakNow = speechSupported && japaneseFaceShowing;
+  if (btnSpeakIcon) { btnSpeakIcon.classList.toggle("hidden", !canSpeakNow); btnSpeakIcon.disabled = !canSpeakNow; }
+  
+  if (canSpeakNow && card) {
+    setTimeout(() => { speakJapaneseForCard(card); }, 50);
+  }
+}
+
+function flip() { showHintOnFront = false; unsureLocked = false; if (!deckView.length) return; isFront = !isFront; render(); }
+function next() { showHintOnFront = false; unsureLocked = false; if (!deckView.length) return; index = (index + 1) % deckView.length; isFront = true; render(); }
+function prev() { showHintOnFront = false; if (!deckView.length) return; index = (index - 1 + deckView.length) % deckView.length; isFront = true; render(); }
+
+function markCorrect() { if (!deckView.length) return; if (isFront) { showToast("Flip first."); return; } showToast("Correct."); if (deckView.length > 1) next(); else { isFront = true; render(); } }
+function markIncorrect() { if (!deckView.length) return; if (isFront) { showToast("Flip first."); return; } const card = deckView[index]; missed.add(card.id); applyIncorrectOnlyView(); showToast("Incorrect."); if (deckView.length > 1) next(); else { isFront = true; render(); } }
+function markUnsure() { if (!deckView.length) return; const card = deckView[index]; missed.add(card.id); applyIncorrectOnlyView(); if (isFront) { isFront = false; unsureLocked = true; render(); } else { showToast("Incorrect."); if (deckView.length > 1) next(); else { isFront = true; render(); } } }
+
+function clearMisses() { missed.clear(); applyIncorrectOnlyView(); index = 0; isFront = true; render(); showToast("Cleared list."); }
+function resetUI() { selAll.checked = false; selEssentials.checked = false; selCore.checked = true; selHira.checked = false; selKata.checked = false; selBasic.checked = false; byCategoryEl.value = ""; optRandomSide.checked = true; optShuffle.checked = true; optLimit.value = 0; optIncorrectOnly.checked = false; deckAll = []; deckView = []; index = 0; isFront = true; perCardFrontIsEnglish = new Map(); missed.clear(); if (speechSupported) window.speechSynthesis.cancel(); render(); }
+
+function syncSelectAllCheckbox() {
+  const allChecked = selEssentials.checked && selCore.checked && selBasic.checked && selHira.checked && selKata.checked;
+  const noneChecked = !selEssentials.checked && !selCore.checked && !selBasic.checked && !selHira.checked && !selKata.checked;
+  selAll.indeterminate = !allChecked && !noneChecked;
+  selAll.checked = allChecked;
+}
+selAll.addEventListener("change", () => { const v = selAll.checked; [selEssentials, selCore, selBasic, selHira, selKata].forEach(cb => cb.checked = v); syncSelectAllCheckbox(); });
+[selEssentials, selCore, selBasic, selHira, selKata].forEach(cb => cb.addEventListener("change", syncSelectAllCheckbox));
+
+el("btn_build").addEventListener("click", rebuildDeck);
+el("btn_reset").addEventListener("click", resetUI);
+el("btn_flip").addEventListener("click", flip);
+el("btn_next").addEventListener("click", next);
+el("btn_prev").addEventListener("click", prev);
+el("btn_correct").addEventListener("click", (e) => { e.stopPropagation(); markCorrect(); });
+el("btn_incorrect").addEventListener("click", (e) => { e.stopPropagation(); markIncorrect(); });
+el("btn_unsure").addEventListener("click", (e) => { e.stopPropagation(); markUnsure(); });
+if (btnSpeakIcon) btnSpeakIcon.addEventListener("click", (e) => { e.stopPropagation(); speakJapaneseForCard(getCurrentCard()); });
+el("btn_clearMisses").addEventListener("click", clearMisses);
+optIncorrectOnly.addEventListener("change", () => { applyIncorrectOnlyView(); index = 0; isFront = true; render(); });
+
+if (btnHint) btnHint.addEventListener("click", (e) => { e.stopPropagation(); if (!deckView.length) return; showHintOnFront = true; render(); });
+
+if (btnSettings && btnCloseSettings) {
+  function isMobileViewport(){ return window.matchMedia("(max-width: 720px)").matches; }
+  function updateSettingsButtons(){
+    const studying = document.body.classList.contains("studying") && isMobileViewport();
+    btnSettings.classList.toggle("hidden", !studying);
+    btnCloseSettings.classList.toggle("hidden", !(studying && mobileSettingsOpen));
+  }
+  function toggleSettingsOverlay(open){
+    mobileSettingsOpen = (open !== undefined) ? !!open : !mobileSettingsOpen;
+    document.body.classList.toggle("showSettings", mobileSettingsOpen);
+    updateSettingsButtons();
+  }
+  btnSettings.addEventListener("click", (e)=>{ e.stopPropagation(); toggleSettingsOverlay(true); });
+  btnCloseSettings.addEventListener("click", (e)=>{ e.stopPropagation(); toggleSettingsOverlay(false); });
+  window.addEventListener("resize", updateSettingsButtons);
+}
+
+cardEl.addEventListener("click", flip);
+window.addEventListener("keydown", (e) => {
+  if (e.key === " " || e.code === "Space" || e.key === "ArrowUp" || e.key === "ArrowDown") { e.preventDefault(); flip(); }
+  if (e.key === "ArrowRight") next();
+  if (e.key === "ArrowLeft") prev();
+});
+
+populateCategoryDropdown();
+syncSelectAllCheckbox();
+initSpeech();
+render();
+</script>
   </style>
 </head>
 
@@ -47,3 +467,4 @@ if (canSpeakNow && card) {
 </script>
 </body>
 </html>
+
