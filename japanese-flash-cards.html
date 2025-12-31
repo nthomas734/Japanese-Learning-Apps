@@ -1,11 +1,11 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Nathan's Japanese Flash Cards — v1.12.4</title>
-
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<title>Nathan's Japanese Flash Cards — v1.12.5</title>
+<style>
     :root{
       --bg:#0b0d12;
       --panel:#121622;
@@ -252,353 +252,2098 @@
     }
   </style>
 </head>
-
 <body>
-  <header>
-    <div class="title">
-      <h1>Nathan's Japanese Flash Cards</h1>
-      <div class="sub"><a href="https://github.com/nthomas734/Japanese-Learning-Apps/tree/main" target="_blank">Repository</a></div>
-    </div>
-    <div class="badgeTop" title="Local, single-file app"><span class="dot"></span><span class="mono">offline-ready</span></div>
-  </header>
-
-  <main>
-    <section class="panel" id="sidebar">
-      <h2>Study Sets <button id="btn_closeSettings" class="ghost closeSettings hidden" type="button">Close</button></h2>
-      <div class="bd">
-        <div class="section-label">Vocabulary</div>
-        <div class="row">
-          <div class="pill"><input id="sel_all_vocab" type="checkbox" /><label for="sel_all_vocab">Select All</label></div>
-        </div>
-        <div class="row">
-          <div class="pill"><input id="sel_essentials" type="checkbox" checked /><label for="sel_essentials">Essentials</label></div>
-          <div class="pill"><input id="sel_travel" type="checkbox" checked /><label for="sel_travel">Travel</label></div>
-          <div class="pill"><input id="sel_basic" type="checkbox" /><label for="sel_basic">Beginner</label></div>
-        </div>
-
-        <div class="section-label">Japanese Scripts</div>
-        <div class="row">
-          <div class="pill"><input id="sel_all_scripts" type="checkbox" /><label for="sel_all_scripts">Select All</label></div>
-        </div>
-        <div class="row">
-          <div class="pill"><input id="sel_hira" type="checkbox" /><label for="sel_hira">Hiragana</label></div>
-          <div class="pill"><input id="sel_kata" type="checkbox" /><label for="sel_kata">Katakana</label></div>
-          <div class="pill"><input id="sel_kanji" type="checkbox" /><label for="sel_kanji">Kanji</label></div>
-        </div>
-
-        <div class="row" style="margin-top:14px;">
-          <div style="flex:1; min-width:220px;">
-            <div class="small" style="margin:0 0 6px 2px;">Build by Category</div>
-            <select id="by_category"><option value="">None</option></select>
-          </div>
-        </div>
-        <div class="row" style="margin-top:12px;">
-          <button id="btn_build" class="primary" type="button">Build Deck</button>
-          <button id="btn_reset" class="ghost" type="button">Reset</button>
-        </div>
-        
-        <div class="row" style="margin-top:14px; gap: 14px;">
-          <div class="pill"><input id="opt_shuffle" type="checkbox" checked /><label for="opt_shuffle">Shuffle</label></div>
-          <div class="pill"><input id="opt_autoplay" type="checkbox" checked /><label for="opt_autoplay">Autoplay Audio</label></div>
-          <div class="pill"><input id="opt_incorrectOnly" type="checkbox" /><label for="opt_incorrectOnly">Incorrect-only view</label></div>
-        </div>
-
-        <div class="row" style="margin-top:12px; align-items:flex-start;">
-           <div style="flex:1;">
-            <div class="small" style="margin:0 0 6px 2px;">Starting Side</div>
-            <select id="opt_side_mode">
-                <option value="random">Random</option>
-                <option value="jp">Japanese</option>
-                <option value="en">English</option>
-            </select>
-          </div>
-          <div style="flex:1;">
-            <div class="small" style="margin:0 0 6px 2px;">Card Limit</div>
-            <select id="opt_limit_select">
-                <option value="0">All</option>
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="section-label" style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.1); padding-top:12px;">Data Management</div>
-        <div class="row">
-            <button id="btn_export" class="ghost" style="flex:1;">Export Save</button>
-            <button id="btn_import" class="ghost" style="flex:1;">Import Save</button>
-            <input type="file" id="file_import" style="display:none" accept=".json" />
-        </div>
-        <div id="storage-status">Checking storage...</div>
-
-        <div class="row" style="margin-top:14px;">
-          <button id="btn_clearMisses" class="ghost" type="button">Clear incorrect list</button>
-          <div class="small mono" id="missCount">Incorrect: 0</div>
-        </div>
-      </div>
-    </section>
-
-    <div class="right-col">
-        <section class="panel" id="workspace">
-          <h2>Study <span class="small mono">v1.12.4</span></h2>
-          <div class="bd">
-            <div class="flashcard" id="card" tabindex="0" title="Click to flip">
-              <button id="btn_speak" class="btn-audio-card" type="button" title="Play Audio">
-                <svg viewBox="0 0 24 24"><path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16.03C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z"></path></svg>
-              </button>
-
-              <div class="badge" id="badge_left">—</div>
-              <div class="badge right" id="badge_right">—</div>
-              <div class="content">
-                <div class="big" id="big">Build a deck to start</div>
-                <div class="mid_jp hidden" id="mid_jp"></div>
-                <div class="mid_txt" id="mid_txt"></div>
-                <div class="smallLine" id="small"></div>
-                <div class="cardActions" id="card_actions" aria-label="Answer actions">
-                  <button class="good" id="btn_correct" type="button">Correct</button>
-                  <button class="warn" id="btn_unsure" type="button">Unsure</button>
-                  <button class="bad" id="btn_incorrect" type="button">Incorrect</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="controls" id="controls_area">
-              <div class="row">
-                <button id="btn_prev">← Prev</button>
-                <button id="btn_hint" class="ghost" type="button">Hint</button>
-                <button class="primary" id="btn_flip">Flip</button>
-                <button id="btn_next">Next →</button>
-              </div>
-              <div class="stats" id="stats">Deck not built yet.</div>
-              <button id="btn_settings" class="ghost settingsToggle hidden" type="button">Settings</button>
-            </div>
-            
-            <div class="toast" id="toast"></div>
-          </div>
-        </section>
-
-        <section class="panel" id="progress-section">
-            <div class="progress-text" id="progress_text">0 / 0 Correct</div>
-            <div class="progress-track" id="progress_track"></div>
-            <div class="streak-container" id="streak_container"></div>
-        </section>
-    </div>
-  </main>
-
+<header>
+<div class="title">
+<h1>Nathan's Japanese Flash Cards</h1>
+<div class="sub"><a href="https://github.com/nthomas734/Japanese-Learning-Apps/tree/main" target="_blank">Repository</a></div>
+</div>
+<div class="badgeTop" title="Local, single-file app"><span class="dot"></span><span class="mono">offline-ready</span></div>
+</header>
+<main>
+<section class="panel" id="sidebar">
+<h2>Study Sets <button class="ghost closeSettings hidden" id="btn_closeSettings" type="button">Close</button></h2>
+<div class="bd">
+<div class="section-label">Vocabulary</div>
+<div class="row">
+<div class="pill"><input id="sel_all_vocab" type="checkbox"/><label for="sel_all_vocab">Select All</label></div>
+</div>
+<div class="row">
+<div class="pill"><input checked="" id="sel_essentials" type="checkbox"/><label for="sel_essentials">Essentials</label></div>
+<div class="pill"><input checked="" id="sel_travel" type="checkbox"/><label for="sel_travel">Travel</label></div>
+<div class="pill"><input id="sel_basic" type="checkbox"/><label for="sel_basic">Beginner</label></div>
+<div class="pill"><input id="sel_ordering" type="checkbox"/><label for="sel_ordering">Ordering</label></div>
+<div class="pill"><input id="sel_grammar" type="checkbox"/><label for="sel_grammar">Grammar</label></div>
+<div class="pill"><input id="sel_n5core" type="checkbox"/><label for="sel_n5core">N5 Core</label></div>
+</div>
+<div class="section-label">Japanese Scripts</div>
+<div class="row">
+<div class="pill"><input id="sel_all_scripts" type="checkbox"/><label for="sel_all_scripts">Select All</label></div>
+</div>
+<div class="row">
+<div class="pill"><input id="sel_hira" type="checkbox"/><label for="sel_hira">Hiragana</label></div>
+<div class="pill"><input id="sel_kata" type="checkbox"/><label for="sel_kata">Katakana</label></div>
+<div class="pill"><input id="sel_kanji" type="checkbox"/><label for="sel_kanji">Kanji</label></div>
+</div>
+<div class="row" style="margin-top:14px;">
+<div style="flex:1; min-width:220px;">
+<div class="small" style="margin:0 0 6px 2px;">Build by Category</div>
+<select id="by_category"><option value="">None</option></select>
+</div>
+</div>
+<div class="row" style="margin-top:12px;">
+<button class="primary" id="btn_build" type="button">Build Deck</button>
+<button class="ghost" id="btn_reset" type="button">Reset</button>
+</div>
+<div class="row" style="margin-top:14px; gap: 14px;">
+<div class="pill"><input checked="" id="opt_shuffle" type="checkbox"/><label for="opt_shuffle">Shuffle</label></div>
+<div class="pill"><input checked="" id="opt_autoplay" type="checkbox"/><label for="opt_autoplay">Autoplay Audio</label></div>
+<div class="pill"><input id="opt_incorrectOnly" type="checkbox"/><label for="opt_incorrectOnly">Incorrect-only view</label></div>
+</div>
+<div class="row" style="margin-top:12px; align-items:flex-start;">
+<div style="flex:1;">
+<div class="small" style="margin:0 0 6px 2px;">Starting Side</div>
+<select id="opt_side_mode">
+<option value="random">Random</option>
+<option value="jp">Japanese</option>
+<option value="en">English</option>
+</select>
+</div>
+<div style="flex:1;">
+<div class="small" style="margin:0 0 6px 2px;">Card Limit</div>
+<select id="opt_limit_select">
+<option value="0">All</option>
+<option value="5">5</option>
+<option value="10">10</option>
+<option value="25">25</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+</div>
+</div>
+<div class="section-label" style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.1); padding-top:12px;">Data Management</div>
+<div class="row">
+<button class="ghost" id="btn_export" style="flex:1;">Export Save</button>
+<button class="ghost" id="btn_import" style="flex:1;">Import Save</button>
+<input accept=".json" id="file_import" style="display:none" type="file"/>
+</div>
+<div id="storage-status">Checking storage...</div>
+<div class="row" style="margin-top:14px;">
+<button class="ghost" id="btn_clearMisses" type="button">Clear incorrect list</button>
+<div class="small mono" id="missCount">Incorrect: 0</div>
+</div>
+</div>
+</section>
+<div class="right-col">
+<section class="panel" id="workspace">
+<h2>Study <span class="small mono">v1.12.5</span></h2>
+<div class="bd">
+<div class="flashcard" id="card" tabindex="0" title="Click to flip">
+<button class="btn-audio-card" id="btn_speak" title="Play Audio" type="button">
+<svg viewbox="0 0 24 24"><path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16.03C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z"></path></svg>
+</button>
+<div class="badge" id="badge_left">—</div>
+<div class="badge right" id="badge_right">—</div>
+<div class="content">
+<div class="big" id="big">Build a deck to start</div>
+<div class="mid_jp hidden" id="mid_jp"></div>
+<div class="mid_txt" id="mid_txt"></div>
+<div class="smallLine" id="small"></div>
+<div aria-label="Answer actions" class="cardActions" id="card_actions">
+<button class="good" id="btn_correct" type="button">Correct</button>
+<button class="warn" id="btn_unsure" type="button">Unsure</button>
+<button class="bad" id="btn_incorrect" type="button">Incorrect</button>
+</div>
+</div>
+</div>
+<div class="controls" id="controls_area">
+<div class="row">
+<button id="btn_prev">← Prev</button>
+<button class="ghost" id="btn_hint" type="button">Hint</button>
+<button class="primary" id="btn_flip">Flip</button>
+<button id="btn_next">Next →</button>
+</div>
+<div class="stats" id="stats">Deck not built yet.</div>
+<button class="ghost settingsToggle hidden" id="btn_settings" type="button">Settings</button>
+</div>
+<div class="toast" id="toast"></div>
+</div>
+</section>
+<section class="panel" id="progress-section">
+<div class="progress-text" id="progress_text">0 / 0 Correct</div>
+<div class="progress-track" id="progress_track"></div>
+<div class="streak-container" id="streak_container"></div>
+</section>
+</div>
+</main>
+<script id="vocab_json" type="application/json">{
+  "Essentials": {
+    "Essentials": [
+      {
+        "english": "Excuse me / Sorry",
+        "japanese": "すみません",
+        "romaji": "Sumimasen",
+        "pronunciation": "soo-mee-mah-sen"
+      },
+      {
+        "english": "Thank you very much",
+        "japanese": "ありがとうございます",
+        "romaji": "Arigatō gozaimasu",
+        "pronunciation": "ah-ree-gah-toh goh-zah-ee-mas"
+      },
+      {
+        "english": "This",
+        "japanese": "これ",
+        "romaji": "Kore",
+        "pronunciation": "koh-reh"
+      },
+      {
+        "english": "That (near you)",
+        "japanese": "それ",
+        "romaji": "Sore",
+        "pronunciation": "soh-reh"
+      },
+      {
+        "english": "Please (requesting an item)",
+        "japanese": "ください",
+        "romaji": "Kudasai",
+        "pronunciation": "koo-dah-sigh"
+      },
+      {
+        "english": "Please (general favor)",
+        "japanese": "お願いします",
+        "romaji": "Onegaishimasu",
+        "pronunciation": "oh-neh-guy-shee-mas"
+      },
+      {
+        "english": "No thank you / I'm good",
+        "japanese": "大丈夫です",
+        "romaji": "Daijōbu desu",
+        "pronunciation": "dye-joh-bu dess"
+      },
+      {
+        "english": "I am ~",
+        "japanese": "私は〜です",
+        "romaji": "Watashi wa ~ desu",
+        "pronunciation": "wah-tah-shee wah ~ dess"
+      },
+      {
+        "english": "I don’t understand",
+        "japanese": "わかりません",
+        "romaji": "Wakarimasen",
+        "pronunciation": "wah-kah-ree-mah-sen"
+      }
+    ],
+    "Greetings": [
+      {
+        "english": "Hello / Good afternoon",
+        "japanese": "こんにちは",
+        "romaji": "Konnichiwa",
+        "pronunciation": "kon-nee-chee-wah"
+      },
+      {
+        "english": "Good morning",
+        "japanese": "おはようございます",
+        "romaji": "Ohayō gozaimasu",
+        "pronunciation": "oh-hah-yoh goh-zah-ee-mas"
+      },
+      {
+        "english": "Good evening",
+        "japanese": "こんばんは",
+        "romaji": "Konbanwa",
+        "pronunciation": "kon-bahn-wah"
+      },
+      {
+        "english": "Good night",
+        "japanese": "おやすみ",
+        "romaji": "Oyasumi",
+        "pronunciation": "oh-yah-soo-mee"
+      }
+    ],
+    "Restaurants": [
+      {
+        "english": "Can I place an order?",
+        "japanese": "注文お願いします",
+        "romaji": "Chūmon onegaishimasu",
+        "pronunciation": "choo-mohn oh-neh-guy-shee-mas"
+      },
+      {
+        "english": "Water please",
+        "japanese": "水をお願いします",
+        "romaji": "Mizu o onegaishimasu",
+        "pronunciation": "mee-zoo oh oh-neh-guy-shee-mas"
+      },
+      {
+        "english": "Can I get the check / bill please",
+        "japanese": "お会計お願いします",
+        "romaji": "Okaikei onegaishimasu",
+        "pronunciation": "oh-kai-kay oh-neh-guy-shee-mas"
+      }
+    ]
+  },
+  "Travel": {
+    "Restaurants": [
+      {
+        "english": "One more beer",
+        "japanese": "ビールもう一杯",
+        "romaji": "Bīru mō ippai",
+        "pronunciation": "bee-roo moh ee-pie"
+      },
+      {
+        "english": "Reservation",
+        "japanese": "よやく",
+        "romaji": "Yoyaku",
+        "pronunciation": "yoh-yah-koo"
+      }
+    ],
+    "Shopping": [
+      {
+        "english": "Do you have (it)?",
+        "japanese": "ありますか",
+        "romaji": "Arimasu ka",
+        "pronunciation": "ah-ree-mas kah"
+      },
+      {
+        "english": "How much?",
+        "japanese": "いくら",
+        "romaji": "Ikura",
+        "pronunciation": "ee-koo-rah"
+      },
+      {
+        "english": "Please show me",
+        "japanese": "見せてください",
+        "romaji": "Misete kudasai",
+        "pronunciation": "mee-seh-teh koo-dah-sigh"
+      }
+    ],
+    "Questions": [
+      {
+        "english": "What is this?",
+        "japanese": "これは何ですか",
+        "romaji": "Kore wa nan desu ka",
+        "pronunciation": "koh-reh wah nahn dess kah"
+      },
+      {
+        "english": "What is your name?",
+        "japanese": "名前はなんですか",
+        "romaji": "Namae wa nan desu ka",
+        "pronunciation": "nah-mah-eh wah nahn dess kah"
+      }
+    ],
+    "Directions": [
+      {
+        "english": "Where is the bathroom?",
+        "japanese": "トイレはどこですか",
+        "romaji": "Toire wa doko desu ka",
+        "pronunciation": "toy-reh wah doh-koh dess kah"
+      }
+    ],
+    "Communication": [
+      {
+        "english": "I can’t speak Japanese",
+        "japanese": "日本語を話せません",
+        "romaji": "Nihongo o hanasemasen",
+        "pronunciation": "nee-hohn-goh oh hah-nah-seh-mah-sen"
+      },
+      {
+        "english": "I am practicing my Japanese",
+        "japanese": "私は日本語を練習しています。",
+        "romaji": "Watashi wa nihongo o renshū shite imasu",
+        "pronunciation": "wah-tah-shee wah nee-hohn-goh oh ren-shoo sheh-teh ee-mas"
+      }
+    ],
+    "Hotel": [
+      {
+        "english": "Reservation / appointment",
+        "japanese": "よやく",
+        "romaji": "Yoyaku",
+        "pronunciation": "yoh-yah-koo"
+      },
+      {
+        "english": "My name is ___",
+        "japanese": "名前は___です",
+        "romaji": "Namae wa ___ desu",
+        "pronunciation": "nah-mah-eh wah ___ dess"
+      },
+      {
+        "english": "Check-in, please",
+        "japanese": "チェックインお願いします",
+        "romaji": "Chekku-in onegaishimasu",
+        "pronunciation": "chek-koo-in oh-neh-guy-shee-mas"
+      },
+      {
+        "english": "What time is check-out?",
+        "japanese": "チェックアウトは何時ですか？",
+        "romaji": "Chekku-auto wa nan-ji desu ka?",
+        "pronunciation": "chek-koo-out-oh wah nahn-jee dess kah"
+      },
+      {
+        "english": "What time is breakfast?",
+        "japanese": "朝食は何時ですか？",
+        "romaji": "Chōshoku wa nan-ji desu ka?",
+        "pronunciation": "choh-shoh-koo wah nahn-jee dess kah"
+      }
+    ],
+    "Numbers": [
+      {
+        "english": "Hundred",
+        "japanese": "ひゃく",
+        "romaji": "Hyaku",
+        "pronunciation": "hyah-koo"
+      },
+      {
+        "english": "Two hundred",
+        "japanese": "にひゃく",
+        "romaji": "Ni-hyaku",
+        "pronunciation": "nee-hyah-koo"
+      },
+      {
+        "english": "Three hundred",
+        "japanese": "さんびゃく",
+        "romaji": "San-byaku",
+        "pronunciation": "sahn-byah-koo"
+      },
+      {
+        "english": "Four hundred",
+        "japanese": "よんひゃく",
+        "romaji": "Yon-hyaku",
+        "pronunciation": "yohn-hyah-koo"
+      },
+      {
+        "english": "Six hundred",
+        "japanese": "ろっぴゃく",
+        "romaji": "Roppyaku",
+        "pronunciation": "roh-ppyah-koo"
+      },
+      {
+        "english": "Eight hundred",
+        "japanese": "はっぴゃく",
+        "romaji": "Happyaku",
+        "pronunciation": "hah-ppyah-koo"
+      },
+      {
+        "english": "Twenty",
+        "japanese": "にじゅう",
+        "romaji": "Ni-jū",
+        "pronunciation": "nee-joo"
+      },
+      {
+        "english": "Thirty",
+        "japanese": "さんじゅう",
+        "romaji": "San-jū",
+        "pronunciation": "sahn-joo"
+      },
+      {
+        "english": "Four thousand",
+        "japanese": "よんせん",
+        "romaji": "Yon-sen",
+        "pronunciation": "yohn-sen"
+      },
+      {
+        "english": "Three thousand",
+        "japanese": "さんぜん",
+        "romaji": "Sanzen",
+        "pronunciation": "sahn-zen"
+      },
+      {
+        "english": "Eight thousand",
+        "japanese": "はっせん",
+        "romaji": "Hassen",
+        "pronunciation": "hah-sen"
+      }
+    ],
+    "Time & Dates": [
+      {
+        "english": "From",
+        "japanese": "から",
+        "romaji": "Kara",
+        "pronunciation": "kah-rah"
+      },
+      {
+        "english": "Until / to",
+        "japanese": "まで",
+        "romaji": "Made",
+        "pronunciation": "mah-deh"
+      },
+      {
+        "english": "Morning / a.m.",
+        "japanese": "ごぜん",
+        "romaji": "Gozen",
+        "pronunciation": "goh-zen"
+      },
+      {
+        "english": "Afternoon / p.m.",
+        "japanese": "ごご",
+        "romaji": "Gogo",
+        "pronunciation": "goh-goh"
+      }
+    ],
+    "Transportation": [
+      {
+        "english": "Where is the station?",
+        "japanese": "駅はどこですか",
+        "romaji": "Eki wa doko desu ka",
+        "pronunciation": "eh-kee wah doh-koh dess kah"
+      },
+      {
+        "english": "Which line?",
+        "japanese": "何線ですか",
+        "romaji": "Nan-sen desu ka",
+        "pronunciation": "nahn-sen dess kah"
+      },
+      {
+        "english": "Which platform?",
+        "japanese": "何番線ですか",
+        "romaji": "Nan-ban-sen desu ka",
+        "pronunciation": "nahn-bahn-sen dess kah"
+      },
+      {
+        "english": "This train goes to ___?",
+        "japanese": "この電車は___に行きますか",
+        "romaji": "Kono densha wa ___ ni ikimasu ka",
+        "pronunciation": "koh-no den-shah wah ___ nee ee-kee-mas kah"
+      },
+      {
+        "english": "One ticket please",
+        "japanese": "切符一枚ください",
+        "romaji": "Kippu ichimai kudasai",
+        "pronunciation": "kee-poo ee-chee-my koo-dah-sigh"
+      },
+      {
+        "english": "Where is the exit?",
+        "japanese": "出口はどこですか",
+        "romaji": "Deguchi wa doko desu ka",
+        "pronunciation": "deh-goo-chee wah doh-koh dess kah"
+      },
+      {
+        "english": "Next stop is ___.",
+        "japanese": "次は___です",
+        "romaji": "Tsugi wa ___ desu",
+        "pronunciation": ""
+      },
+      {
+        "english": "Transfer here.",
+        "japanese": "乗り換えです",
+        "romaji": "Norikae desu",
+        "pronunciation": ""
+      }
+    ],
+    "Convenience Store / Daily Errands": [
+      {
+        "english": "Convenience store",
+        "japanese": "コンビニ",
+        "romaji": "konbini",
+        "pronunciation": "kohn-bee-nee"
+      },
+      {
+        "english": "Cash register / checkout",
+        "japanese": "レジ",
+        "romaji": "reji",
+        "pronunciation": "reh-jee"
+      },
+      {
+        "english": "Receipt",
+        "japanese": "レシート",
+        "romaji": "reshiito",
+        "pronunciation": "reh-shee-toh"
+      },
+      {
+        "english": "Plastic bag",
+        "japanese": "レジ袋",
+        "romaji": "reji-bukuro",
+        "pronunciation": "reh-jee boo-koo-roh"
+      },
+      {
+        "english": "Do you need a bag?",
+        "japanese": "袋はいりますか？",
+        "romaji": "Fukuro wa irimasu ka?",
+        "pronunciation": "foo-koo-roh wah ee-ree-mas ka"
+      },
+      {
+        "english": "No, I'm okay.",
+        "japanese": "大丈夫です",
+        "romaji": "Daijōbu desu",
+        "pronunciation": "dai-joh-boo des"
+      },
+      {
+        "english": "Please.",
+        "japanese": "お願いします",
+        "romaji": "Onegaishimasu",
+        "pronunciation": "oh-neh-gai-shee-mas"
+      },
+      {
+        "english": "Just looking.",
+        "japanese": "見ているだけです",
+        "romaji": "Mite iru dake desu",
+        "pronunciation": "mee-teh ee-roo dah-keh des"
+      },
+      {
+        "english": "This one, please.",
+        "japanese": "これをお願いします",
+        "romaji": "Kore o onegaishimasu",
+        "pronunciation": "koh-reh oh oh-neh-gai-shee-mas"
+      },
+      {
+        "english": "Cash",
+        "japanese": "現金",
+        "romaji": "genkin",
+        "pronunciation": "gen-keen"
+      },
+      {
+        "english": "Credit card",
+        "japanese": "クレジットカード",
+        "romaji": "kurejitto kādo",
+        "pronunciation": "koo-reh-jit-toh kah-doh"
+      },
+      {
+        "english": "IC card (Suica/PASMO)",
+        "japanese": "ICカード",
+        "romaji": "aishi kādo",
+        "pronunciation": "ai-shee kah-doh"
+      },
+      {
+        "english": "Touchless / tap",
+        "japanese": "タッチ決済",
+        "romaji": "tacchi kessai",
+        "pronunciation": "tah-chee keh-ssai"
+      },
+      {
+        "english": "Change (money)",
+        "japanese": "お釣り",
+        "romaji": "otsuri",
+        "pronunciation": "oh-tsoo-ree"
+      },
+      {
+        "english": "Coin",
+        "japanese": "硬貨",
+        "romaji": "kōka",
+        "pronunciation": "koh-kah"
+      },
+      {
+        "english": "Bill (banknote)",
+        "japanese": "紙幣",
+        "romaji": "shihei",
+        "pronunciation": "shee-heh"
+      },
+      {
+        "english": "ATM",
+        "japanese": "ATM",
+        "romaji": "ētīemu",
+        "pronunciation": "ay-tee-ee-em"
+      },
+      {
+        "english": "Withdrawal",
+        "japanese": "引き出し",
+        "romaji": "hikidashi",
+        "pronunciation": "hee-kee-dah-shee"
+      },
+      {
+        "english": "Deposit",
+        "japanese": "預け入れ",
+        "romaji": "azukeire",
+        "pronunciation": "ah-zoo-keh-ee-reh"
+      },
+      {
+        "english": "Top up / charge (IC card)",
+        "japanese": "チャージ",
+        "romaji": "chāji",
+        "pronunciation": "chah-jee"
+      },
+      {
+        "english": "Wi‑Fi",
+        "japanese": "Wi‑Fi",
+        "romaji": "waifai",
+        "pronunciation": "why-fye"
+      },
+      {
+        "english": "Battery",
+        "japanese": "電池",
+        "romaji": "denchi",
+        "pronunciation": "den-chee"
+      },
+      {
+        "english": "Charger",
+        "japanese": "充電器",
+        "romaji": "jūdenki",
+        "pronunciation": "joo-den-kee"
+      },
+      {
+        "english": "Umbrella",
+        "japanese": "傘",
+        "romaji": "kasa",
+        "pronunciation": "kah-sah"
+      },
+      {
+        "english": "Tissue",
+        "japanese": "ティッシュ",
+        "romaji": "tisshu",
+        "pronunciation": "tee-shoo"
+      },
+      {
+        "english": "Hand sanitizer",
+        "japanese": "消毒液",
+        "romaji": "shōdokueki",
+        "pronunciation": "shoh-doh-koo-eh-kee"
+      },
+      {
+        "english": "Toilet",
+        "japanese": "トイレ",
+        "romaji": "toire",
+        "pronunciation": "toy-reh"
+      },
+      {
+        "english": "Restroom?",
+        "japanese": "トイレはどこですか？",
+        "romaji": "Toire wa doko desu ka?",
+        "pronunciation": "toy-reh wah doh-koh des ka"
+      },
+      {
+        "english": "Open 24 hours",
+        "japanese": "24時間営業",
+        "romaji": "nijūyojikan eigyō",
+        "pronunciation": "nee-joo-yoh-jee-kahn eh-gyoh"
+      },
+      {
+        "english": "Discount / sale",
+        "japanese": "割引",
+        "romaji": "waribiki",
+        "pronunciation": "wah-ree-bee-kee"
+      }
+    ]
+  },
+  "Ordering": {
+    "Restaurants": [
+      {
+        "english": "Welcome!",
+        "japanese": "いらっしゃいませ",
+        "romaji": "Irasshaimase",
+        "pronunciation": "ee-rah-sshah-ee-mah-seh"
+      },
+      {
+        "english": "Table for one",
+        "japanese": "一人です",
+        "romaji": "Hitori desu",
+        "pronunciation": "hee-toh-ree dess"
+      },
+      {
+        "english": "Table for two",
+        "japanese": "二人です",
+        "romaji": "Futari desu",
+        "pronunciation": "foo-tah-ree dess"
+      },
+      {
+        "english": "Table for three",
+        "japanese": "三人です",
+        "romaji": "Sannin desu",
+        "pronunciation": "sahn-neen dess"
+      },
+      {
+        "english": "Table for four",
+        "japanese": "四人です",
+        "romaji": "Yonin desu",
+        "pronunciation": "yoh-neen dess"
+      },
+      {
+        "english": "I’d like to order this",
+        "japanese": "これをお願いします",
+        "romaji": "Kore o onegaishimasu",
+        "pronunciation": "koh-reh oh oh-neh-guy-shee-mas"
+      },
+      {
+        "english": "One please",
+        "japanese": "一つください",
+        "romaji": "Hitotsu kudasai",
+        "pronunciation": "hee-toh-tsu koo-dah-sigh"
+      },
+      {
+        "english": "Two please",
+        "japanese": "二つください",
+        "romaji": "Futatsu kudasai",
+        "pronunciation": "foo-tah-tsu koo-dah-sigh"
+      },
+      {
+        "english": "Three please",
+        "japanese": "三つください",
+        "romaji": "Mittsu kudasai",
+        "pronunciation": "meet-tsu koo-dah-sigh"
+      },
+      {
+        "english": "Four please",
+        "japanese": "四つください",
+        "romaji": "Yottsu kudasai",
+        "pronunciation": "yoht-tsu koo-dah-sigh"
+      },
+      {
+        "english": "Water, please",
+        "japanese": "お水ください",
+        "romaji": "Omizu kudasai",
+        "pronunciation": "oh-mee-zoo koo-dah-sigh"
+      },
+      {
+        "english": "Another beer, please",
+        "japanese": "ビールもう一杯",
+        "romaji": "Bīru mō ippai",
+        "pronunciation": "bee-roo moh ee-pie"
+      },
+      {
+        "english": "Check, please",
+        "japanese": "お会計お願いします",
+        "romaji": "Okaikei onegaishimasu",
+        "pronunciation": "oh-kai-kay oh-neh-guy-shee-mas"
+      },
+      {
+        "english": "It’s delicious",
+        "japanese": "おいしいです",
+        "romaji": "Oishii desu",
+        "pronunciation": "oh-ee-shee dess"
+      },
+      {
+        "english": "How many people?",
+        "japanese": "何名様ですか？",
+        "romaji": "Nan-mei sama desu ka?",
+        "pronunciation": ""
+      },
+      {
+        "english": "What would you like to order?",
+        "japanese": "ご注文は？",
+        "romaji": "Go-chūmon wa?",
+        "pronunciation": ""
+      },
+      {
+        "english": "This way, please.",
+        "japanese": "こちらへどうぞ",
+        "romaji": "Kochira e dōzo",
+        "pronunciation": ""
+      }
+    ],
+    "Cafés & Coffee": [
+      {
+        "english": "Coffee please",
+        "japanese": "コーヒーください",
+        "romaji": "Kōhī kudasai",
+        "pronunciation": "koh-hee koo-dah-sigh"
+      },
+      {
+        "english": "Hot or iced?",
+        "japanese": "ホットですか、アイスですか",
+        "romaji": "Hotto desu ka, aisu desu ka",
+        "pronunciation": "hoht-to dess kah, eye-soo dess kah"
+      },
+      {
+        "english": "I’ll have this",
+        "japanese": "これにします",
+        "romaji": "Kore ni shimasu",
+        "pronunciation": "koh-reh nee shee-mas"
+      },
+      {
+        "english": "For here",
+        "japanese": "店内で",
+        "romaji": "Tennai de",
+        "pronunciation": "ten-nye deh"
+      },
+      {
+        "english": "To go",
+        "japanese": "持ち帰りで",
+        "romaji": "Mochikaeri de",
+        "pronunciation": "moh-chee-kye-ree deh"
+      },
+      {
+        "english": "For here?",
+        "japanese": "店内ですか？",
+        "romaji": "Tennai desu ka?",
+        "pronunciation": ""
+      },
+      {
+        "english": "To go?",
+        "japanese": "お持ち帰りですか？",
+        "romaji": "Omochikaeri desu ka?",
+        "pronunciation": ""
+      },
+      {
+        "english": "Credit card OK?",
+        "japanese": "カードは使えますか",
+        "romaji": "Kādo wa tsukaemasu ka",
+        "pronunciation": "kah-doh wah tsoo-kai-mahs kah"
+      }
+    ]
+  },
+  "Grammar": {
+    "Particles": [
+      {
+        "english": "Topic marker (wa)",
+        "japanese": "は",
+        "romaji": "wa",
+        "pronunciation": "wa"
+      },
+      {
+        "english": "Object marker (o)",
+        "japanese": "を",
+        "romaji": "o",
+        "pronunciation": "o"
+      },
+      {
+        "english": "Question marker (ka)",
+        "japanese": "か",
+        "romaji": "ka",
+        "pronunciation": "ka"
+      },
+      {
+        "english": "Destination / time (ni)",
+        "japanese": "に",
+        "romaji": "ni",
+        "pronunciation": "ni"
+      },
+      {
+        "english": "Location of action (de)",
+        "japanese": "で",
+        "romaji": "de",
+        "pronunciation": "de"
+      }
+    ],
+    "Counters": [
+      {
+        "english": "General counter (1–9): 1",
+        "japanese": "一つ/1つ",
+        "romaji": "hitotsu",
+        "pronunciation": "hitotsu"
+      },
+      {
+        "english": "General counter (1–9): 2",
+        "japanese": "二つ/2つ",
+        "romaji": "futatsu",
+        "pronunciation": "futatsu"
+      },
+      {
+        "english": "General counter (1–9): 3",
+        "japanese": "三つ/3つ",
+        "romaji": "mittsu",
+        "pronunciation": "mittsu"
+      },
+      {
+        "english": "General counter (1–9): 4",
+        "japanese": "四つ/4つ",
+        "romaji": "yottsu",
+        "pronunciation": "yottsu"
+      },
+      {
+        "english": "General counter (1–9): 5",
+        "japanese": "五つ/5つ",
+        "romaji": "itsutsu",
+        "pronunciation": "itsutsu"
+      },
+      {
+        "english": "General counter (1–9): 6",
+        "japanese": "六つ/6つ",
+        "romaji": "muttsu",
+        "pronunciation": "muttsu"
+      },
+      {
+        "english": "General counter (1–9): 7",
+        "japanese": "七つ/7つ",
+        "romaji": "nanatsu",
+        "pronunciation": "nanatsu"
+      },
+      {
+        "english": "General counter (1–9): 8",
+        "japanese": "八つ/8つ",
+        "romaji": "yattsu",
+        "pronunciation": "yattsu"
+      },
+      {
+        "english": "General counter (1–9): 9",
+        "japanese": "九つ/9つ",
+        "romaji": "kokonotsu",
+        "pronunciation": "kokonotsu"
+      },
+      {
+        "english": "Counter for things (ko): 1",
+        "japanese": "一個",
+        "romaji": "ikko",
+        "pronunciation": "ikko"
+      },
+      {
+        "english": "Counter for things (ko): 6",
+        "japanese": "六個",
+        "romaji": "rokko",
+        "pronunciation": "rokko"
+      },
+      {
+        "english": "Counter for things (ko): 8",
+        "japanese": "八個",
+        "romaji": "hakko",
+        "pronunciation": "hakko"
+      },
+      {
+        "english": "Counter for things (ko): 10",
+        "japanese": "十個",
+        "romaji": "jukko",
+        "pronunciation": "jukko"
+      },
+      {
+        "english": "Counter for things (ko): 100",
+        "japanese": "百個",
+        "romaji": "hyakko",
+        "pronunciation": "hyakko"
+      },
+      {
+        "english": "People counter: 1 person",
+        "japanese": "一人",
+        "romaji": "hitori",
+        "pronunciation": "hitori"
+      },
+      {
+        "english": "People counter: 2 people",
+        "japanese": "二人",
+        "romaji": "futari",
+        "pronunciation": "futari"
+      },
+      {
+        "english": "People counter (suffix)",
+        "japanese": "人",
+        "romaji": "nin",
+        "pronunciation": "nin"
+      },
+      {
+        "english": "Flat objects counter",
+        "japanese": "枚",
+        "romaji": "mai",
+        "pronunciation": "mai"
+      },
+      {
+        "english": "Long/cylindrical objects counter",
+        "japanese": "本",
+        "romaji": "hon",
+        "pronunciation": "hon"
+      },
+      {
+        "english": "Books/notebooks counter",
+        "japanese": "冊",
+        "romaji": "satsu",
+        "pronunciation": "satsu"
+      },
+      {
+        "english": "Machines/vehicles/furniture counter",
+        "japanese": "台",
+        "romaji": "dai",
+        "pronunciation": "dai"
+      },
+      {
+        "english": "Small animals/insects/fish counter",
+        "japanese": "匹",
+        "romaji": "hiki",
+        "pronunciation": "hiki"
+      },
+      {
+        "english": "Large animals counter",
+        "japanese": "頭",
+        "romaji": "tō",
+        "pronunciation": "toh"
+      },
+      {
+        "english": "Birds/rabbits counter",
+        "japanese": "羽",
+        "romaji": "wa",
+        "pronunciation": "wa"
+      },
+      {
+        "english": "Number of times counter",
+        "japanese": "回",
+        "romaji": "kai",
+        "pronunciation": "kai"
+      },
+      {
+        "english": "Minutes counter",
+        "japanese": "分",
+        "romaji": "fun",
+        "pronunciation": "fun"
+      },
+      {
+        "english": "Age counter",
+        "japanese": "歳",
+        "romaji": "sai",
+        "pronunciation": "sai"
+      },
+      {
+        "english": "Age: 20 years old",
+        "japanese": "二十歳",
+        "romaji": "hatachi",
+        "pronunciation": "hatachi"
+      }
+    ]
+  },
+  "Beginner": {
+    "Key Phrases": [
+      {
+        "english": "Yes",
+        "japanese": "はい",
+        "romaji": "Hai",
+        "pronunciation": "hai"
+      },
+      {
+        "english": "No",
+        "japanese": "いいえ",
+        "romaji": "Iie",
+        "pronunciation": "ee-eh"
+      },
+      {
+        "english": "What is your name?",
+        "japanese": "名前はなんですか",
+        "romaji": "Namae wa nan desu ka",
+        "pronunciation": "nah-mah-eh wah nahn dess kah"
+      },
+      {
+        "english": "I am ~",
+        "japanese": "私は〜です",
+        "romaji": "Watashi wa ~ desu",
+        "pronunciation": "wah-tah-shee wah dess"
+      },
+      {
+        "english": "I came from ~ / I am from ~",
+        "japanese": "〜から来ました",
+        "romaji": "~ kara kimashita",
+        "pronunciation": "kah-rah kee-mah-shee-tah"
+      },
+      {
+        "english": "What is this?",
+        "japanese": "これは何ですか",
+        "romaji": "Kore wa nan desu ka",
+        "pronunciation": "koh-reh wah nahn dess kah"
+      },
+      {
+        "english": "How much?",
+        "japanese": "いくらですか",
+        "romaji": "Ikura desu ka",
+        "pronunciation": "ee-koo-rah dess kah"
+      },
+      {
+        "english": "Can I get this one? / I'll take this one",
+        "japanese": "これください",
+        "romaji": "Kore kudasai",
+        "pronunciation": "koh-reh koo-dah-sigh"
+      },
+      {
+        "english": "Please",
+        "japanese": "おねがいします",
+        "romaji": "Onegaishimasu",
+        "pronunciation": "oh-neh-guy-shee-mas"
+      },
+      {
+        "english": "Can I place an order?",
+        "japanese": "注文お願いします",
+        "romaji": "Chūmon onegaishimasu",
+        "pronunciation": "choo-mohn oh-neh-guy-shee-mas"
+      },
+      {
+        "english": "Water please",
+        "japanese": "水をお願いします",
+        "romaji": "Mizu o onegaishimasu",
+        "pronunciation": "mee-zoo oh-neh-guy-shee-mas"
+      },
+      {
+        "english": "Can I get the check/bill?",
+        "japanese": "お会計お願いします",
+        "romaji": "Okaikei onegaishimasu",
+        "pronunciation": "oh-kai-kay oh-neh-guy-shee-mas"
+      },
+      {
+        "english": "Where am I?",
+        "japanese": "ここはどこですか",
+        "romaji": "Koko wa doko desu ka",
+        "pronunciation": "koh-koh wah doh-koh dess kah"
+      },
+      {
+        "english": "Where is the bathroom?",
+        "japanese": "トイレはどこですか",
+        "romaji": "Toire wa doko desu ka",
+        "pronunciation": "toy-reh wah doh-koh dess kah"
+      },
+      {
+        "english": "Where is the train station?",
+        "japanese": "駅はどこですか",
+        "romaji": "Eki wa doko desu ka",
+        "pronunciation": "eh-kee wah doh-koh dess kah"
+      },
+      {
+        "english": "What time is it now?",
+        "japanese": "今何時ですか",
+        "romaji": "Ima nan ji desu ka",
+        "pronunciation": "ee-mah nahn jee dess kah"
+      },
+      {
+        "english": "I don't understand",
+        "japanese": "わかりません",
+        "romaji": "Wakarimasen",
+        "pronunciation": "wah-kah-ree-mah-sen"
+      },
+      {
+        "english": "I can't speak Japanese",
+        "japanese": "日本語を話せません",
+        "romaji": "Nihongo o hanasemasen",
+        "pronunciation": "nee-hohn-goh oh hah-nah-seh-mah-sen"
+      }
+    ],
+    "Greetings": [
+      {
+        "english": "Good morning",
+        "japanese": "おはようございます",
+        "romaji": "Ohayō gozaimasu",
+        "pronunciation": "oh-hah-yoh goh-zah-ee-mas"
+      },
+      {
+        "english": "Good afternoon",
+        "japanese": "こんにちは",
+        "romaji": "Konnichiwa",
+        "pronunciation": "kon-nee-chee-wah"
+      },
+      {
+        "english": "Good evening",
+        "japanese": "こんばんは",
+        "romaji": "Konbanwa",
+        "pronunciation": "kon-bahn-wah"
+      },
+      {
+        "english": "Thank you",
+        "japanese": "ありがとうございます",
+        "romaji": "Arigatō gozaimasu",
+        "pronunciation": "ah-ree-gah-toh goh-zah-ee-mas"
+      },
+      {
+        "english": "Excuse me / I'm sorry",
+        "japanese": "すみません",
+        "romaji": "Sumimasen",
+        "pronunciation": "soo-mee-mah-sen"
+      }
+    ],
+    "People & Pronouns": [
+      {
+        "english": "I (watashi / boku / ore)",
+        "japanese": "私、僕、俺",
+        "romaji": "Watashi / Boku / Ore",
+        "pronunciation": ""
+      },
+      {
+        "english": "Friend",
+        "japanese": "友達",
+        "romaji": "Tomodachi",
+        "pronunciation": "toh-moh-dah-chee"
+      },
+      {
+        "english": "Co-worker",
+        "japanese": "同僚",
+        "romaji": "Dōryō",
+        "pronunciation": "doh-ryoh"
+      },
+      {
+        "english": "Boss / Company president",
+        "japanese": "部長、社長",
+        "romaji": "Buchō / Shachō",
+        "pronunciation": "boo-choh / shah-choh"
+      },
+      {
+        "english": "Family",
+        "japanese": "家族",
+        "romaji": "Kazoku",
+        "pronunciation": "kah-zoh-koo"
+      },
+      {
+        "english": "Father",
+        "japanese": "お父さん",
+        "romaji": "Otō-san",
+        "pronunciation": "oh-toh-san"
+      },
+      {
+        "english": "Mother",
+        "japanese": "お母さん",
+        "romaji": "Okā-san",
+        "pronunciation": "oh-kah-san"
+      },
+      {
+        "english": "Older brother",
+        "japanese": "お兄さん",
+        "romaji": "Onii-san",
+        "pronunciation": "oh-nee-san"
+      },
+      {
+        "english": "Older sister",
+        "japanese": "お姉さん",
+        "romaji": "Onee-san",
+        "pronunciation": "oh-neh-san"
+      },
+      {
+        "english": "Younger brother",
+        "japanese": "弟",
+        "romaji": "Otōto",
+        "pronunciation": "oh-toh-toh"
+      },
+      {
+        "english": "Younger sister",
+        "japanese": "妹",
+        "romaji": "Imōto",
+        "pronunciation": "ee-moh-toh"
+      },
+      {
+        "english": "Adults",
+        "japanese": "大人",
+        "romaji": "Otona",
+        "pronunciation": "oh-toh-nah"
+      },
+      {
+        "english": "Children",
+        "japanese": "子供",
+        "romaji": "Kodomo",
+        "pronunciation": "koh-doh-moh"
+      },
+      {
+        "english": "Boyfriend",
+        "japanese": "彼氏",
+        "romaji": "Kareshi",
+        "pronunciation": "kah-reh-shee"
+      },
+      {
+        "english": "Girlfriend",
+        "japanese": "彼女",
+        "romaji": "Kanojo",
+        "pronunciation": "kah-noh-joh"
+      },
+      {
+        "english": "Man",
+        "japanese": "男の人",
+        "romaji": "Otoko no hito",
+        "pronunciation": "oh-toh-koh noh hee-toh"
+      },
+      {
+        "english": "Woman",
+        "japanese": "女の人",
+        "romaji": "Onna no hito",
+        "pronunciation": "ohn-nah noh hee-toh"
+      }
+    ],
+    "Food & Drink": [
+      {
+        "english": "Breakfast",
+        "japanese": "朝ご飯",
+        "romaji": "Asa-gohan",
+        "pronunciation": "ah-sah goh-hahn"
+      },
+      {
+        "english": "Lunch",
+        "japanese": "昼ご飯",
+        "romaji": "Hiru-gohan",
+        "pronunciation": "hee-roo goh-hahn"
+      },
+      {
+        "english": "Dinner",
+        "japanese": "夜ご飯",
+        "romaji": "Yoru-gohan",
+        "pronunciation": "yoh-roo goh-hahn"
+      },
+      {
+        "english": "Rice / Meal",
+        "japanese": "ご飯",
+        "romaji": "Gohan",
+        "pronunciation": "goh-hahn"
+      },
+      {
+        "english": "Bread",
+        "japanese": "パン",
+        "romaji": "Pan",
+        "pronunciation": "pahn"
+      },
+      {
+        "english": "Meat",
+        "japanese": "肉",
+        "romaji": "Niku",
+        "pronunciation": "nee-koo"
+      },
+      {
+        "english": "Fish",
+        "japanese": "魚",
+        "romaji": "Sakana",
+        "pronunciation": "sah-kah-nah"
+      },
+      {
+        "english": "Vegetables",
+        "japanese": "野菜",
+        "romaji": "Yasai",
+        "pronunciation": "yah-sigh"
+      },
+      {
+        "english": "Fruits",
+        "japanese": "果物",
+        "romaji": "Kudamono",
+        "pronunciation": "koo-dah-moh-noh"
+      },
+      {
+        "english": "Soup",
+        "japanese": "スープ",
+        "romaji": "Sūpu",
+        "pronunciation": "soo-poo"
+      },
+      {
+        "english": "Salad",
+        "japanese": "サラダ",
+        "romaji": "Sarada",
+        "pronunciation": "sah-rah-dah"
+      },
+      {
+        "english": "Egg",
+        "japanese": "卵",
+        "romaji": "Tamago",
+        "pronunciation": "tah-mah-goh"
+      },
+      {
+        "english": "Milk",
+        "japanese": "牛乳",
+        "romaji": "Gyūnyū",
+        "pronunciation": "gyoo-nyoo"
+      },
+      {
+        "english": "Cheese",
+        "japanese": "チーズ",
+        "romaji": "Chīzu",
+        "pronunciation": "chee-zoo"
+      },
+      {
+        "english": "Dessert",
+        "japanese": "デザート",
+        "romaji": "Dezāto",
+        "pronunciation": "deh-zah-toh"
+      },
+      {
+        "english": "Water",
+        "japanese": "水",
+        "romaji": "Mizu",
+        "pronunciation": "mee-zoo"
+      },
+      {
+        "english": "Tea / Green tea",
+        "japanese": "お茶",
+        "romaji": "Ocha",
+        "pronunciation": "oh-chah"
+      },
+      {
+        "english": "Coffee",
+        "japanese": "コーヒー",
+        "romaji": "Kōhī",
+        "pronunciation": "koh-hee"
+      },
+      {
+        "english": "Alcohol / Sake",
+        "japanese": "お酒",
+        "romaji": "Osake",
+        "pronunciation": "oh-sah-keh"
+      },
+      {
+        "english": "Wine",
+        "japanese": "ワイン",
+        "romaji": "Wain",
+        "pronunciation": "wah-een"
+      },
+      {
+        "english": "Beer",
+        "japanese": "ビール",
+        "romaji": "Bīru",
+        "pronunciation": "bee-roo"
+      }
+    ],
+    "Numbers": [
+      {
+        "english": "1",
+        "japanese": "一",
+        "romaji": "ichi",
+        "pronunciation": "ee-chee"
+      },
+      {
+        "english": "2",
+        "japanese": "二",
+        "romaji": "ni",
+        "pronunciation": "nee"
+      },
+      {
+        "english": "3",
+        "japanese": "三",
+        "romaji": "san",
+        "pronunciation": "sahn"
+      },
+      {
+        "english": "4",
+        "japanese": "四",
+        "romaji": "yon",
+        "pronunciation": "yohn"
+      },
+      {
+        "english": "5",
+        "japanese": "五",
+        "romaji": "go",
+        "pronunciation": "goh"
+      },
+      {
+        "english": "6",
+        "japanese": "六",
+        "romaji": "roku",
+        "pronunciation": "roh-koo"
+      },
+      {
+        "english": "7",
+        "japanese": "七",
+        "romaji": "nana",
+        "pronunciation": "nah-nah"
+      },
+      {
+        "english": "8",
+        "japanese": "八",
+        "romaji": "hachi",
+        "pronunciation": "hah-chee"
+      },
+      {
+        "english": "9",
+        "japanese": "九",
+        "romaji": "kyū",
+        "pronunciation": "kyoo"
+      },
+      {
+        "english": "10",
+        "japanese": "十",
+        "romaji": "jū",
+        "pronunciation": "joo"
+      },
+      {
+        "english": "11",
+        "japanese": "十一",
+        "romaji": "jūichi",
+        "pronunciation": "joo-ee-chee"
+      },
+      {
+        "english": "12",
+        "japanese": "十二",
+        "romaji": "jūni",
+        "pronunciation": "joo-nee"
+      },
+      {
+        "english": "20",
+        "japanese": "二十",
+        "romaji": "nijū",
+        "pronunciation": "nee-joo"
+      },
+      {
+        "english": "21",
+        "japanese": "二十一",
+        "romaji": "nijūichi",
+        "pronunciation": "nee-joo-ee-chee"
+      },
+      {
+        "english": "30",
+        "japanese": "三十",
+        "romaji": "sanjū",
+        "pronunciation": "sahn-joo"
+      },
+      {
+        "english": "32",
+        "japanese": "三十二",
+        "romaji": "sanjūni",
+        "pronunciation": "sahn-joo-nee"
+      },
+      {
+        "english": "40",
+        "japanese": "四十",
+        "romaji": "yonjū",
+        "pronunciation": "yohn-joo"
+      },
+      {
+        "english": "43",
+        "japanese": "四十三",
+        "romaji": "yonjūsan",
+        "pronunciation": "yohn-joo-sahn"
+      },
+      {
+        "english": "50",
+        "japanese": "五十",
+        "romaji": "gojū",
+        "pronunciation": "goh-joo"
+      },
+      {
+        "english": "54",
+        "japanese": "五十四",
+        "romaji": "gojūyon",
+        "pronunciation": "goh-joo-yohn"
+      },
+      {
+        "english": "60",
+        "japanese": "六十",
+        "romaji": "rokujū",
+        "pronunciation": "roh-koo-joo"
+      },
+      {
+        "english": "65",
+        "japanese": "六十五",
+        "romaji": "rokujūgo",
+        "pronunciation": "roh-koo-joo-goh"
+      },
+      {
+        "english": "70",
+        "japanese": "七十",
+        "romaji": "nanajū",
+        "pronunciation": "nah-nah-joo"
+      },
+      {
+        "english": "76",
+        "japanese": "七十六",
+        "romaji": "nanajūroku",
+        "pronunciation": "nah-nah-joo-roh-koo"
+      },
+      {
+        "english": "80",
+        "japanese": "八十",
+        "romaji": "hachijū",
+        "pronunciation": "hah-chee-joo"
+      },
+      {
+        "english": "87",
+        "japanese": "八十七",
+        "romaji": "hachijūnana",
+        "pronunciation": "hah-chee-joo-nah-nah"
+      },
+      {
+        "english": "90",
+        "japanese": "九十",
+        "romaji": "kyūjū",
+        "pronunciation": "kyoo-joo"
+      },
+      {
+        "english": "98",
+        "japanese": "九十八",
+        "romaji": "kyūjūhachi",
+        "pronunciation": "kyoo-joo-hah-chee"
+      },
+      {
+        "english": "100",
+        "japanese": "百",
+        "romaji": "hyaku",
+        "pronunciation": "hyah-koo"
+      },
+      {
+        "english": "1000",
+        "japanese": "千",
+        "romaji": "sen",
+        "pronunciation": "sen"
+      },
+      {
+        "english": "2000",
+        "japanese": "二千",
+        "romaji": "nisen",
+        "pronunciation": "nee-sen"
+      },
+      {
+        "english": "3000",
+        "japanese": "三千",
+        "romaji": "sanzen",
+        "pronunciation": "sahn-zen"
+      },
+      {
+        "english": "5000",
+        "japanese": "五千",
+        "romaji": "gosen",
+        "pronunciation": "goh-sen"
+      }
+    ],
+    "Essential Verbs": [
+      {
+        "english": "to eat",
+        "japanese": "食べる",
+        "romaji": "Taberu",
+        "pronunciation": "tah-beh-roo"
+      },
+      {
+        "english": "to go",
+        "japanese": "行く",
+        "romaji": "Iku",
+        "pronunciation": "ee-koo"
+      },
+      {
+        "english": "to drink",
+        "japanese": "飲む",
+        "romaji": "Nomu",
+        "pronunciation": "noh-moo"
+      },
+      {
+        "english": "to listen / hear",
+        "japanese": "聞く",
+        "romaji": "Kiku",
+        "pronunciation": "kee-koo"
+      },
+      {
+        "english": "to read",
+        "japanese": "読む",
+        "romaji": "Yomu",
+        "pronunciation": "yoh-moo"
+      },
+      {
+        "english": "to see / look / watch",
+        "japanese": "見る",
+        "romaji": "Miru",
+        "pronunciation": "mee-roo"
+      },
+      {
+        "english": "to sleep",
+        "japanese": "寝る",
+        "romaji": "Neru",
+        "pronunciation": "neh-roo"
+      },
+      {
+        "english": "to wake up",
+        "japanese": "起きる",
+        "romaji": "Okiru",
+        "pronunciation": "oh-kee-roo"
+      },
+      {
+        "english": "to speak / talk",
+        "japanese": "話す",
+        "romaji": "Hanasu",
+        "pronunciation": "hah-nah-soo"
+      },
+      {
+        "english": "to return / go back",
+        "japanese": "帰る",
+        "romaji": "Kaeru",
+        "pronunciation": "kah-eh-roo"
+      },
+      {
+        "english": "to sit down",
+        "japanese": "座る",
+        "romaji": "Suwaru",
+        "pronunciation": "soo-wah-roo"
+      },
+      {
+        "english": "to stand up",
+        "japanese": "立つ",
+        "romaji": "Tatsu",
+        "pronunciation": "tah-tsoo"
+      },
+      {
+        "english": "to swim",
+        "japanese": "泳ぐ",
+        "romaji": "Oyogu",
+        "pronunciation": "oh-yoh-goo"
+      },
+      {
+        "english": "to play",
+        "japanese": "遊ぶ",
+        "romaji": "Asobu",
+        "pronunciation": "ah-soh-boo"
+      },
+      {
+        "english": "to ride",
+        "japanese": "乗る",
+        "romaji": "Noru",
+        "pronunciation": "noh-roo"
+      },
+      {
+        "english": "to buy",
+        "japanese": "買う",
+        "romaji": "Kau",
+        "pronunciation": "kah-oo"
+      },
+      {
+        "english": "to meet",
+        "japanese": "会う",
+        "romaji": "Au",
+        "pronunciation": "ah-oo"
+      },
+      {
+        "english": "to write",
+        "japanese": "書く",
+        "romaji": "Kaku",
+        "pronunciation": "kah-koo"
+      },
+      {
+        "english": "to wait",
+        "japanese": "待つ",
+        "romaji": "Matsu",
+        "pronunciation": "mah-tsoo"
+      },
+      {
+        "english": "to take a picture",
+        "japanese": "撮る",
+        "romaji": "Toru",
+        "pronunciation": "toh-roo"
+      }
+    ]
+  },
+  "N5 Core": {
+    "N5 Verbs": [
+      {
+        "english": "to do",
+        "japanese": "する",
+        "romaji": "suru",
+        "pronunciation": "soo-roo"
+      },
+      {
+        "english": "to go",
+        "japanese": "行く",
+        "romaji": "iku",
+        "pronunciation": "ee-koo"
+      },
+      {
+        "english": "to come",
+        "japanese": "来る",
+        "romaji": "kuru",
+        "pronunciation": "koo-roo"
+      },
+      {
+        "english": "to eat",
+        "japanese": "食べる",
+        "romaji": "taberu",
+        "pronunciation": "tah-beh-roo"
+      },
+      {
+        "english": "to drink",
+        "japanese": "飲む",
+        "romaji": "nomu",
+        "pronunciation": "noh-moo"
+      },
+      {
+        "english": "to see / watch",
+        "japanese": "見る",
+        "romaji": "miru",
+        "pronunciation": "mee-roo"
+      },
+      {
+        "english": "to listen / hear",
+        "japanese": "聞く",
+        "romaji": "kiku",
+        "pronunciation": "kee-koo"
+      },
+      {
+        "english": "to speak",
+        "japanese": "話す",
+        "romaji": "hanasu",
+        "pronunciation": "hah-nah-soo"
+      },
+      {
+        "english": "to read",
+        "japanese": "読む",
+        "romaji": "yomu",
+        "pronunciation": "yoh-moo"
+      },
+      {
+        "english": "to write",
+        "japanese": "書く",
+        "romaji": "kaku",
+        "pronunciation": "kah-koo"
+      },
+      {
+        "english": "to buy",
+        "japanese": "買う",
+        "romaji": "kau",
+        "pronunciation": "kah-oo"
+      },
+      {
+        "english": "to wait",
+        "japanese": "待つ",
+        "romaji": "matsu",
+        "pronunciation": "mah-tsoo"
+      },
+      {
+        "english": "to know",
+        "japanese": "知る",
+        "romaji": "shiru",
+        "pronunciation": "shee-roo"
+      },
+      {
+        "english": "to understand",
+        "japanese": "分かる",
+        "romaji": "wakaru",
+        "pronunciation": "wah-kah-roo"
+      },
+      {
+        "english": "to use",
+        "japanese": "使う",
+        "romaji": "tsukau",
+        "pronunciation": "tsoo-kah-oo"
+      }
+    ],
+    "N5 Adjectives": [
+      {
+        "english": "good",
+        "japanese": "いい",
+        "romaji": "ii",
+        "pronunciation": "ee-ee"
+      },
+      {
+        "english": "bad",
+        "japanese": "悪い",
+        "romaji": "warui",
+        "pronunciation": "wah-roo-ee"
+      },
+      {
+        "english": "big",
+        "japanese": "大きい",
+        "romaji": "ōkii",
+        "pronunciation": "oh-kee-ee"
+      },
+      {
+        "english": "small",
+        "japanese": "小さい",
+        "romaji": "chiisai",
+        "pronunciation": "chee-ee-sai"
+      },
+      {
+        "english": "new",
+        "japanese": "新しい",
+        "romaji": "atarashii",
+        "pronunciation": "ah-tah-rah-shee-ee"
+      },
+      {
+        "english": "old (thing)",
+        "japanese": "古い",
+        "romaji": "furui",
+        "pronunciation": "foo-roo-ee"
+      },
+      {
+        "english": "hot (weather/food)",
+        "japanese": "暑い / 熱い",
+        "romaji": "atsui",
+        "pronunciation": "ah-tsoo-ee"
+      },
+      {
+        "english": "cold",
+        "japanese": "寒い / 冷たい",
+        "romaji": "samui / tsumetai",
+        "pronunciation": "sah-moo-ee / tsoo-meh-tai"
+      },
+      {
+        "english": "expensive",
+        "japanese": "高い",
+        "romaji": "takai",
+        "pronunciation": "tah-kai"
+      },
+      {
+        "english": "cheap",
+        "japanese": "安い",
+        "romaji": "yasui",
+        "pronunciation": "yah-soo-ee"
+      },
+      {
+        "english": "busy",
+        "japanese": "忙しい",
+        "romaji": "isogashii",
+        "pronunciation": "ee-soh-gah-shee-ee"
+      },
+      {
+        "english": "free (available)",
+        "japanese": "暇",
+        "romaji": "hima",
+        "pronunciation": "hee-mah"
+      }
+    ],
+    "N5 Nouns": [
+      {
+        "english": "person",
+        "japanese": "人",
+        "romaji": "hito",
+        "pronunciation": "hee-toh"
+      },
+      {
+        "english": "friend",
+        "japanese": "友達",
+        "romaji": "tomodachi",
+        "pronunciation": "toh-moh-dah-chee"
+      },
+      {
+        "english": "family",
+        "japanese": "家族",
+        "romaji": "kazoku",
+        "pronunciation": "kah-zoh-koo"
+      },
+      {
+        "english": "time",
+        "japanese": "時間",
+        "romaji": "jikan",
+        "pronunciation": "jee-kahn"
+      },
+      {
+        "english": "money",
+        "japanese": "お金",
+        "romaji": "okane",
+        "pronunciation": "oh-kah-neh"
+      },
+      {
+        "english": "place",
+        "japanese": "場所",
+        "romaji": "basho",
+        "pronunciation": "bah-shoh"
+      },
+      {
+        "english": "thing",
+        "japanese": "物",
+        "romaji": "mono",
+        "pronunciation": "moh-noh"
+      },
+      {
+        "english": "shop/store",
+        "japanese": "店",
+        "romaji": "mise",
+        "pronunciation": "mee-seh"
+      },
+      {
+        "english": "restaurant",
+        "japanese": "レストラン",
+        "romaji": "resutoran",
+        "pronunciation": "reh-soo-toh-rahn"
+      },
+      {
+        "english": "hotel",
+        "japanese": "ホテル",
+        "romaji": "hoteru",
+        "pronunciation": "hoh-teh-roo"
+      },
+      {
+        "english": "station",
+        "japanese": "駅",
+        "romaji": "eki",
+        "pronunciation": "eh-kee"
+      },
+      {
+        "english": "bathroom",
+        "japanese": "トイレ",
+        "romaji": "toire",
+        "pronunciation": "toy-reh"
+      }
+    ],
+    "N5 Expressions": [
+      {
+        "english": "what",
+        "japanese": "何",
+        "romaji": "nani",
+        "pronunciation": "nah-nee"
+      },
+      {
+        "english": "where",
+        "japanese": "どこ",
+        "romaji": "doko",
+        "pronunciation": "doh-koh"
+      },
+      {
+        "english": "when",
+        "japanese": "いつ",
+        "romaji": "itsu",
+        "pronunciation": "ee-tsoo"
+      },
+      {
+        "english": "who",
+        "japanese": "誰",
+        "romaji": "dare",
+        "pronunciation": "dah-reh"
+      },
+      {
+        "english": "which",
+        "japanese": "どれ",
+        "romaji": "dore",
+        "pronunciation": "doh-reh"
+      },
+      {
+        "english": "how",
+        "japanese": "どう",
+        "romaji": "dō",
+        "pronunciation": "doh"
+      },
+      {
+        "english": "how much",
+        "japanese": "いくら",
+        "romaji": "ikura",
+        "pronunciation": "ee-koo-rah"
+      },
+      {
+        "english": "why",
+        "japanese": "なぜ",
+        "romaji": "naze",
+        "pronunciation": "nah-zeh"
+      },
+      {
+        "english": "today",
+        "japanese": "今日",
+        "romaji": "kyō",
+        "pronunciation": "kyoh"
+      },
+      {
+        "english": "tomorrow",
+        "japanese": "明日",
+        "romaji": "ashita",
+        "pronunciation": "ah-shee-tah"
+      },
+      {
+        "english": "yesterday",
+        "japanese": "昨日",
+        "romaji": "kinō",
+        "pronunciation": "kee-noh"
+      },
+      {
+        "english": "morning",
+        "japanese": "朝",
+        "romaji": "asa",
+        "pronunciation": "ah-sah"
+      },
+      {
+        "english": "afternoon",
+        "japanese": "午後",
+        "romaji": "gogo",
+        "pronunciation": "goh-goh"
+      },
+      {
+        "english": "night",
+        "japanese": "夜",
+        "romaji": "yoru",
+        "pronunciation": "yoh-roo"
+      },
+      {
+        "english": "now",
+        "japanese": "今",
+        "romaji": "ima",
+        "pronunciation": "ee-mah"
+      },
+      {
+        "english": "later",
+        "japanese": "後で",
+        "romaji": "atode",
+        "pronunciation": "ah-toh-deh"
+      }
+    ]
+  }
+}</script>
 <script>
-/* ========= Japanese Flash Cards — v1.12.4 ========= */
-const APP = { version: "1.12.4", build: 48, storageKey: "jp_fc_v1" };
+/* ========= Japanese Flash Cards — v1.12.5 ========= */
+const APP = { version: "1.12.5", build: 48, storageKey: "jp_fc_v1" };
 
 const SETS = {
   ESSENTIALS: "Essentials",
   TRAVEL: "Travel",
   BASIC: "Beginner",
+  ORDERING: "Ordering",
+  GRAMMAR: "Grammar",
+  N5CORE: "N5 Core",
   HIRAGANA: "Hiragana",
   KATAKANA: "Katakana",
   KANJI: "Kanji"
 };
 
 /* --- EMBEDDED DATA START --- */
-const VOCAB = {
-  [SETS.ESSENTIALS]: {
-    "Essentials": [
-      { english: "Excuse me / Sorry", japanese: "すみません", romaji: "Sumimasen", pronunciation: "soo-mee-mah-sen" },
-      { english: "Thank you very much", japanese: "ありがとうございます", romaji: "Arigatō gozaimasu", pronunciation: "ah-ree-gah-toh goh-zah-ee-mas" },
-      { english: "This", japanese: "これ", romaji: "Kore", pronunciation: "koh-reh" },
-      { english: "That (near you)", japanese: "それ", romaji: "Sore", pronunciation: "soh-reh" },
-      { english: "Please (requesting an item)", japanese: "ください", romaji: "Kudasai", pronunciation: "koo-dah-sigh" },
-      { english: "Please (general favor)", japanese: "お願いします", romaji: "Onegaishimasu", pronunciation: "oh-neh-guy-shee-mas" },
-      { english: "No thank you / I'm good", japanese: "大丈夫です", romaji: "Daijōbu desu", pronunciation: "dye-joh-bu dess" },
-      { english: "I am ~", japanese: "私は〜です", romaji: "Watashi wa ~ desu", pronunciation: "wah-tah-shee wah ~ dess" },
-      { english: "I don’t understand", japanese: "わかりません", romaji: "Wakarimasen", pronunciation: "wah-kah-ree-mah-sen" }
-    ],
-    "Greetings": [
-      { english: "Hello / Good afternoon", japanese: "こんにちは", romaji: "Konnichiwa", pronunciation: "kon-nee-chee-wah" },
-      { english: "Good morning", japanese: "おはようございます", romaji: "Ohayō gozaimasu", pronunciation: "oh-hah-yoh goh-zah-ee-mas" },
-      { english: "Good evening", japanese: "こんばんは", romaji: "Konbanwa", pronunciation: "kon-bahn-wah" },
-      { english: "Good night", japanese: "おやすみ", romaji: "Oyasumi", pronunciation: "oh-yah-soo-mee" }
-    ],
-    "Restaurants": [
-      { english: "Can I place an order?", japanese: "注文お願いします", romaji: "Chūmon onegaishimasu", pronunciation: "choo-mohn oh-neh-guy-shee-mas" },
-      { english: "Water please", japanese: "水をお願いします", romaji: "Mizu o onegaishimasu", pronunciation: "mee-zoo oh oh-neh-guy-shee-mas" },
-      { english: "Can I get the check / bill please", japanese: "お会計お願いします", romaji: "Okaikei onegaishimasu", pronunciation: "oh-kai-kay oh-neh-guy-shee-mas" }
-    ]
-  },
-  [SETS.TRAVEL]: {
-    "Restaurants": [
-      { english: "One more beer", japanese: "ビールもう一杯", romaji: "Bīru mō ippai", pronunciation: "bee-roo moh ee-pie" },
-      { english: "Reservation", japanese: "よやく", romaji: "Yoyaku", pronunciation: "yoh-yah-koo" }
-    ],
-    "Shopping": [
-      { english: "Do you have (it)?", japanese: "ありますか", romaji: "Arimasu ka", pronunciation: "ah-ree-mas kah" },
-      { english: "How much?", japanese: "いくら", romaji: "Ikura", pronunciation: "ee-koo-rah" },
-      { english: "Please show me", japanese: "見せてください", romaji: "Misete kudasai", pronunciation: "mee-seh-teh koo-dah-sigh" }
-    ],
-    "Questions": [
-      { english: "What is this?", japanese: "これは何ですか", romaji: "Kore wa nan desu ka", pronunciation: "koh-reh wah nahn dess kah" },
-      { english: "What is your name?", japanese: "名前はなんですか", romaji: "Namae wa nan desu ka", pronunciation: "nah-mah-eh wah nahn dess kah" }
-    ],
-    "Directions": [
-      { english: "Where is the bathroom?", japanese: "トイレはどこですか", romaji: "Toire wa doko desu ka", pronunciation: "toy-reh wah doh-koh dess kah" }
-    ],
-    "Communication": [
-      { english: "I can’t speak Japanese", japanese: "日本語を話せません", romaji: "Nihongo o hanasemasen", pronunciation: "nee-hohn-goh oh hah-nah-seh-mah-sen" },
-      { english: "I am practicing my Japanese", japanese: "私は日本語を練習しています。", romaji: "Watashi wa nihongo o renshū shite imasu", pronunciation: "wah-tah-shee wah nee-hohn-goh oh ren-shoo sheh-teh ee-mas" }
-    ],
-    "Hotel": [
-      { english: "Reservation / appointment", japanese: "よやく", romaji: "Yoyaku", pronunciation: "yoh-yah-koo" }
-    ],
-    "Numbers": [
-      { english: "Hundred", japanese: "ひゃく", romaji: "Hyaku", pronunciation: "hyah-koo" },
-      { english: "Two hundred", japanese: "にひゃく", romaji: "Ni-hyaku", pronunciation: "nee-hyah-koo" },
-      { english: "Three hundred", japanese: "さんびゃく", romaji: "San-byaku", pronunciation: "sahn-byah-koo" },
-      { english: "Four hundred", japanese: "よんひゃく", romaji: "Yon-hyaku", pronunciation: "yohn-hyah-koo" },
-      { english: "Six hundred", japanese: "ろっぴゃく", romaji: "Roppyaku", pronunciation: "roh-ppyah-koo" },
-      { english: "Eight hundred", japanese: "はっぴゃく", romaji: "Happyaku", pronunciation: "hah-ppyah-koo" },
-      { english: "Twenty", japanese: "にじゅう", romaji: "Ni-jū", pronunciation: "nee-joo" },
-      { english: "Thirty", japanese: "さんじゅう", romaji: "San-jū", pronunciation: "sahn-joo" },
-      { english: "Four thousand", japanese: "よんせん", romaji: "Yon-sen", pronunciation: "yohn-sen" },
-      { english: "Three thousand", japanese: "さんぜん", romaji: "Sanzen", pronunciation: "sahn-zen" },
-      { english: "Eight thousand", japanese: "はっせん", romaji: "Hassen", pronunciation: "hah-sen" }
-    ],
-    "Time & Dates": [
-      { english: "From", japanese: "から", romaji: "Kara", pronunciation: "kah-rah" },
-      { english: "Until / to", japanese: "まで", romaji: "Made", pronunciation: "mah-deh" },
-      { english: "Morning / a.m.", japanese: "ごぜん", romaji: "Gozen", pronunciation: "goh-zen" },
-      { english: "Afternoon / p.m.", japanese: "ごご", romaji: "Gogo", pronunciation: "goh-goh" }
-    ]
-  },
-  [SETS.BASIC]: {
-    "Key Phrases": [
-      { english: "Yes", japanese: "はい", romaji: "Hai", pronunciation: "hai" },
-      { english: "No", japanese: "いいえ", romaji: "Iie", pronunciation: "ee-eh" },
-      { english: "What is your name?", japanese: "名前はなんですか", romaji: "Namae wa nan desu ka", pronunciation: "nah-mah-eh wah nahn dess kah" },
-      { english: "I am ~", japanese: "私は〜です", romaji: "Watashi wa ~ desu", pronunciation: "wah-tah-shee wah dess" },
-      { english: "I came from ~ / I am from ~", japanese: "〜から来ました", romaji: "~ kara kimashita", pronunciation: "kah-rah kee-mah-shee-tah" },
-      { english: "What is this?", japanese: "これは何ですか", romaji: "Kore wa nan desu ka", pronunciation: "koh-reh wah nahn dess kah" },
-      { english: "How much?", japanese: "いくらですか", romaji: "Ikura desu ka", pronunciation: "ee-koo-rah dess kah" },
-      { english: "Can I get this one? / I'll take this one", japanese: "これください", romaji: "Kore kudasai", pronunciation: "koh-reh koo-dah-sigh" },
-      { english: "Please", japanese: "おねがいします", romaji: "Onegaishimasu", pronunciation: "oh-neh-guy-shee-mas" },
-      { english: "Can I place an order?", japanese: "注文お願いします", romaji: "Chūmon onegaishimasu", pronunciation: "choo-mohn oh-neh-guy-shee-mas" },
-      { english: "Water please", japanese: "水をお願いします", romaji: "Mizu o onegaishimasu", pronunciation: "mee-zoo oh-neh-guy-shee-mas" },
-      { english: "Can I get the check/bill?", japanese: "お会計お願いします", romaji: "Okaikei onegaishimasu", pronunciation: "oh-kai-kay oh-neh-guy-shee-mas" },
-      { english: "Where am I?", japanese: "ここはどこですか", romaji: "Koko wa doko desu ka", pronunciation: "koh-koh wah doh-koh dess kah" },
-      { english: "Where is the bathroom?", japanese: "トイレはどこですか", romaji: "Toire wa doko desu ka", pronunciation: "toy-reh wah doh-koh dess kah" },
-      { english: "Where is the train station?", japanese: "駅はどこですか", romaji: "Eki wa doko desu ka", pronunciation: "eh-kee wah doh-koh dess kah" },
-      { english: "What time is it now?", japanese: "今何時ですか", romaji: "Ima nan ji desu ka", pronunciation: "ee-mah nahn jee dess kah" },
-      { english: "I don't understand", japanese: "わかりません", romaji: "Wakarimasen", pronunciation: "wah-kah-ree-mah-sen" },
-      { english: "I can't speak Japanese", japanese: "日本語を話せません", romaji: "Nihongo o hanasemasen", pronunciation: "nee-hohn-goh oh hah-nah-seh-mah-sen" }
-    ],
-    "Greetings": [
-      { english: "Good morning", japanese: "おはようございます", romaji: "Ohayō gozaimasu", pronunciation: "oh-hah-yoh goh-zah-ee-mas" },
-      { english: "Good afternoon", japanese: "こんにちは", romaji: "Konnichiwa", pronunciation: "kon-nee-chee-wah" },
-      { english: "Good evening", japanese: "こんばんは", romaji: "Konbanwa", pronunciation: "kon-bahn-wah" },
-      { english: "Thank you", japanese: "ありがとうございます", romaji: "Arigatō gozaimasu", pronunciation: "ah-ree-gah-toh goh-zah-ee-mas" },
-      { english: "Excuse me / I'm sorry", japanese: "すみません", romaji: "Sumimasen", pronunciation: "soo-mee-mah-sen" }
-    ],
-    "People & Pronouns": [
-      { english: "I (watashi / boku / ore)", japanese: "私、僕、俺", romaji: "Watashi / Boku / Ore", pronunciation: "" },
-      { english: "Friend", japanese: "友達", romaji: "Tomodachi", pronunciation: "toh-moh-dah-chee" },
-      { english: "Co-worker", japanese: "同僚", romaji: "Dōryō", pronunciation: "doh-ryoh" },
-      { english: "Boss / Company president", japanese: "部長、社長", romaji: "Buchō / Shachō", pronunciation: "boo-choh / shah-choh" },
-      { english: "Family", japanese: "家族", romaji: "Kazoku", pronunciation: "kah-zoh-koo" },
-      { english: "Father", japanese: "お父さん", romaji: "Otō-san", pronunciation: "oh-toh-san" },
-      { english: "Mother", japanese: "お母さん", romaji: "Okā-san", pronunciation: "oh-kah-san" },
-      { english: "Older brother", japanese: "お兄さん", romaji: "Onii-san", pronunciation: "oh-nee-san" },
-      { english: "Older sister", japanese: "お姉さん", romaji: "Onee-san", pronunciation: "oh-neh-san" },
-      { english: "Younger brother", japanese: "弟", romaji: "Otōto", pronunciation: "oh-toh-toh" },
-      { english: "Younger sister", japanese: "妹", romaji: "Imōto", pronunciation: "ee-moh-toh" },
-      { english: "Adults", japanese: "大人", romaji: "Otona", pronunciation: "oh-toh-nah" },
-      { english: "Children", japanese: "子供", romaji: "Kodomo", pronunciation: "koh-doh-moh" },
-      { english: "Boyfriend", japanese: "彼氏", romaji: "Kareshi", pronunciation: "kah-reh-shee" },
-      { english: "Girlfriend", japanese: "彼女", romaji: "Kanojo", pronunciation: "kah-noh-joh" },
-      { english: "Man", japanese: "男の人", romaji: "Otoko no hito", pronunciation: "oh-toh-koh noh hee-toh" },
-      { english: "Woman", japanese: "女の人", romaji: "Onna no hito", pronunciation: "ohn-nah noh hee-toh" }
-    ],
-    "Food & Drink": [
-      { english: "Breakfast", japanese: "朝ご飯", romaji: "Asa-gohan", pronunciation: "ah-sah goh-hahn" },
-      { english: "Lunch", japanese: "昼ご飯", romaji: "Hiru-gohan", pronunciation: "hee-roo goh-hahn" },
-      { english: "Dinner", japanese: "夜ご飯", romaji: "Yoru-gohan", pronunciation: "yoh-roo goh-hahn" },
-      { english: "Rice / Meal", japanese: "ご飯", romaji: "Gohan", pronunciation: "goh-hahn" },
-      { english: "Bread", japanese: "パン", romaji: "Pan", pronunciation: "pahn" },
-      { english: "Meat", japanese: "肉", romaji: "Niku", pronunciation: "nee-koo" },
-      { english: "Fish", japanese: "魚", romaji: "Sakana", pronunciation: "sah-kah-nah" },
-      { english: "Vegetables", japanese: "野菜", romaji: "Yasai", pronunciation: "yah-sigh" },
-      { english: "Fruits", japanese: "果物", romaji: "Kudamono", pronunciation: "koo-dah-moh-noh" },
-      { english: "Soup", japanese: "スープ", romaji: "Sūpu", pronunciation: "soo-poo" },
-      { english: "Salad", japanese: "サラダ", romaji: "Sarada", pronunciation: "sah-rah-dah" },
-      { english: "Egg", japanese: "卵", romaji: "Tamago", pronunciation: "tah-mah-goh" },
-      { english: "Milk", japanese: "牛乳", romaji: "Gyūnyū", pronunciation: "gyoo-nyoo" },
-      { english: "Cheese", japanese: "チーズ", romaji: "Chīzu", pronunciation: "chee-zoo" },
-      { english: "Dessert", japanese: "デザート", romaji: "Dezāto", pronunciation: "deh-zah-toh" },
-      { english: "Water", japanese: "水", romaji: "Mizu", pronunciation: "mee-zoo" },
-      { english: "Tea / Green tea", japanese: "お茶", romaji: "Ocha", pronunciation: "oh-chah" },
-      { english: "Coffee", japanese: "コーヒー", romaji: "Kōhī", pronunciation: "koh-hee" },
-      { english: "Alcohol / Sake", japanese: "お酒", romaji: "Osake", pronunciation: "oh-sah-keh" },
-      { english: "Wine", japanese: "ワイン", romaji: "Wain", pronunciation: "wah-een" },
-      { english: "Beer", japanese: "ビール", romaji: "Bīru", pronunciation: "bee-roo" }
-    ],
-    "Numbers": [
-      { english: "1", japanese: "一", romaji: "ichi", pronunciation: "ee-chee" },
-      { english: "2", japanese: "二", romaji: "ni", pronunciation: "nee" },
-      { english: "3", japanese: "三", romaji: "san", pronunciation: "sahn" },
-      { english: "4", japanese: "四", romaji: "yon", pronunciation: "yohn" },
-      { english: "5", japanese: "五", romaji: "go", pronunciation: "goh" },
-      { english: "6", japanese: "六", romaji: "roku", pronunciation: "roh-koo" },
-      { english: "7", japanese: "七", romaji: "nana", pronunciation: "nah-nah" },
-      { english: "8", japanese: "八", romaji: "hachi", pronunciation: "hah-chee" },
-      { english: "9", japanese: "九", romaji: "kyū", pronunciation: "kyoo" },
-      { english: "10", japanese: "十", romaji: "jū", pronunciation: "joo" },
-      { english: "11", japanese: "十一", romaji: "jūichi", pronunciation: "joo-ee-chee" },
-      { english: "12", japanese: "十二", romaji: "jūni", pronunciation: "joo-nee" },
-      { english: "20", japanese: "二十", romaji: "nijū", pronunciation: "nee-joo" },
-      { english: "21", japanese: "二十一", romaji: "nijūichi", pronunciation: "nee-joo-ee-chee" },
-      { english: "30", japanese: "三十", romaji: "sanjū", pronunciation: "sahn-joo" },
-      { english: "32", japanese: "三十二", romaji: "sanjūni", pronunciation: "sahn-joo-nee" },
-      { english: "40", japanese: "四十", romaji: "yonjū", pronunciation: "yohn-joo" },
-      { english: "43", japanese: "四十三", romaji: "yonjūsan", pronunciation: "yohn-joo-sahn" },
-      { english: "50", japanese: "五十", romaji: "gojū", pronunciation: "goh-joo" },
-      { english: "54", japanese: "五十四", romaji: "gojūyon", pronunciation: "goh-joo-yohn" },
-      { english: "60", japanese: "六十", romaji: "rokujū", pronunciation: "roh-koo-joo" },
-      { english: "65", japanese: "六十五", romaji: "rokujūgo", pronunciation: "roh-koo-joo-goh" },
-      { english: "70", japanese: "七十", romaji: "nanajū", pronunciation: "nah-nah-joo" },
-      { english: "76", japanese: "七十六", romaji: "nanajūroku", pronunciation: "nah-nah-joo-roh-koo" },
-      { english: "80", japanese: "八十", romaji: "hachijū", pronunciation: "hah-chee-joo" },
-      { english: "87", japanese: "八十七", romaji: "hachijūnana", pronunciation: "hah-chee-joo-nah-nah" },
-      { english: "90", japanese: "九十", romaji: "kyūjū", pronunciation: "kyoo-joo" },
-      { english: "98", japanese: "九十八", romaji: "kyūjūhachi", pronunciation: "kyoo-joo-hah-chee" },
-      { english: "100", japanese: "百", romaji: "hyaku", pronunciation: "hyah-koo" },
-      { english: "1000", japanese: "千", romaji: "sen", pronunciation: "sen" },
-      { english: "2000", japanese: "二千", romaji: "nisen", pronunciation: "nee-sen" },
-      { english: "3000", japanese: "三千", romaji: "sanzen", pronunciation: "sahn-zen" },
-      { english: "5000", japanese: "五千", romaji: "gosen", pronunciation: "goh-sen" }
-    ],
-    "Essential Verbs": [
-      { english: "to eat", japanese: "食べる", romaji: "Taberu", pronunciation: "tah-beh-roo" },
-      { english: "to go", japanese: "行く", romaji: "Iku", pronunciation: "ee-koo" },
-      { english: "to drink", japanese: "飲む", romaji: "Nomu", pronunciation: "noh-moo" },
-      { english: "to listen / hear", japanese: "聞く", romaji: "Kiku", pronunciation: "kee-koo" },
-      { english: "to read", japanese: "読む", romaji: "Yomu", pronunciation: "yoh-moo" },
-      { english: "to see / look / watch", japanese: "見る", romaji: "Miru", pronunciation: "mee-roo" },
-      { english: "to sleep", japanese: "寝る", romaji: "Neru", pronunciation: "neh-roo" },
-      { english: "to wake up", japanese: "起きる", romaji: "Okiru", pronunciation: "oh-kee-roo" },
-      { english: "to speak / talk", japanese: "話す", romaji: "Hanasu", pronunciation: "hah-nah-soo" },
-      { english: "to return / go back", japanese: "帰る", romaji: "Kaeru", pronunciation: "kah-eh-roo" },
-      { english: "to sit down", japanese: "座る", romaji: "Suwaru", pronunciation: "soo-wah-roo" },
-      { english: "to stand up", japanese: "立つ", romaji: "Tatsu", pronunciation: "tah-tsoo" },
-      { english: "to swim", japanese: "泳ぐ", romaji: "Oyogu", pronunciation: "oh-yoh-goo" },
-      { english: "to play", japanese: "遊ぶ", romaji: "Asobu", pronunciation: "ah-soh-boo" },
-      { english: "to ride", japanese: "乗る", romaji: "Noru", pronunciation: "noh-roo" },
-      { english: "to buy", japanese: "買う", romaji: "Kau", pronunciation: "kah-oo" },
-      { english: "to meet", japanese: "会う", romaji: "Au", pronunciation: "ah-oo" },
-      { english: "to write", japanese: "書く", romaji: "Kaku", pronunciation: "kah-koo" },
-      { english: "to wait", japanese: "待つ", romaji: "Matsu", pronunciation: "mah-tsoo" },
-      { english: "to take a picture", japanese: "撮る", romaji: "Toru", pronunciation: "toh-roo" }
-    ]
+let VOCAB = {};
+const VOCAB_STATUS = { errors: [], warnings: [] };
+
+(function loadVocabFromJson(){
+  const el = document.getElementById("vocab_json");
+  if (!el) {
+    VOCAB_STATUS.errors.push("Missing #vocab_json data block.");
+    VOCAB = {};
+    return;
   }
-};
+  try {
+    VOCAB = JSON.parse(el.textContent);
+  } catch (e) {
+    VOCAB_STATUS.errors.push("VOCAB JSON parse error: " + (e && e.message ? e.message : String(e)));
+    VOCAB = {};
+  }
+})();
 
 const HIRAGANA = [
   ["あ","a","ah"],["い","i","ee"],["う","u","oo"],["え","e","eh"],["お","o","oh"],
@@ -672,6 +2417,9 @@ function saveData() {
       essentials: selEssentials.checked,
       travel: selTravel.checked,
       basic: selBasic.checked,
+      ordering: selOrdering.checked,
+      grammar: selGrammar.checked,
+      n5core: selN5Core.checked,
       hira: selHira.checked,
       kata: selKata.checked,
       kanji: selKanji.checked,
@@ -730,6 +2478,9 @@ function restoreFromObject(data) {
       selEssentials.checked = !!data.settings.essentials;
       selTravel.checked = !!data.settings.travel;
       selBasic.checked = !!data.settings.basic;
+      selOrdering.checked = !!data.settings.ordering;
+      selGrammar.checked = !!data.settings.grammar;
+      selN5Core.checked = !!data.settings.n5core;
       selHira.checked = !!data.settings.hira;
       selKata.checked = !!data.settings.kata;
       selKanji.checked = !!data.settings.kanji;
@@ -792,6 +2543,8 @@ btnExport.addEventListener("click", () => {
           essentials: selEssentials.checked,
           travel: selTravel.checked,
           basic: selBasic.checked,
+      ordering: selOrdering.checked,
+      grammar: selGrammar.checked,
           hira: selHira.checked,
           kata: selKata.checked,
           kanji: selKanji.checked,
@@ -881,8 +2634,18 @@ function buildKanjiCards(setName, kanjiArr) {
 function dedupeCards(cards) {
   const seen = new Set();
   const out = [];
+  const norm = (s) => (s == null ? "" : String(s))
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+
   for (const c of cards) {
-    const key = `${c.type}|${c.japanese}|${c.english}|${c.romaji}`;
+    const jp = (c.japanese == null ? "" : String(c.japanese)).trim();
+    const en = norm(c.english);
+    const key = c.type === "vocab"
+      ? `${c.type}|${jp}|${en}`              // ignore romaji/pronunciation to reduce duplicates across lists
+      : `${c.type}|${jp}|${norm(c.romaji)}`; // scripts/kanji
+
     if (seen.has(key)) continue;
     seen.add(key);
     out.push(c);
@@ -912,7 +2675,46 @@ const missed = new Set();
 // Progress & Streak
 let currentStreak = 0;
 let answerHistory = [];
+let answerIds = [];
+const answerStatus = new Map();
 let correctCount = 0;
+
+function recomputeStreakFromHistory(){
+  let s = 0;
+  for (const t of answerHistory) {
+    if (t === 'correct') {
+      if (s < 0) s = 0;
+      s++;
+    } else {
+      if (s > 0) s = 0;
+      s--;
+    }
+  }
+  currentStreak = s;
+}
+
+function recomputeProgressSummary(){
+  answerStatus.clear();
+  missed.clear();
+  for (let i = 0; i < answerHistory.length; i++) {
+    const t = answerHistory[i];
+    const id = answerIds[i];
+    if (!id) continue;
+    answerStatus.set(id, t);
+  }
+  correctCount = 0;
+  for (const [id, t] of answerStatus.entries()) {
+    if (t === 'correct') correctCount++;
+    else missed.add(id);
+  }
+}
+
+function recordAnswer(type, cardId){
+  answerHistory.push(type);
+  answerIds.push(cardId);
+  recomputeProgressSummary();
+  recomputeStreakFromHistory();
+}
 
 // speech
 let speechSupported = false;
@@ -942,6 +2744,9 @@ const selAllScripts = el("sel_all_scripts");
 const selEssentials = el("sel_essentials");
 const selTravel = el("sel_travel");
 const selBasic = el("sel_basic");
+const selOrdering = el("sel_ordering");
+const selGrammar = el("sel_grammar");
+const selN5Core = el("sel_n5core");
 const selHira = el("sel_hira");
 const selKata = el("sel_kata");
 const selKanji = el("sel_kanji");
@@ -951,6 +2756,90 @@ const optAutoplay = el("opt_autoplay"); // NEW
 const optLimitSelect = el("opt_limit_select");
 const optSideMode = el("opt_side_mode");
 const optIncorrectOnly = el("opt_incorrectOnly");
+// ===== VOCAB Safety Check (prevents UI from breaking when vocab JSON is malformed) =====
+function validateVocabData() {
+  // If JSON parse failed, VOCAB_STATUS.errors already contains the reason.
+  if (!VOCAB || typeof VOCAB !== "object") {
+    VOCAB_STATUS.errors.push("VOCAB data is not an object.");
+    return;
+  }
+  const setNames = Object.keys(VOCAB);
+  if (setNames.length === 0) {
+    VOCAB_STATUS.errors.push("VOCAB is empty (no sets found).");
+    return;
+  }
+
+  const requiredFields = ["english", "japanese", "romaji", "pronunciation"];
+  const dup = new Set();
+
+  for (const setName of setNames) {
+    const cats = VOCAB[setName];
+    if (!cats || typeof cats !== "object") {
+      VOCAB_STATUS.errors.push(`Set '${setName}' is not an object of categories.`);
+      continue;
+    }
+    const catNames = Object.keys(cats);
+    if (catNames.length === 0) {
+      VOCAB_STATUS.warnings.push(`Set '${setName}' has no categories.`);
+    }
+    for (const catName of catNames) {
+      const items = cats[catName];
+      if (!Array.isArray(items)) {
+        VOCAB_STATUS.errors.push(`Category '${setName} → ${catName}' is not an array.`);
+        continue;
+      }
+      for (let i = 0; i < items.length; i++) {
+        const card = items[i];
+        if (!card || typeof card !== "object") {
+          VOCAB_STATUS.errors.push(`Card '${setName} → ${catName} [${i}]' is not an object.`);
+          continue;
+        }
+        for (const f of requiredFields) {
+          if (typeof card[f] !== "string") {
+            VOCAB_STATUS.errors.push(`Card '${setName} → ${catName} [${i}]' missing string field '${f}'.`);
+          }
+        }
+        const k = `${setName}|${catName}|${card.english}|${card.japanese}|${card.romaji}`;
+        if (dup.has(k)) VOCAB_STATUS.warnings.push(`Duplicate card detected: ${setName} → ${catName}: '${card.english}' / '${card.japanese}'.`);
+        dup.add(k);
+      }
+    }
+  }
+}
+
+function applyVocabSafetyUI() {
+  // Validate once DOM exists and show actionable feedback.
+  validateVocabData();
+
+  if (VOCAB_STATUS.warnings.length) console.warn("VOCAB warnings:", VOCAB_STATUS.warnings);
+
+  if (!VOCAB_STATUS.errors.length) return;
+
+  console.error("VOCAB errors:", VOCAB_STATUS.errors);
+
+  // Keep the app from entering a half-broken state.
+  const btnBuild = document.getElementById("btn_build");
+  const byCat = document.getElementById("by_category");
+  const storageStatus = document.getElementById("storage-status");
+
+  if (btnBuild) btnBuild.disabled = true;
+  if (byCat) {
+    byCat.innerHTML = '<option value="">None</option>';
+    byCat.disabled = true;
+  }
+  if (storageStatus) {
+    storageStatus.textContent = "Vocab error: fix vocab_json (Build Deck disabled)";
+    storageStatus.style.color = "var(--bad)";
+  }
+
+  try {
+    showToast("Vocab error: check vocab_json (Build Deck disabled).", "bad");
+  } catch (_) {
+    // If showToast isn't available yet, fail quietly; console already has details.
+  }
+}
+// ==============================================================================
+
 
 const btnSpeak = el("btn_speak");
 const btnHint = el("btn_hint");
@@ -979,6 +2868,9 @@ function showToast(msg, type) {
   }, 2000);
 }
 
+
+// Run vocab safety checks before wiring the rest of the app
+applyVocabSafetyUI();
 function updateMissCount() { missCountEl.textContent = `Incorrect: ${missed.size}`; }
 
 function selectedSets() {
@@ -986,6 +2878,9 @@ function selectedSets() {
   if (selEssentials.checked) sets.push(SETS.ESSENTIALS);
   if (selTravel.checked) sets.push(SETS.TRAVEL);
   if (selBasic.checked) sets.push(SETS.BASIC);
+  if (selOrdering.checked) sets.push(SETS.ORDERING);
+  if (selGrammar.checked) sets.push(SETS.GRAMMAR);
+  if (selN5Core.checked) sets.push(SETS.N5CORE);
   if (selHira.checked) sets.push(SETS.HIRAGANA);
   if (selKata.checked) sets.push(SETS.KATAKANA);
   if (selKanji.checked) sets.push(SETS.KANJI);
@@ -1099,6 +2994,13 @@ function rebuildDeck() {
       else cards.push(...buildCardsFromVocab(s));
     }
     cards = dedupeCards(cards);
+
+    // If this is a scripts-only deck, default the starting side to Japanese (unless the user explicitly chose otherwise).
+    const scriptsOnly = cards.length > 0 && cards.every(c => (c.type === "kana" || c.type === "kanji"));
+    if (scriptsOnly && optSideMode.value === "random") {
+      optSideMode.value = "jp";
+    }
+
     const limit = parseInt(optLimitSelect.value, 10);
     if (optShuffle.checked) shuffleInPlace(cards);
     if (limit > 0) cards = cards.slice(0, limit);
@@ -1115,8 +3017,9 @@ function rebuildDeck() {
   // Reset Progress
   currentStreak = 0;
   answerHistory = [];
-  correctCount = 0;
-
+  answerIds = [];
+  recomputeProgressSummary();
+  recomputeStreakFromHistory();
   applyIncorrectOnlyView();
   showToast(`Built deck with ${deckAll.length} cards.`);
   render();
@@ -1243,7 +3146,7 @@ function render() {
     let subHtml = `You have completed this deck.<br/><br/>`;
     
     if (missed.size > 0) {
-        subHtml += `<button id="btn_review_missed" class="bad" style="margin-bottom:10px;">Review Incorrect Cards (${missed.size})</button><br/>`;
+        subHtml += `<button id="btn_review_missed" class="bad" style="padding:10px; margin-bottom:10px;">Review Incorrect Cards (${missed.size})</button><br/>`;
     }
     
     subHtml += `<button id="btn_restart" class="ghost">Restart Deck</button>`;
@@ -1261,8 +3164,9 @@ function render() {
             btnReview.onclick = () => {
                 optIncorrectOnly.checked = true;
                 applyIncorrectOnlyView();
-                index = 0; currentStreak = 0; answerHistory = []; correctCount = 0;
-                perCardFrontIsEnglish = new Map(); 
+                index = 0; currentStreak = 0; answerHistory = []; answerIds = []; recomputeProgressSummary(); recomputeStreakFromHistory();
+                isFront = true;
+                unsureLocked = false;
                 render();
                 saveData();
             };
@@ -1270,7 +3174,7 @@ function render() {
         const btnRestart = document.getElementById("btn_restart");
         if (btnRestart) {
             btnRestart.onclick = () => {
-                index = 0; currentStreak = 0; answerHistory = []; correctCount = 0;
+                index = 0; currentStreak = 0; answerHistory = []; answerIds = []; recomputeProgressSummary(); recomputeStreakFromHistory();
                 isFront = true;
                 perCardFrontIsEnglish = new Map();
                 shuffleInPlace(deckView); 
@@ -1389,18 +3293,17 @@ function prev() {
   showHintOnFront = false;
   if (!deckView.length) return;
   if (index > 0) {
-      index--;
-      const lastAnswer = answerHistory.pop();
-      if(lastAnswer === 'correct') correctCount--;
-      
-      if(currentStreak > 0) currentStreak--;
-      else if(currentStreak < 0) currentStreak++;
+    index--;
+    answerHistory.pop();
+    answerIds.pop();
+    recomputeProgressSummary();
+    recomputeStreakFromHistory();
   }
   isFront = true;
   showHintOnFront = false;
   mobileSettingsOpen = false;
-  document.body.classList.remove("studying","showSettings"); 
-  render(); 
+  document.body.classList.remove("studying","showSettings");
+  render();
   saveData();
 }
 
@@ -1408,12 +3311,8 @@ function prev() {
 function markCorrect() {
   if (!deckView.length) return;
   if (isFront) { showToast("Flip first to see the answer.", "warn"); return; }
-  
-  if (currentStreak < 0) currentStreak = 0; 
-  currentStreak++;
-  answerHistory.push('correct');
-  correctCount++;
-
+  const card = deckView[index];
+  recordAnswer('correct', card.id);
   showToast("Correct!", "good");
   next();
 }
@@ -1423,13 +3322,8 @@ function markIncorrect() {
   if (!deckView.length) return;
   if (isFront) { showToast("Flip first to see the answer.", "warn"); return; }
   const card = deckView[index];
-  missed.add(card.id);
+  recordAnswer('incorrect', card.id);
   applyIncorrectOnlyView();
-  
-  if (currentStreak > 0) currentStreak = 0; 
-  currentStreak--;
-  answerHistory.push('incorrect');
-
   showToast("Incorrect", "bad");
   next();
 }
@@ -1438,22 +3332,22 @@ function markIncorrect() {
 function markUnsure() {
   if (!deckView.length) return;
   const card = deckView[index];
-  missed.add(card.id);
-  applyIncorrectOnlyView();
 
+  // "Unsure" is treated as incorrect for progress + review list
   if (isFront) {
     isFront = false;
     unsureLocked = true;
+    recordAnswer('incorrect', card.id);
+    applyIncorrectOnlyView();
     showToast("Unsure → marked incorrect. (Flipped to answer)", "warn");
     render();
-  } else {
-    if (currentStreak > 0) currentStreak = 0;
-    currentStreak--;
-    answerHistory.push('incorrect');
-
-    showToast("Unsure → Incorrect", "warn");
-    next();
+    return;
   }
+
+  recordAnswer('incorrect', card.id);
+  applyIncorrectOnlyView();
+  showToast("Unsure → Incorrect", "warn");
+  next();
 }
 
 
@@ -1471,6 +3365,8 @@ function resetUI() {
   selEssentials.checked = false;
   selTravel.checked = true;
   selBasic.checked = false;
+  selOrdering.checked = false;
+  selGrammar.checked = false;
   selHira.checked = false;
   selKata.checked = false;
   selKanji.checked = false;
@@ -1492,7 +3388,9 @@ function resetUI() {
   
   currentStreak = 0;
   answerHistory = [];
-  correctCount = 0;
+  answerIds = [];
+  recomputeProgressSummary();
+  recomputeStreakFromHistory();
 
   mobileSettingsOpen = false;
   document.body.classList.remove("studying","showSettings");
@@ -1505,8 +3403,8 @@ function resetUI() {
 
 
 function syncSelectAllVocab() {
-  const allChecked = selEssentials.checked && selTravel.checked && selBasic.checked;
-  const noneChecked = !selEssentials.checked && !selTravel.checked && !selBasic.checked;
+  const allChecked = selEssentials.checked && selTravel.checked && selBasic.checked && selOrdering.checked && selGrammar.checked;
+  const noneChecked = !selEssentials.checked && !selTravel.checked && !selBasic.checked && !selOrdering.checked && !selGrammar.checked;
   selAllVocab.indeterminate = !allChecked && !noneChecked;
   selAllVocab.checked = allChecked;
 }
@@ -1523,6 +3421,8 @@ selAllVocab.addEventListener("change", () => {
   selEssentials.checked = v;
   selTravel.checked = v;
   selBasic.checked = v;
+    selOrdering.checked = v;
+    selGrammar.checked = v;
   syncSelectAllVocab();
   saveData();
 });
@@ -1536,7 +3436,7 @@ selAllScripts.addEventListener("change", () => {
   saveData();
 });
 
-[selEssentials, selTravel, selBasic].forEach(cb => cb.addEventListener("change", () => { syncSelectAllVocab(); saveData(); }));
+[selEssentials, selTravel, selBasic, selOrdering, selGrammar, selN5Core].forEach(cb => cb.addEventListener("change", () => { syncSelectAllVocab(); saveData(); }));
 [selHira, selKata, selKanji].forEach(cb => cb.addEventListener("change", () => { syncSelectAllScripts(); saveData(); }));
 
 el("btn_build").addEventListener("click", rebuildDeck);
@@ -1675,4 +3575,3 @@ initSpeech();
 </script>
 </body>
 </html>
-
